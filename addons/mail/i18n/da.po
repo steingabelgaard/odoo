@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Odoo 8.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-01-21 14:07+0000\n"
-"PO-Revision-Date: 2016-01-17 20:26+0100\n"
+"PO-Revision-Date: 2016-01-17 20:38+0100\n"
 "Last-Translator: Hans Henrik Gabelgaard <hhg@gabelgaard.org>\n"
 "Language-Team: Danish (http://www.transifex.com/odoo/odoo-8/language/da/)\n"
 "MIME-Version: 1.0\n"
@@ -1155,9 +1155,8 @@ msgstr "Besked- og kommunikations historik"
 
 #. module: mail
 #: model:ir.ui.menu,name:mail.mail_feeds model:ir.ui.menu,name:mail.mail_feeds_main
-#, fuzzy
 msgid "Messaging"
-msgstr "Messaging"
+msgstr "Beskeder"
 
 #. module: mail
 #: view:res.users:mail.view_users_form_mail
