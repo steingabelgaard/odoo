@@ -176,7 +176,7 @@ msgstr "Gns. forfalds forsinkelse"
 #. module: account_voucher
 #: view:account.voucher:account_voucher.view_purchase_receipt_form
 msgid "Bill Date"
-msgstr "Bilags dato"
+msgstr "Bilagsdato"
 
 #. module: account_voucher
 #: view:account.voucher:account_voucher.view_purchase_receipt_form
