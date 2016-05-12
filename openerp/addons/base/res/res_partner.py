@@ -679,12 +679,13 @@ class res_partner(osv.Model, format_address):
 
             unaccent = get_unaccent_wrapper(cr)
 
-            query = """SELECT id
-                         FROM res_partner
+            query = """SELECT res_partner.id
+                         FROM {fromstr}
                       {where} ({email} {operator} {percent}
                            OR {display_name} {operator} {percent})
                      ORDER BY {display_name}
-                    """.format(where=where_str, operator=operator,
+                    """.format(fromstr=from_clause,
+                               where=where_str, operator=operator,
                                email=unaccent('email'),
                                display_name=unaccent('display_name'),
                                percent=unaccent('%s'))
