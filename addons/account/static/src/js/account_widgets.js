@@ -88,6 +88,7 @@ openerp.account = function (instance) {
                     label: _t("Tax"),
                     required: false,
                     tabindex: 12,
+                    invisible: 1,
                     constructor: instance.web.form.FieldMany2One,
                     field_properties: {
                         relation: "account.tax",
@@ -962,6 +963,11 @@ openerp.account = function (instance) {
                     self.model_res_users
                         .call("has_group", [field_data.group])
                         .then(hideGroupResponseClosureFactory(field, target, (field_data.id+"_field")));
+                }
+                // Hide the field if group not OK
+                if (field_data.invisible !== undefined) {
+                	var target = $field_container;
+                    target.hide();
                 }
             }
     
