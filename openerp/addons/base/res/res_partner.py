@@ -67,10 +67,12 @@ class format_address(object):
                 doc = etree.fromstring(arch)
                 for node in doc.xpath("//div[@class='address_format']"):
                     tree = etree.fromstring(v % {'city': _('City'), 'zip': _('ZIP'), 'state': _('State')})
-                    for child in node.xpath("//field"):
-                        if child.attrib.get('modifiers'):
-                            for field in tree.xpath("//field[@name='%s']" % child.attrib.get('name')):
+                    for child in node.xpath(".//field"):
+                        for field in tree.xpath("//field[@name='%s']" % child.attrib.get("name")):
+                            if child.attrib.get("modifiers"):
                                 field.attrib['modifiers'] = child.attrib.get('modifiers')
+                            if child.attrib.get("on_change"):
+                                field.attrib["on_change"] = child.attrib.get("on_change")
                     node.getparent().replace(node, tree)
                 arch = etree.tostring(doc)
                 break
@@ -563,6 +565,8 @@ class res_partner(osv.Model, format_address):
 
         result = super(res_partner, self).write(vals)
         for partner in self:
+            if any(u.has_group('base.group_user') for u in partner.user_ids if u != self.env.user):
+                self.env['res.users'].check_access_rights('write')
             self._fields_sync(partner, vals)
         return result
 
@@ -675,12 +679,13 @@ class res_partner(osv.Model, format_address):
 
             unaccent = get_unaccent_wrapper(cr)
 
-            query = """SELECT id
-                         FROM res_partner
+            query = """SELECT res_partner.id
+                         FROM {fromstr}
                       {where} ({email} {operator} {percent}
                            OR {display_name} {operator} {percent})
                      ORDER BY {display_name}
-                    """.format(where=where_str, operator=operator,
+                    """.format(fromstr=from_clause,
+                               where=where_str, operator=operator,
                                email=unaccent('email'),
                                display_name=unaccent('display_name'),
                                percent=unaccent('%s'))

@@ -775,7 +775,10 @@ class Database(http.Controller):
 class Session(http.Controller):
 
     def session_info(self):
-        request.session.ensure_valid()
+        try:
+            request.session.check_security()
+        except:
+            request.session.ensure_valid()
         return {
             "session_id": request.session_id,
             "uid": request.session.uid,
@@ -1475,8 +1478,7 @@ class CSVExport(ExportFormat, http.Controller):
         for data in rows:
             row = []
             for d in data:
-                if isinstance(d, basestring):
-                    d = d.replace('\n',' ').replace('\t',' ')
+                if isinstance(d, unicode):
                     try:
                         d = d.encode('utf-8')
                     except UnicodeError:
