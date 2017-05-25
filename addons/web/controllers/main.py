@@ -1334,7 +1334,7 @@ class Export(http.Controller):
     @http.route('/web/export/namelist', type='json', auth="user")
     def namelist(self, model, export_id):
         # TODO: namelist really has no reason to be in Python (although itertools.groupby helps)
-        export = request.session.model("ir.exports").read([export_id])[0]
+        export = request.session.model("ir.exports").read([export_id], fields=['export_fields'])[0]
         export_fields_list = request.session.model("ir.exports.line").read(
             export['export_fields'])
 
