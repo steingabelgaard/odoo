@@ -750,7 +750,7 @@ class BaseModel(object):
                 field = cls._fields.get(name)
                 if not field:
                     _logger.warning("method %s.%s: @constrains parameter %r is not a field name", cls._name, attr, name)
-                elif not (field.store or field.column and field.column._fnct_inv):
+                elif not (field.store or field.column and field.column._fnct_inv or field.inherited):
                     _logger.warning("method %s.%s: @constrains parameter %r is not writeable", cls._name, attr, name)
             methods.append(func)
 
@@ -860,7 +860,7 @@ class BaseModel(object):
             return '__export__.' + name
 
     @api.multi
-    def __export_rows(self, fields):
+    def _export_rows(self, fields):
         """ Export fields of the records in ``self``.
 
             :param fields: list of lists of fields to traverse
@@ -907,7 +907,7 @@ class BaseModel(object):
 
                         # recursively export the fields that follow name
                         fields2 = [(p[1:] if p and p[0] == name else []) for p in fields]
-                        lines2 = value.__export_rows(fields2)
+                        lines2 = value._export_rows(fields2)
                         if lines2:
                             # merge first line with record's main line
                             for j, val in enumerate(lines2[0]):
@@ -926,6 +926,8 @@ class BaseModel(object):
 
         return lines
 
+    __export_rows = _export_rows
+    
     @api.multi
     def export_data(self, fields_to_export, raw_data=False):
         """ Export fields for selected objects
@@ -939,7 +941,7 @@ class BaseModel(object):
         fields_to_export = map(fix_import_export_id_paths, fields_to_export)
         if raw_data:
             self = self.with_context(export_raw_data=True)
-        return {'datas': self.__export_rows(fields_to_export)}
+        return {'datas': self._export_rows(fields_to_export)}
 
     def import_data(self, cr, uid, fields, datas, mode='init', current_module='', noupdate=False, context=None, filename=None):
         """
@@ -3205,9 +3207,6 @@ class BaseModel(object):
         """
         # fetch the records of this model without field_name in their cache
         records = self._in_cache_without(field)
-
-        if len(records) > PREFETCH_MAX:
-            records = records[:PREFETCH_MAX] | self
 
         # determine which fields can be prefetched
         if not self.env.in_draft and \
@@ -5675,16 +5674,19 @@ class BaseModel(object):
         return RecordCache(self)
 
     @api.model
-    def _in_cache_without(self, field):
-        """ Make sure ``self`` is present in cache (for prefetching), and return
-            the records of model ``self`` in cache that have no value for ``field``
-            (:class:`Field` instance).
+    def _in_cache_without(self, field, limit=PREFETCH_MAX):
+        """ Return records to prefetch that have no value in cache for ``field``
+            (:class:`Field` instance), including ``self``.
+            Return at most ``limit`` records.
         """
         env = self.env
         prefetch_ids = env.prefetch[self._name]
         prefetch_ids.update(self._ids)
         ids = filter(None, prefetch_ids - set(env.cache[field]))
-        return self.browse(ids)
+        recs = self.browse(ids)
+        if limit and len(recs) > limit:
+            recs = self + (recs - self)[:(limit - len(self))]
+        return recs
 
     @api.model
     def refresh(self):

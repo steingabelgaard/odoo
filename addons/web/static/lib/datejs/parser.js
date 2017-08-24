@@ -919,7 +919,7 @@
 
 	// check for these formats first
     g._formats = g.formats([
-        "\"yyyy-MM-ddTHH:mm:ssZ\"",
+    	"\"yyyy-MM-ddTHH:mm:ssZ\"",
         "yyyy-MM-ddTHH:mm:ssZ",
         "yyyy-MM-ddTHH:mm:ssz",
         "yyyy-MM-ddTHH:mm:ss",
@@ -928,16 +928,18 @@
         "yyyy-MM-ddTHH:mm",
         "ddd, MMM dd, yyyy H:mm:ss tt",
         "ddd MMM d yyyy HH:mm:ss zzz",
-        "MMddyyyy",
+        // "MMddyyyy",
         "ddMMyyyy",
         "Mddyyyy",
         "ddMyyyy",
-        "Mdyyyy",
-        "dMyyyy",
-        "yyyy",
-        "Mdyy",
+        //"Mdyyyy",
+        "ddMMyy",
+        //"yyyy",
+        //"Mdyy",
+        "ddMM",
         "dMyy",
         "d"
+
     ]);
 
 	// starting rule for general purpose grammar

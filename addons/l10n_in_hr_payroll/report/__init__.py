@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-import report_payslip_details
+#import report_payslip_details
 import report_payroll_advice
 import report_hr_salary_employee_bymonth
 import payment_advice_report
