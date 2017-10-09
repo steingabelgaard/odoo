@@ -4,13 +4,16 @@
 # 
 # Translators:
 # ສີສຸວັນ ສັງບົວບຸລົມ <sisouvan@gmail.com>, 2017
+# Martin Trigaux <mat@odoo.com>, 2017
+# Phoxaysy Sengchanthanouvong <phoxaysy@gmail.com>, 2017
+# Amkha VAYAPHATH <amkha.nazou@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-06-23 13:27+0000\n"
 "PO-Revision-Date: 2017-06-23 13:27+0000\n"
-"Last-Translator: ສີສຸວັນ ສັງບົວບຸລົມ <sisouvan@gmail.com>, 2017\n"
+"Last-Translator: Amkha VAYAPHATH <amkha.nazou@gmail.com>, 2017\n"
 "Language-Team: Lao (https://www.transifex.com/odoo/teams/41243/lo/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5362,7 +5365,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_ir_module_module_category_id
 #: model:ir.ui.view,arch_db:base.view_module_filter
 msgid "Category"
-msgstr ""
+msgstr "ໝວດ"
 
 #. module: base
 #: model:res.country,name:base.ky
@@ -5682,7 +5685,7 @@ msgstr ""
 #: selection:ir.translation,type:0
 #: model:ir.ui.view,arch_db:base.view_base_import_language
 msgid "Code"
-msgstr ""
+msgstr "ລະຫັດ"
 
 #. module: base
 #: model:ir.model.fields,help:base.field_ir_model_fields_compute
@@ -5945,7 +5948,7 @@ msgstr ""
 #. module: base
 #: model:ir.ui.view,arch_db:base.view_base_module_upgrade
 msgid "Confirm"
-msgstr ""
+msgstr "ຢືນຢັນ"
 
 #. module: base
 #: model:res.country,name:base.cg
@@ -6011,7 +6014,7 @@ msgstr ""
 #: model:ir.ui.view,arch_db:base.view_partner_simple_form
 #: selection:res.partner,type:0
 msgid "Contact"
-msgstr ""
+msgstr "ທີ່ຕິດຕໍ່່"
 
 #. module: base
 #: model:ir.ui.view,arch_db:base.view_partner_form
@@ -6737,7 +6740,7 @@ msgstr ""
 #. module: base
 #: model:ir.ui.view,arch_db:base.ir_logging_search_view
 msgid "Day"
-msgstr ""
+msgstr "ວັນ"
 
 #. module: base
 #: model:ir.ui.view,arch_db:base.sequence_view
@@ -7187,7 +7190,7 @@ msgstr ""
 #. module: base
 #: selection:ir.actions.todo,state:0
 msgid "Done"
-msgstr ""
+msgstr "ຈົບເເລັວ"
 
 #. module: base
 #: model:res.partner.title,shortcut:base.res_partner_title_doctor
@@ -8159,7 +8162,7 @@ msgstr "ການເກມຫຼິ້ນ"
 #: selection:ir.actions.act_window.view,view_mode:0
 #: selection:ir.ui.view,type:0
 msgid "Gantt"
-msgstr ""
+msgstr "ເເກ້ນ"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_web_kanban_gauge
@@ -9032,7 +9035,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_res_partner_image
 #: model:ir.model.fields,field_description:base.field_res_users_image
 msgid "Image"
-msgstr ""
+msgstr "ຮູບພາບ"
 
 #. module: base
 #: model:ir.ui.view,arch_db:base.view_base_module_upgrade
@@ -11446,7 +11449,7 @@ msgstr ""
 #: code:addons/base/res/res_users.py:728 code:addons/base/res/res_users.py:888
 #, python-format
 msgid "Other"
-msgstr ""
+msgstr "ອື່ນໆ"
 
 #. module: base
 #: model:ir.module.category,name:base.module_category_extra
@@ -11518,7 +11521,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_ir_attachment_create_uid
 #: model:ir.ui.view,arch_db:base.view_attachment_search
 msgid "Owner"
-msgstr ""
+msgstr "ເຈົ້າຂອງ"
 
 #. module: base
 #: selection:ir.actions.report.xml,report_type:0
@@ -11611,12 +11614,12 @@ msgstr ""
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_partner_category_parent_id
 msgid "Parent Category"
-msgstr ""
+msgstr "ໜວດຫຼັກ"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_company_parent_id
 msgid "Parent Company"
-msgstr ""
+msgstr "ບໍລິສັດແມ່"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_ui_menu_parent_id
@@ -11679,7 +11682,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_res_partner_category_partner_ids
 #: model:ir.ui.view,arch_db:base.view_partner_form
 msgid "Partners"
-msgstr ""
+msgstr "ຄູ່ຄ້າ"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_base_geolocalize
@@ -11822,7 +11825,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_res_users_phone
 #, python-format
 msgid "Phone"
-msgstr ""
+msgstr "ໂທລະສັຍ"
 
 #. module: base
 #: model:ir.ui.view,arch_db:base.view_partner_form
@@ -11848,7 +11851,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_web_planner
 msgid "Planner"
-msgstr ""
+msgstr "ຜູ້​ວາງ​ແຜນ"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_pt
@@ -11942,7 +11945,7 @@ msgstr ""
 #: model:ir.module.module,shortdesc:base.module_portal
 #: model:res.groups,name:base.group_portal
 msgid "Portal"
-msgstr ""
+msgstr "ປະຕູ"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_portal_gamification
@@ -12041,7 +12044,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_ir_mail_server_sequence
 #: model:ir.model.fields,field_description:base.field_res_request_link_priority
 msgid "Priority"
-msgstr ""
+msgstr "ບຸລິມະສິດ"
 
 #. module: base
 #: code:addons/models.py:107
@@ -12052,7 +12055,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_procurement
 msgid "Procurements"
-msgstr ""
+msgstr "ການຈັດຊື້"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_product_email_template
@@ -12491,7 +12494,7 @@ msgstr ""
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_model_fields_relation_field
 msgid "Relation field"
-msgstr ""
+msgstr "ຊ່ອງຂໍ້ມູນທີ່ກ່ຽວຂ້ອງ"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_model_fields_relation_table
@@ -12879,7 +12882,7 @@ msgstr ""
 #: model:ir.module.module,shortdesc:base.module_sale
 #: model:ir.module.module,summary:base.module_website_quote
 msgid "Sales"
-msgstr ""
+msgstr "ການຂາຍ"
 
 #. module: base
 #: model:ir.ui.view,arch_db:base.view_partner_form
@@ -12894,7 +12897,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,summary:base.module_sales_team
 msgid "Sales Team"
-msgstr ""
+msgstr "ທິມງານຂາຍ"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_sales_team
@@ -12921,7 +12924,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_res_users_user_id
 #: model:ir.ui.view,arch_db:base.view_res_partner_filter
 msgid "Salesperson"
-msgstr ""
+msgstr "ພະນັກງານຂາຍ"
 
 #. module: base
 #: model:res.country,name:base.ws
@@ -13070,7 +13073,7 @@ msgstr ""
 #. module: base
 #: selection:ir.property,type:0 selection:ir.translation,type:0
 msgid "Selection"
-msgstr ""
+msgstr "ການເລືອກເອົາ"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_model_fields_selection
@@ -13199,7 +13202,7 @@ msgstr ""
 #. module: base
 #: model:res.partner.category,name:base.res_partner_category_11
 msgid "Services"
-msgstr ""
+msgstr "ການບໍລິການ"
 
 #. module: base
 #: selection:ir.model.fields,on_delete:0
@@ -13234,7 +13237,7 @@ msgstr ""
 #: model:ir.ui.menu,name:base.menu_administration
 #: model:res.groups,name:base.group_system
 msgid "Settings"
-msgstr ""
+msgstr "ການກໍານົດຄ່າ"
 
 #. module: base
 #: model:res.country,name:base.sc
@@ -13355,7 +13358,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_slides
 msgid "Slides"
-msgstr ""
+msgstr "ແຜ່ນສະໄລດ໌"
 
 #. module: base
 #: model:res.country,name:base.sk
@@ -13556,7 +13559,7 @@ msgstr ""
 #: model:ir.ui.view,arch_db:base.view_partner_form
 #: model:ir.ui.view,arch_db:base.view_res_bank_form
 msgid "State"
-msgstr ""
+msgstr "ແຂວງ"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_country_state_code
@@ -13571,7 +13574,7 @@ msgstr ""
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_country_state_ids
 msgid "States"
-msgstr ""
+msgstr "ສະພາບ"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_base_language_install_state
@@ -13584,7 +13587,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_wkf_workitem_state
 #: model:ir.ui.view,arch_db:base.view_workflow_workitem_search
 msgid "Status"
-msgstr ""
+msgstr "ສະພາບ"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_sequence_number_increment
@@ -13633,7 +13636,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_res_partner_street
 #: model:ir.model.fields,field_description:base.field_res_users_street
 msgid "Street"
-msgstr ""
+msgstr "ຖະໜົນ"
 
 #. module: base
 #: model:ir.ui.view,arch_db:base.view_company_form
@@ -13641,7 +13644,7 @@ msgstr ""
 #: model:ir.ui.view,arch_db:base.view_partner_form
 #: model:ir.ui.view,arch_db:base.view_res_bank_form
 msgid "Street 2..."
-msgstr ""
+msgstr "ຖະໜົນເຊື່ອມຕໍ່..."
 
 #. module: base
 #: model:ir.ui.view,arch_db:base.view_company_form
@@ -13649,7 +13652,7 @@ msgstr ""
 #: model:ir.ui.view,arch_db:base.view_partner_form
 #: model:ir.ui.view,arch_db:base.view_res_bank_form
 msgid "Street..."
-msgstr ""
+msgstr "ຖະໜົນ..."
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_bank_street2
@@ -13657,7 +13660,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_res_partner_street2
 #: model:ir.model.fields,field_description:base.field_res_users_street2
 msgid "Street2"
-msgstr ""
+msgstr "ຖະໜົນເຊື່ອມຕໍ່"
 
 #. module: base
 #: model:ir.module.module,description:base.module_payment_stripe
@@ -13716,7 +13719,7 @@ msgstr ""
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_module_module_summary
 msgid "Summary"
-msgstr ""
+msgstr "ສັງລວມ"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_act_client_params
@@ -13863,7 +13866,7 @@ msgstr ""
 #. module: base
 #: model:ir.ui.view,arch_db:base.view_res_partner_filter
 msgid "Tag"
-msgstr ""
+msgstr "ເປົ້າໝາຍ"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_partner_category_name
@@ -13874,7 +13877,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_res_partner_category_id_970
 #: model:ir.model.fields,field_description:base.field_res_users_category_id
 msgid "Tags"
-msgstr ""
+msgstr "ເປົ້າໝາຍ"
 
 #. module: base
 #: model:ir.ui.view,arch_db:base.view_partner_form
@@ -14554,7 +14557,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_res_partner_title_name
 #: model:ir.model.fields,field_description:base.field_res_users_title
 msgid "Title"
-msgstr ""
+msgstr "ຫົວເລື່ອງ"
 
 #. module: base
 #: sql_constraint:res.partner.title:0
@@ -14570,7 +14573,7 @@ msgstr ""
 #: selection:ir.actions.todo,state:0
 #: model:ir.ui.view,arch_db:base.config_wizard_step_view_search
 msgid "To Do"
-msgstr ""
+msgstr "ທີ່ຈະເຮັດ"
 
 #. module: base
 #: selection:ir.translation,state:0
@@ -14843,7 +14846,7 @@ msgstr ""
 #: model:ir.ui.view,arch_db:base.view_attachment_search
 #: model:ir.ui.view,arch_db:base.view_view_search
 msgid "Type"
-msgstr ""
+msgstr "ປະເພດ"
 
 #. module: base
 #: model:ir.model.fields,help:base.field_ir_act_server_state
@@ -15052,7 +15055,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_ir_model_data_date_update
 #: model:ir.model.fields,field_description:base.field_ir_model_relation_date_update
 msgid "Update Date"
-msgstr ""
+msgstr "ປັບປຸງວັນທີ"
 
 #. module: base
 #: model:ir.ui.view,arch_db:base.res_lang_tree
@@ -15166,7 +15169,7 @@ msgstr ""
 #. module: base
 #: model:ir.model.fields,help:base.field_res_users_login
 msgid "Used to log into the system"
-msgstr ""
+msgstr "ໃຊ້ສຳລັບເຊື່ອມຕໍ່ເຂົ້າຫາລະບົບ"
 
 #. module: base
 #: model:ir.model.fields,help:base.field_res_company_sequence
@@ -15202,7 +15205,7 @@ msgstr ""
 #. module: base
 #: model:ir.model.fields,field_description:base.field_change_password_user_user_login
 msgid "User Login"
-msgstr ""
+msgstr "ຜູ້ເຊື່ອມຕໍ່ເຂົ້າລະບົບ"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_users_log_ids
@@ -15243,7 +15246,7 @@ msgstr ""
 #: model:ir.ui.view,arch_db:base.view_users_simple_form
 #: model:ir.ui.view,arch_db:base.view_users_tree
 msgid "Users"
-msgstr ""
+msgstr "ຜູ້ໃຊ້ງານ"
 
 #. module: base
 #: model:ir.ui.view,arch_db:base.view_groups_form
@@ -15374,7 +15377,7 @@ msgstr ""
 #: selection:ir.translation,type:0
 #: model:ir.ui.view,arch_db:base.view_view_search
 msgid "View"
-msgstr ""
+msgstr "ເບຶ່ງ"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_ui_view_arch
@@ -15511,19 +15514,19 @@ msgstr ""
 #: code:addons/base/res/res_partner.py:337
 #, python-format
 msgid "Warning"
-msgstr ""
+msgstr "​ເຕື່ອນ"
 
 #. module: base
 #: code:addons/base/res/res_config.py:444
 #, python-format
 msgid "Warning!"
-msgstr ""
+msgstr "ລະວັງ !"
 
 #. module: base
 #: code:addons/models.py:5351
 #, python-format
 msgid "Warnings"
-msgstr ""
+msgstr "​ເຕື່ອນ"
 
 #. module: base
 #: model:ir.ui.view,arch_db:base.view_base_module_upgrade_install
@@ -15784,7 +15787,7 @@ msgstr ""
 #. module: base
 #: model:ir.model.fields,field_description:base.field_change_password_user_wizard_id
 msgid "Wizard"
-msgstr ""
+msgstr "ໂຕພາສ້າງ"
 
 #. module: base
 #: model:ir.ui.view,arch_db:base.config_wizard_step_view_search
@@ -16089,7 +16092,7 @@ msgstr ""
 #: model:ir.ui.view,arch_db:base.view_partner_form
 #: model:ir.ui.view,arch_db:base.view_res_bank_form
 msgid "ZIP"
-msgstr ""
+msgstr "ລະຫັດປະເທດ"
 
 #. module: base
 #: model:res.country,name:base.zr
@@ -16112,7 +16115,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_res_partner_zip
 #: model:ir.model.fields,field_description:base.field_res_users_zip
 msgid "Zip"
-msgstr ""
+msgstr "ລະຫັດປະເທດ"
 
 #. module: base
 #: model:ir.ui.view,arch_db:base.view_model_fields_form
@@ -16138,7 +16141,7 @@ msgstr ""
 #. module: base
 #: model:ir.ui.view,arch_db:base.res_partner_kanban_view
 msgid "at"
-msgstr ""
+msgstr "ທີ່"
 
 #. module: base
 #: model:ir.model,name:base.model_base
@@ -16558,7 +16561,7 @@ msgstr ""
 #: code:addons/base/ir/ir_fields.py:338
 #, python-format
 msgid "name"
-msgstr ""
+msgstr "ຊື່"
 
 #. module: base
 #: code:addons/base/ir/ir_fields.py:143
