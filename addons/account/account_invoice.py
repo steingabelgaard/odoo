@@ -1512,6 +1512,12 @@ class account_invoice_line(models.Model):
                 unique_tax_ids = product_change_result['value']['invoice_line_tax_id']
         return {'value': {'invoice_line_tax_id': unique_tax_ids}}
 
+    # Unlink backported from https://github.com/odoo/odoo/commit/efa4f85480cbea1b68454091168bc988bc9c8341
+    @api.multi
+    def unlink(self):
+        if self.filtered(lambda r: r.invoice_id and r.invoice_id.state != 'draft'):
+            raise Warning(_('You can only delete an invoice line if the invoice is in draft state.'))
+        return super(account_invoice_line, self).unlink()
 
 class account_invoice_tax(models.Model):
     _name = "account.invoice.tax"
