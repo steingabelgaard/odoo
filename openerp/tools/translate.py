@@ -697,7 +697,7 @@ def trans_generate(lang, modules, cr):
 
     def push(mod, type, name, res_id, term):
         term = (term or '').strip()
-        if len(term) > 2 or term in ENGLISH_SMALL_WORDS:
+        if len(term) > 2 or term.lower() in ENGLISH_SMALL_WORDS:
             push_translation(mod, type, name, res_id, term)
 
     def get_root_view(xml_id):
