@@ -249,9 +249,11 @@ class Cursor(object):
             if self._default_log_exceptions if log_exceptions is None else log_exceptions:
                 _logger.error("Programming error: %s, in query %s", pe, query)
             raise
-        except Exception:
+        except Exception as e:
             if self._default_log_exceptions if log_exceptions is None else log_exceptions:
-                _logger.exception("bad query: %s", self._obj.query or query)
+                # _logger.exception("bad query: %s",        self._obj.query or query)
+                # Ver. 8 logging could cause ascii encoding error - next line ported from ver. 11
+                _logger.error("bad query: %s\nERROR: %s", self._obj.query or query, e)
             raise
 
         # simple query count is always computed
