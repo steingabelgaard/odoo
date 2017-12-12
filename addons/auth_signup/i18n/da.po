@@ -177,14 +177,9 @@ msgid "Passwords do not match; please retype them."
 msgstr "Kodeord er ikke ens"
 
 #. module: auth_signup
-#: view:website:web.login
+#: view:website:web.login view:website:auth_signup.reset_password
 msgid "Reset Password"
 msgstr "Nulstil adgangskode"
-
-#. module: auth_signup
-#: view:website:auth_signup.reset_password
-msgid "Reset password"
-msgstr ""
 
 #. module: auth_signup
 #: code:addons/auth_signup/res_users.py:267
