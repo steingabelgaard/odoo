@@ -158,6 +158,12 @@ msgid "Password"
 msgstr ""
 
 #. module: auth_signup
+#: code:addons/auth_signup/controllers/main.py:119
+#, python-format
+msgid "Passwords do not match; please retype them."
+msgstr ""
+
+#. module: auth_signup
 #: model:email.template,subject:auth_signup.reset_password_email
 msgid "Password reset"
 msgstr ""
@@ -227,6 +233,12 @@ msgstr ""
 #. module: auth_signup
 #: field:base.config.settings,auth_signup_template_user_id:0
 msgid "Template user for new users created through signup"
+msgstr ""
+
+#. module: auth_signup
+#: code:addons/auth_signup/controllers/main.py:119
+#, python-format
+msgid "The form was not properly filled in."
 msgstr ""
 
 #. module: auth_signup
