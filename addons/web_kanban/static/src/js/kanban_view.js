@@ -612,8 +612,9 @@ var KanbanView = View.extend({
                     // Does not display the tag if color = 10
                     if (typeof record.color !== 'undefined' && record.color != 10){
                         var $tag = $('<span>')
-                            .addClass('o_tag o_tag_color_' + record.color)
-                            .attr('title', _.str.escapeHTML(record.name));
+                            .addClass('badge o_tag o_tag_color_' + record.color)
+                            .attr('title', _.str.escapeHTML(record.name))
+                            .text(record.name);
                         $(rel.elements[record.id]).append($tag);
                     }
                 });
