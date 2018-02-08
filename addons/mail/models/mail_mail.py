@@ -187,6 +187,7 @@ class MailMail(models.Model):
             'body': body,
             'body_alternative': body_alternative,
             'email_to': self.send_get_mail_to(partner=partner),
+            'subject': self.subject,
         }
         return res
 
@@ -262,7 +263,7 @@ class MailMail(models.Model):
                     msg = IrMailServer.build_email(
                         email_from=mail.email_from,
                         email_to=email.get('email_to'),
-                        subject=mail.subject,
+                        subject=email.get('subject', mail.subject),
                         body=email.get('body'),
                         body_alternative=email.get('body_alternative'),
                         email_cc=tools.email_split(mail.email_cc),
