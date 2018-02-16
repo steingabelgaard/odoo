@@ -8270,6 +8270,8 @@ msgid ""
 "Selecting \"Blocking Message\" will throw an exception with the message and "
 "block the flow. The Message has to be written in the next field."
 msgstr ""
+"Εάν επιλέξετε την \"Προειδοποίηση\" θα ειδοποιήσει το χρήστη με το μήνυμα.\n"
+"Εάν επιλέξετε το \"Μήνυμα αποκλεισμού\" η διαδικασία θα διακοπεί και θα εμφανιστεί ένα μήνυμα. Γράψτε το μήνυμα στο επόμενο πεδίο."
 
 #. module: account
 #: model:ir.ui.menu,name:account.menu_product_template_action
@@ -10919,7 +10921,7 @@ msgstr "στείλτε μας ένα email"
 #. module: account
 #: model:ir.ui.view,arch_db:account.account_planner
 msgid "set company logo"
-msgstr ""
+msgstr "ορίσετε το λογότυπο της εταιρίας"
 
 #. module: account
 #: model:ir.ui.view,arch_db:account.account_planner
