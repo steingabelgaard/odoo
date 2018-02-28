@@ -1406,7 +1406,7 @@ class account_move(osv.osv):
             result = super(account_move, self).create(cr, uid, vals, c)
             tmp = self.validate(cr, uid, [result], context)
             journal = self.pool.get('account.journal').browse(cr, uid, vals['journal_id'], context)
-            if journal.entry_posted and tmp:
+            if journal.entry_posted and tmp and not context.get('no_posting', False):
                 self.button_validate(cr,uid, [result], context)
         else:
             result = super(account_move, self).create(cr, uid, vals, context)
