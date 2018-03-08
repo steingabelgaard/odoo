@@ -296,8 +296,8 @@ class WebsiteSlides(http.Controller):
         # check the size only when we upload a file.
         if post.get('datas'):
             file_size = len(post['datas']) * 3 / 4 # base64
-            if (file_size / 1024.0 / 1024.0) > 25:
-                return {'error': _('File is too big. File size cannot exceed 25MB')}
+            if (file_size / 1024.0 / 1024.0) > 64:
+                return {'error': _('File is too big. File size cannot exceed 64MB')}
 
         values = dict((fname, post[fname]) for fname in [
             'name', 'url', 'tag_ids', 'slide_type', 'channel_id',
