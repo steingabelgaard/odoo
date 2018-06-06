@@ -401,7 +401,7 @@ class AlarmManager(models.AbstractModel):
 
         result = False
         if alarm.type == 'email':
-            result = meeting.attendee_ids._send_mail_to_attendees('calendar.calendar_template_meeting_reminder', force_send=True)
+            result = meeting.attendee_ids.filtered(lambda r: r.state != 'declined')._send_mail_to_attendees('calendar.calendar_template_meeting_reminder', force_send=True)
         return result
 
     def do_notif_reminder(self, alert):
@@ -842,7 +842,7 @@ class Meeting(models.Model):
     @api.multi
     def _compute_color_partner(self):
         for meeting in self:
-            meeting.color_partner_id = meeting.user_id.partner_id.id
+            meeting.color_partner_id = meeting.sudo().user_id.partner_id.id
 
     @api.constrains('start_datetime', 'stop_datetime', 'start_date', 'stop_date')
     def _check_closing_date(self):

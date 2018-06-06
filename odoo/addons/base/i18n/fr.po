@@ -50,13 +50,14 @@
 # William Henrotin <whe@odoo.com>, 2017
 # e2f <projects@e2f.com>, 2018
 # fr trans <e2ffr01@hotmail.com>, 2018
+# fr rev <e2ffr02@hotmail.com>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-10-20 07:12+0000\n"
 "PO-Revision-Date: 2017-10-20 07:12+0000\n"
-"Last-Translator: fr trans <e2ffr01@hotmail.com>, 2018\n"
+"Last-Translator: fr rev <e2ffr02@hotmail.com>, 2018\n"
 "Language-Team: French (https://www.transifex.com/odoo/teams/41243/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5876,20 +5877,20 @@ msgid ""
 "       the spreading, for the selected Analytic Accounts of Budgets.\n"
 msgstr ""
 "\n"
-"Module permettant aux comptables de gérer les budgets analytiques et croisés.\n"
-"================================================== ========================\n"
+"Module permettant aux comptables de gérer les budgets analytiques et croisés\n"
+"============================================================================\n"
 "\n"
-"  Une fois que les budgets sont définis (dans Facturation / Budgets / Budgets), les gestionnaires de projet peuvent fixer le montant prévu sur chaque compte analytique.\n"
+"Une fois que les budgets sont définis (dans Facturation / Budgets / Budgets), les gestionnaires de projet peuvent fixer le montant prévu sur chaque compte analytique.\n"
 "\n"
 "Le comptable a la possibilité de voir le total des prévisions de chaque budget afin d'assurer que le total prévu n'est ni supérieur ni inférieur à ce qu'il avait planifié. Chaque budget peut être visualisé sous forme de vue graphique.\n"
 "\n"
-"  Trois rapports sont disponibles:\n"
-"  ----------------------------\n"
-"  1. Le premier est réalisé à partir d'une liste des budgets. Il donne la répartition des comptes analytiques pour ces budgets.\n"
+"Trois rapports sont disponibles:\n"
+"--------------------------------\n"
 "\n"
-"  2. Le second est un résumé du précédent, il donne la répartition par comptes analytiques budgétaires sélectionnés\n"
-"\n"
+"1. Le premier est réalisé à partir d'une liste des budgets. Il donne la répartition des comptes analytiques pour ces budgets.\n"
+"2. Le second est un résumé du précédent, il donne la répartition par comptes analytiques budgétaires sélectionnés\n"
 "3. Le dernier est réalisé à partir du plan comptable analytique. Il donne la répartition, pour les comptes analytiques budgétaires sélectionnés.\n"
+"\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_base_action_rule
@@ -8136,6 +8137,8 @@ msgid ""
 "Also you will find here all the related documents and download it by "
 "clicking on any individual document."
 msgstr ""
+"Vous trouverez également ici tous les documents associés et pourrez les "
+"télécharger en cliquant sur chacun d'eux."
 
 #. module: base
 #: code:addons/base/ir/ir_fields.py:378
@@ -8181,7 +8184,7 @@ msgstr "Comptabilité analytique"
 #. module: base
 #: model:ir.module.module,summary:base.module_mrp_account
 msgid "Analytic accounting in Manufacturing"
-msgstr ""
+msgstr "Comptabilité analytique dans le module Fabrication"
 
 #. module: base
 #: selection:workflow.activity,join_mode:0
@@ -11116,6 +11119,9 @@ msgid ""
 " is a customer without access or with a limited access created for sharing "
 "data."
 msgstr ""
+"Le client (aucun utilisateur) ou l'utilisateur partagé a indiqué que le "
+"partenaire actuel est un client qui ne dispose pas d'accès ou qui dispose "
+"d'un accès limité pour le partage des données."
 
 #. module: base
 #: model:res.country,name:base.sv
@@ -11208,6 +11214,11 @@ msgid ""
 "* Traceability report\n"
 "* Cost Structure report (mrp_account)"
 msgstr ""
+"Extension d'entreprise pour le module Fabrication\n"
+"\n"
+"* Planification de commande de travail. Vérifiez la planification à l'aide de vues Gantt regroupées par commande de travail / poste de charge\n"
+"* Rapport de traçabilité\n"
+"* Rapport sur la structure de coût (mrp_account)"
 
 #. module: base
 #: model:res.country,name:base.gq
@@ -13001,7 +13012,7 @@ msgid ""
 "If several child actions return an action, only the last one will be executed.\n"
 "                                    This may happen when having server actions executing code that returns an action, or server actions returning a client action."
 msgstr ""
-"Si plusieurs actions filles retournent une action, seul la dernière sera exécutée.\n"
+"Si plusieurs actions filles retournent une action, seule la dernière sera exécutée.\n"
 "Cela peut se produire quand on a : \n"
 " - des actions-serveur qui exécutent du code retournant une action \n"
 " - ou des actions-serveur retournant une action du client."
@@ -14703,6 +14714,18 @@ msgstr "Gestion des Membres"
 #: model:ir.module.module,shortdesc:base.module_note_pad
 msgid "Memos pad"
 msgstr "Blocs notes"
+
+#. module: base
+#: code:addons/base/ir/ir_model.py:382
+#, python-format
+msgid "Model %s does not exist"
+msgstr ""
+
+#. module: base
+#: code:addons/base/ir/ir_model.py:383
+#, python-format
+msgid "Please specify a valid model for the object relation"
+msgstr ""
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_ui_menu_name
@@ -19279,7 +19302,7 @@ msgstr "Séparateur des milliers"
 #. module: base
 #: model:ir.module.module,summary:base.module_helpdesk
 msgid "Ticketing, Support, Issues"
-msgstr ""
+msgstr "Création de ticketd, assistance, incidents"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_website_helpdesk_livechat
@@ -20458,7 +20481,7 @@ msgstr "Éditeur Web"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_web_enterprise
 msgid "Web Enterprise"
-msgstr ""
+msgstr "Web Enterprise"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_web_gantt
@@ -20519,7 +20542,7 @@ msgstr "Site Web Constructeur de Formulaires"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_helpdesk_form
 msgid "Website Form Helpdesk"
-msgstr ""
+msgstr "Assistance du site Web par formulaire"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_gengo
@@ -20534,12 +20557,12 @@ msgstr "Site Web Google Map"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_helpdesk
 msgid "Website Helpdesk"
-msgstr ""
+msgstr "Assistance relative au site Web"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_helpdesk_livechat
 msgid "Website IM Livechat Helpdesk"
-msgstr ""
+msgstr "Assistance relative à la discussion instantanée du site Web"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_links
@@ -20619,7 +20642,7 @@ msgstr "Site Web – Stocks et informations sur les livraisons"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_helpdesk_slides
 msgid "Website Slides Helpdesk"
-msgstr ""
+msgstr "Assistance relative aux diapositives du site Web"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_theme_install
@@ -20787,7 +20810,7 @@ msgstr "Jours Travaillés"
 #. module: base
 #: model:ir.module.module,summary:base.module_mrp_workorder
 msgid "Work Orders, Planing, Stock Reports."
-msgstr ""
+msgstr "Commandes de travail, planification, rapports sur les stocks."
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_wkf_activity_wkf_id
