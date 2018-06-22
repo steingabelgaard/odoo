@@ -2819,7 +2819,7 @@ msgstr ""
 #: model:ir.ui.view,arch_db:website.publish_short
 #, python-format
 msgid "Published"
-msgstr "Udgiv"
+msgstr "Udgivet"
 
 #. module: website
 #: model:ir.ui.view,arch_db:website.http_error_debug
