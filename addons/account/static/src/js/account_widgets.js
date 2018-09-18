@@ -147,7 +147,7 @@ openerp.account = function (instance) {
                     corresponding_property: "filename",
                     label: _t("Filename"),
                     required: false,
-                    //invisible: 1,
+                    invisible: 1,
                     tabindex: 15,
                     constructor: instance.web.form.FieldChar,
                     field_properties: {
@@ -1491,7 +1491,11 @@ openerp.account = function (instance) {
             var line_created_being_edited = self.get("line_created_being_edited");
             line_created_being_edited[0][elt.corresponding_property] = val.newValue;
             line_created_being_edited[0].currency_id = self.st_line.currency_id;
-    
+
+            // File name handling
+            if (elt.corresponding_property == "filedata")
+                line_created_being_edited[0].filename = elt.filename
+            
             // Specific cases
             if (elt === self.account_id_field)
                 line_created_being_edited[0].account_num = self.map_account_id_code[elt.get("value")];
@@ -1708,7 +1712,7 @@ openerp.account = function (instance) {
             if (line.tax_id) dict['account_tax_id'] = line.tax_id;
             if (line.is_tax_line) dict['is_tax_line'] = line.is_tax_line;
             if (line.analytic_account_id) dict['analytic_account_id'] = line.analytic_account_id;
-            if (line.filedata) dict['filename'] = line.filedata.filename;
+            if (line.filename) dict['filename'] = line.filename;
             if (line.filedata) dict['filedata'] = line.filedata;
     
             return dict;
