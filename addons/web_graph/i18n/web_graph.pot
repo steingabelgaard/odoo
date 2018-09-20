@@ -6,8 +6,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-21 14:08+0000\n"
-"PO-Revision-Date: 2015-01-21 14:08+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -49,6 +47,15 @@ msgstr ""
 #: code:addons/web_graph/static/src/xml/web_graph.xml:44
 #, python-format
 msgid "Export Data"
+msgstr ""
+
+#. module: web_graph
+#. openerp-web
+#: code:addons/web_graph/static/src/js/graph_widget.js:855
+#, python-format
+msgid "For Excel compatibility, data cannot be exported if there is more than 256 columns.\n"
+"\n"
+"Tip: try to flip axis, filter further or reduce the number of measures."
 msgstr ""
 
 #. module: web_graph
@@ -155,7 +162,7 @@ msgstr ""
 #: code:addons/web_graph/static/src/js/graph_widget.js:472
 #: code:addons/web_graph/static/src/js/graph_widget.js:705
 #: code:addons/web_graph/static/src/js/graph_widget.js:706
-#: code:addons/web_graph/static/src/js/pivot_table.js:336
+#: code:addons/web_graph/static/src/js/pivot_table.js:337
 #, python-format
 msgid "Total"
 msgstr ""
@@ -169,9 +176,10 @@ msgstr ""
 #: code:addons/web_graph/static/src/js/graph_widget.js:739
 #: code:addons/web_graph/static/src/js/graph_widget.js:744
 #: code:addons/web_graph/static/src/js/graph_widget.js:747
-#: code:addons/web_graph/static/src/js/graph_widget.js:792
-#: code:addons/web_graph/static/src/js/graph_widget.js:821
-#: code:addons/web_graph/static/src/js/pivot_table.js:435
+#: code:addons/web_graph/static/src/js/graph_widget.js:793
+#: code:addons/web_graph/static/src/js/graph_widget.js:822
+#: code:addons/web_graph/static/src/js/graph_widget.js:825
+#: code:addons/web_graph/static/src/js/pivot_table.js:436
 #, python-format
 msgid "Undefined"
 msgstr ""
