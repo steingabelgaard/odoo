@@ -36,22 +36,22 @@ msgstr "; няма намерена поръчка"
 #. module: payment_ogone
 #: model:ir.model.fields,field_description:payment_ogone.field_payment_acquirer_ogone_userid
 msgid "API User ID"
-msgstr ""
+msgstr "Идентификационен номер на API потребител"
 
 #. module: payment_ogone
 #: model:ir.model.fields,field_description:payment_ogone.field_payment_acquirer_ogone_password
 msgid "API User Password"
-msgstr ""
+msgstr "Потребителска парола за API"
 
 #. module: payment_ogone
 #: model:ir.model.fields,field_description:payment_ogone.field_payment_acquirer_ogone_alias_usage
 msgid "Alias Usage"
-msgstr ""
+msgstr "Използване на псевдоним"
 
 #. module: payment_ogone
 #: model:ir.ui.view,arch_db:payment_ogone.ogone_s2s_form
 msgid "CVC"
-msgstr ""
+msgstr "Код за валидиране на карта - CVC"
 
 #. module: payment_ogone
 #: model:ir.ui.view,arch_db:payment_ogone.ogone_s2s_form
@@ -71,7 +71,7 @@ msgstr ""
 #. module: payment_ogone
 #: model:ir.ui.view,arch_db:payment_ogone.acquirer_form_ogone
 msgid "How to configure your Ogone account?"
-msgstr ""
+msgstr "Как да конфигурирате сметката си Ogone?"
 
 #. module: payment_ogone
 #: model:ir.model.fields,help:payment_ogone.field_payment_acquirer_ogone_alias_usage
@@ -79,12 +79,15 @@ msgid ""
 "If you want to use Ogone Aliases, this default Alias Usage will be presented"
 " to the customer as the reason you want to keep his payment data"
 msgstr ""
+"Ако желаете да използвате псевдоними Ogone, това използване на псевдоними по"
+" подразбиране ще бъде представено на клиента като причината, поради която "
+"искате да запазите данните му за плащанията."
 
 #. module: payment_ogone
 #: code:addons/payment_ogone/models/payment.py:247
 #, python-format
 msgid "Ogone: invalid shasign, received %s, computed %s, for data %s"
-msgstr ""
+msgstr "Ogone: невалиден shasign, получен %s, изчислен %s, за данни %s"
 
 #. module: payment_ogone
 #: code:addons/payment_ogone/models/payment.py:236
@@ -105,7 +108,7 @@ msgstr ""
 #. module: payment_ogone
 #: model:ir.model.fields,field_description:payment_ogone.field_payment_acquirer_ogone_pspid
 msgid "PSPID"
-msgstr ""
+msgstr "PSPID"
 
 #. module: payment_ogone
 #: model:ir.model,name:payment_ogone.model_payment_acquirer
@@ -120,14 +123,14 @@ msgstr "Платежна транзакция"
 #. module: payment_ogone
 #: model:ir.model.fields,field_description:payment_ogone.field_payment_acquirer_ogone_shakey_in
 msgid "SHA Key IN"
-msgstr ""
+msgstr "SHA Key IN"
 
 #. module: payment_ogone
 #: model:ir.model.fields,field_description:payment_ogone.field_payment_acquirer_ogone_shakey_out
 msgid "SHA Key OUT"
-msgstr ""
+msgstr "SHA Key OUT"
 
 #. module: payment_ogone
 #: model:ir.model,name:payment_ogone.model_payment_token
 msgid "payment.token"
-msgstr ""
+msgstr "payment.token"
