@@ -416,7 +416,7 @@ class IrMailServer(models.Model):
         # Use the default bounce address **only if** no Return-Path was
         # provided by caller.  Caller may be using Variable Envelope Return
         # Path (VERP) to detect no-longer valid email addresses.
-        smtp_from = 'catchall@laerforlivet.dk' #message['Return-Path'] or self._get_default_bounce_address() or message['From']
+        smtp_from = '<catchall@laerforlivet.dk>' #message['Return-Path'] or self._get_default_bounce_address() or message['From']
         assert smtp_from, "The Return-Path or From header is required for any outbound email"
 
         # The email's "Envelope From" (Return-Path), and all recipient addresses must only contain ASCII characters.
@@ -467,6 +467,7 @@ class IrMailServer(models.Model):
             msg = _("Mail delivery failed via SMTP server '%s'.\n%s: %s") % params
             _logger.info(msg)
             _logger.info('SMTP USER: %s From: %s', smtp_user, smtp_from)
+            _logger.info('MESSAGE: %s', message)
             raise MailDeliveryException(_("Mail Delivery Failed"), msg)
         return message_id
 
