@@ -7876,12 +7876,12 @@ msgstr "Filter"
 #. module: base
 #: view:ir.filters:base.ir_filters_view_search field:ir.filters,name:0
 msgid "Filter Name"
-msgstr ""
+msgstr "Filternavn"
 
 #. module: base
 #: sql_constraint:ir.filters:0
 msgid "Filter names must be unique"
-msgstr ""
+msgstr "Filternavn skal være unikt"
 
 #. module: base
 #: view:ir.attachment:base.view_attachment_search
@@ -7901,7 +7901,7 @@ msgstr "Filtre"
 #. module: base
 #: view:ir.filters:base.ir_filters_view_search
 msgid "Filters created by myself"
-msgstr ""
+msgstr "Filtrer oprettet af mig"
 
 #. module: base
 #: view:ir.filters:base.ir_filters_view_search
