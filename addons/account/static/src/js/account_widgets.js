@@ -126,6 +126,35 @@ openerp.account = function (instance) {
                         domain: [['type', '!=', 'view'], ['state', 'not in', ['close','cancelled']]],
                     },
                 },
+                
+                filedata: {
+                    id: "filedata",
+                    index: 6,
+                    corresponding_property: "filedata",
+                    label: _t("Attach File"),
+                    required: false,
+                    tabindex: 16,
+                    constructor: instance.web.form.FieldBinaryFile,
+                    filename: "filename",
+                    field_properties: {
+                        string: _t("Attach File"),
+                        type: "binary",
+                    },
+                },
+                filename: {
+                    id: "filename",
+                    index: 5,
+                    corresponding_property: "filename",
+                    label: _t("Filename"),
+                    required: false,
+                    invisible: 1,
+                    tabindex: 15,
+                    constructor: instance.web.form.FieldChar,
+                    field_properties: {
+                        string: _t("Filename"),
+                        type: "char",
+                    },
+                },
             };
         },
     
@@ -936,6 +965,9 @@ openerp.account = function (instance) {
                 // create widgets
                 var node = new Default_node(field_data.id);
                 if (! field_data.required) node.attrs.modifiers = "";
+                if (field_data.id == 'filedata') {
+                	node.attrs.filename="filename"
+                }
                 var field = new field_data.constructor(field_manager, node);
                 self[field_data.id+"_field"] = field;
                 self.create_form.push(field);
@@ -955,7 +987,15 @@ openerp.account = function (instance) {
                     field.$el.find("input").keyup(function(e, field){ field.commit_value(); }.bind(null, null, field));
                 }
                 field.$el.find("input").attr("tabindex", field_data.tabindex);
-    
+                
+                //var fn_field = false
+                //if (field_data.id == 'filename') {
+                //	fn_field = field
+                //}
+                //if (field_data.id == 'filedata') {
+                //	field.attr.filename = fn_field
+                //}
+                
                 // Hide the field if group not OK
                 if (field_data.group !== undefined) {
                     var target = $field_container;
@@ -980,6 +1020,7 @@ openerp.account = function (instance) {
             });
             self.change_partner_field.$el.find("input").attr("placeholder", self.st_line.communication_partner_name || _t("Select Partner"));
     
+            
             field_manager.do_show();
         },
     
@@ -1450,7 +1491,11 @@ openerp.account = function (instance) {
             var line_created_being_edited = self.get("line_created_being_edited");
             line_created_being_edited[0][elt.corresponding_property] = val.newValue;
             line_created_being_edited[0].currency_id = self.st_line.currency_id;
-    
+
+            // File name handling
+            if (elt.corresponding_property == "filedata")
+                line_created_being_edited[0].filename = elt.filename
+            
             // Specific cases
             if (elt === self.account_id_field)
                 line_created_being_edited[0].account_num = self.map_account_id_code[elt.get("value")];
@@ -1667,6 +1712,8 @@ openerp.account = function (instance) {
             if (line.tax_id) dict['account_tax_id'] = line.tax_id;
             if (line.is_tax_line) dict['is_tax_line'] = line.is_tax_line;
             if (line.analytic_account_id) dict['analytic_account_id'] = line.analytic_account_id;
+            if (line.filename) dict['filename'] = line.filename;
+            if (line.filedata) dict['filedata'] = line.filedata;
     
             return dict;
         },
