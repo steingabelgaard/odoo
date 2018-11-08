@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 10.saas~18\n"
+"Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-20 09:54+0000\n"
-"PO-Revision-Date: 2017-09-20 09:54+0000\n"
+"POT-Creation-Date: 2018-11-08 09:40+0000\n"
+"PO-Revision-Date: 2018-11-08 09:40+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -61,6 +61,11 @@ msgid "50% YoY"
 msgstr ""
 
 #. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "<b>Below you can upload relevant documents.<br/></b>"
+msgstr ""
+
+#. module: website_hr_recruitment
 #: model:ir.ui.view,arch_db:website_hr_recruitment.s_hr_rating_options
 msgid "<i class=\"fa fa-bolt\"/> Bolts"
 msgstr ""
@@ -81,15 +86,8 @@ msgid "<i class=\"fa fa-tasks\"/> Bar"
 msgstr ""
 
 #. module: website_hr_recruitment
-#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
-msgid "<span class=\"btn btn-primary btn-lg o_website_form_send\">Submit</span>\n"
-"                                <span id=\"o_website_form_result\"/>"
-msgstr ""
-
-#. module: website_hr_recruitment
-#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou
-#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou_page_ir_ui_view
-#: model:website.page,arch_db:website_hr_recruitment.thankyou_page
+#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou_ir_ui_view
+#: model:website.page,arch_db:website_hr_recruitment.thankyou
 msgid "<span>\n"
 "                                            We usually reply between one and three days.<br/>\n"
 "                                            Feel free to contact him/her if you have further questions.\n"
@@ -137,8 +135,18 @@ msgid "All Offices"
 msgstr ""
 
 #. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.detail
+msgid "Ansøg!"
+msgstr ""
+
+#. module: website_hr_recruitment
 #: model:ir.model,name:website_hr_recruitment.model_hr_applicant
 msgid "Applicant"
+msgstr ""
+
+#. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "Application"
 msgstr ""
 
 #. module: website_hr_recruitment
@@ -162,8 +170,18 @@ msgid "Benefits"
 msgstr ""
 
 #. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "Birthdate"
+msgstr ""
+
+#. module: website_hr_recruitment
 #: model:ir.ui.view,arch_db:website_hr_recruitment.default_website_description
 msgid "Brand-name product and services in categories like travel, electronics, health, fitness, cellular, and more"
+msgstr ""
+
+#. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "City"
 msgstr ""
 
 #. module: website_hr_recruitment
@@ -177,9 +195,8 @@ msgid "Company Maturity:"
 msgstr ""
 
 #. module: website_hr_recruitment
-#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou
-#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou_page_ir_ui_view
-#: model:website.page,arch_db:website_hr_recruitment.thankyou_page
+#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou_ir_ui_view
+#: model:website.page,arch_db:website_hr_recruitment.thankyou
 msgid "Congratulations!"
 msgstr ""
 
@@ -189,9 +206,8 @@ msgid "Contact us"
 msgstr ""
 
 #. module: website_hr_recruitment
-#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou
-#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou_page_ir_ui_view
-#: model:website.page,arch_db:website_hr_recruitment.thankyou_page
+#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou_ir_ui_view
+#: model:website.page,arch_db:website_hr_recruitment.thankyou
 msgid "Continue To Our Website"
 msgstr ""
 
@@ -216,8 +232,18 @@ msgid "Eat &amp; Drink"
 msgstr ""
 
 #. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "Female"
+msgstr ""
+
+#. module: website_hr_recruitment
 #: model:ir.ui.view,arch_db:website_hr_recruitment.default_website_description
 msgid "Full sales cycle"
+msgstr ""
+
+#. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "Gender"
 msgstr ""
 
 #. module: website_hr_recruitment
@@ -231,10 +257,15 @@ msgid "High commissions for good performers"
 msgstr ""
 
 #. module: website_hr_recruitment
-#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou
-#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou_page_ir_ui_view
-#: model:website.page,arch_db:website_hr_recruitment.thankyou_page
+#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou_ir_ui_view
+#: model:website.page,arch_db:website_hr_recruitment.thankyou
 msgid "In the meantime,"
+msgstr ""
+
+#. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.job_footer_custom
+#: model:website.menu,name:website_hr_recruitment.menu_jobs
+msgid "Job"
 msgstr ""
 
 #. module: website_hr_recruitment
@@ -264,28 +295,14 @@ msgid "Job Security:"
 msgstr ""
 
 #. module: website_hr_recruitment
-#: code:addons/website_hr_recruitment/controllers/main.py:72
+#: code:addons/website_hr_recruitment/controllers/main.py:77
 #, python-format
 msgid "Job Title"
 msgstr ""
 
 #. module: website_hr_recruitment
 #: model:ir.ui.view,arch_db:website_hr_recruitment.detail
-#: model:ir.ui.view,arch_db:website_hr_recruitment.job_footer_custom
-#: model:website.menu,name:website_hr_recruitment.menu_jobs
 msgid "Jobs"
-msgstr ""
-
-#. module: website_hr_recruitment
-#: model:ir.ui.view,arch_db:website_hr_recruitment.index
-msgid "Join us and help disrupt the enterprise market!"
-msgstr ""
-
-#. module: website_hr_recruitment
-#: model:ir.ui.view,arch_db:website_hr_recruitment.index
-msgid "Join us, we offer you an extraordinary chance to learn, to\n"
-"                                    develop and to be part of an exciting experience and\n"
-"                                    team."
 msgstr ""
 
 #. module: website_hr_recruitment
@@ -294,10 +311,14 @@ msgid "Large apps scope: CRM, MRP, Accounting, Inventory, HR, Project Mgt, etc."
 msgstr ""
 
 #. module: website_hr_recruitment
-#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou
-#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou_page_ir_ui_view
-#: model:website.page,arch_db:website_hr_recruitment.thankyou_page
+#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou_ir_ui_view
+#: model:website.page,arch_db:website_hr_recruitment.thankyou
 msgid "Look around on our website:"
+msgstr ""
+
+#. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "Male"
 msgstr ""
 
 #. module: website_hr_recruitment
@@ -311,6 +332,11 @@ msgid "New Job Offer"
 msgstr ""
 
 #. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "Next"
+msgstr ""
+
+#. module: website_hr_recruitment
 #: model:ir.ui.view,arch_db:website_hr_recruitment.default_website_description
 msgid "No outbound calls, you get leads and focus on providing value to them"
 msgstr ""
@@ -321,8 +347,13 @@ msgid "Only a couple blocs from BART, Caltrain, Highway 101, carpool pickup, and
 msgstr ""
 
 #. module: website_hr_recruitment
-#: model:ir.ui.view,arch_db:website_hr_recruitment.index
-msgid "Our Job Offers"
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "Other"
+msgstr ""
+
+#. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "Other relevant Document"
 msgstr ""
 
 #. module: website_hr_recruitment
@@ -391,6 +422,16 @@ msgid "Save on commute"
 msgstr ""
 
 #. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.index
+msgid "Se mulighederne for at blive en del af Lær for Livet herunder:"
+msgstr ""
+
+#. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "Select gender..."
+msgstr ""
+
+#. module: website_hr_recruitment
 #: model:ir.ui.view,arch_db:website_hr_recruitment.apply
 msgid "Short Introduction"
 msgstr ""
@@ -417,6 +458,26 @@ msgstr ""
 #. module: website_hr_recruitment
 #: model:ir.ui.view,arch_db:website_hr_recruitment.default_website_description
 msgid "Sport Activity"
+msgstr ""
+
+#. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.index
+msgid "Stillinger i Lær for Livet"
+msgstr ""
+
+#. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "Street"
+msgstr ""
+
+#. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "Street 2"
+msgstr ""
+
+#. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "Submit"
 msgstr ""
 
 #. module: website_hr_recruitment
@@ -495,17 +556,20 @@ msgid "Your Phone Number"
 msgstr ""
 
 #. module: website_hr_recruitment
-#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou
-#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou_page_ir_ui_view
-#: model:website.page,arch_db:website_hr_recruitment.thankyou_page
+#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou_ir_ui_view
+#: model:website.page,arch_db:website_hr_recruitment.thankyou
 msgid "Your application has been posted successfully."
 msgstr ""
 
 #. module: website_hr_recruitment
-#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou
-#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou_page_ir_ui_view
-#: model:website.page,arch_db:website_hr_recruitment.thankyou_page
+#: model:ir.ui.view,arch_db:website_hr_recruitment.thankyou_ir_ui_view
+#: model:website.page,arch_db:website_hr_recruitment.thankyou
 msgid "Your application has been sent to:"
+msgstr ""
+
+#. module: website_hr_recruitment
+#: model:ir.ui.view,arch_db:website_hr_recruitment.apply
+msgid "Zip"
 msgstr ""
 
 #. module: website_hr_recruitment
