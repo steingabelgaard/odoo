@@ -890,7 +890,10 @@ class BaseModel(object):
                     current[i] = record.__export_xml_id()
                 else:
                     field = record._fields[name]
-                    value = record[name]
+                    try:
+                        value = record[name]
+                    except AccessError:
+                        value = False 
 
                     # this part could be simpler, but it has to be done this way
                     # in order to reproduce the former behavior
