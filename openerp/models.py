@@ -890,7 +890,10 @@ class BaseModel(object):
                     current[i] = record.__export_xml_id()
                 else:
                     field = record._fields[name]
-                    value = record[name]
+                    try:
+                        value = record[name]
+                    except AccessError:
+                        value = False 
 
                     # this part could be simpler, but it has to be done this way
                     # in order to reproduce the former behavior
@@ -913,14 +916,15 @@ class BaseModel(object):
                             for j, val in enumerate(lines2[0]):
                                 if val or isinstance(val, bool):
                                     current[j] = val
+                            # HHG Issue 15748
                             # check value of current field
-                            if not current[i] and not isinstance(current[i], bool):
-                                # assign xml_ids, and forget about remaining lines
-                                xml_ids = [item[1] for item in value.name_get()]
-                                current[i] = ','.join(xml_ids)
-                            else:
-                                # append the other lines at the end
-                                lines += lines2[1:]
+                            #if not current[i] and not isinstance(current[i], bool):
+                            #    # assign xml_ids, and forget about remaining lines
+                            #    xml_ids = [item[1] for item in value.name_get()]
+                            #    current[i] = ','.join(xml_ids)
+                            #else:
+                            # append the other lines at the end
+                            lines += lines2[1:]
                         else:
                             current[i] = False
 
