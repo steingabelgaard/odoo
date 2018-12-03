@@ -893,6 +893,7 @@ class BaseModel(object):
                     try:
                         value = record[name]
                     except AccessError:
+                        _logger.info('EXPORT ACCESS ERROR: %s %d %s', self._name, record.id, name)
                         value = False 
 
                     # this part could be simpler, but it has to be done this way
