@@ -893,7 +893,8 @@ class BaseModel(object):
                     try:
                         value = record[name]
                     except AccessError:
-                        value = False 
+                        _logger.info('EXPORT ACCESS ERROR: %s %d %s', self._name, record.id, name)
+                        value = ' ' # Use a blank to force output 
 
                     # this part could be simpler, but it has to be done this way
                     # in order to reproduce the former behavior
