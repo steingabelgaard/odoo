@@ -88,7 +88,7 @@ openerp.account = function (instance) {
                     label: _t("Tax"),
                     required: false,
                     tabindex: 12,
-                    invisible: 1,
+                    group:"sg_member_accounting.group_sgmember_account_vat",
                     constructor: instance.web.form.FieldMany2One,
                     field_properties: {
                         relation: "account.tax",
