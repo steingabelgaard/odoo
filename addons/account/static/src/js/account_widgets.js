@@ -949,7 +949,7 @@ openerp.account = function (instance) {
             var hideGroupResponseClosureFactory = function(field_widget, $container, obj_key){
                 return function(has_group){
                     if (has_group) $container.show();
-                    else {
+                    else if (obj_key != 'tax_id_field') {
                         field_widget.destroy();
                         $container.remove();
                         delete self[obj_key];
