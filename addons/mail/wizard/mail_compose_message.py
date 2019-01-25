@@ -8,7 +8,9 @@ from odoo import _, api, fields, models, SUPERUSER_ID, tools
 from odoo.tools import pycompat
 from odoo.tools.safe_eval import safe_eval
 
+import logging
 
+_logger = logging.getLogger(__name__)
 # main mako-like expression pattern
 EXPRESSION_PATTERN = re.compile('(\$\{.+?\})')
 
@@ -249,6 +251,7 @@ class MailComposer(models.TransientModel):
                 batch_mails = Mail
                 all_mail_values = wizard.get_mail_values(res_ids)
                 for res_id, mail_values in all_mail_values.items():
+                    _logger.info('Mail values: %s', mail_values)
                     if wizard.composition_mode == 'mass_mail':
                         batch_mails |= Mail.create(mail_values)
                     else:
@@ -258,7 +261,7 @@ class MailComposer(models.TransientModel):
                             **mail_values)
 
                 if wizard.composition_mode == 'mass_mail':
-                    batch_mails.send(auto_commit=auto_commit)
+                    batch_mails.filtered(lambda r: not r.scheduled_date).send(auto_commit=auto_commit)
 
         return {'type': 'ir.actions.act_window_close'}
 
@@ -464,7 +467,7 @@ class MailComposer(models.TransientModel):
         if self.template_id:
             template_values = self.generate_email_for_composer(
                 self.template_id.id, res_ids,
-                fields=['email_to', 'partner_to', 'email_cc', 'attachment_ids', 'mail_server_id'])
+                fields=['email_to', 'partner_to', 'email_cc', 'attachment_ids', 'mail_server_id', 'scheduled_date'])
         else:
             template_values = {}
 
@@ -493,7 +496,7 @@ class MailComposer(models.TransientModel):
             res_ids = [res_ids]
 
         if fields is None:
-            fields = ['subject', 'body_html', 'email_from', 'email_to', 'partner_to', 'email_cc',  'reply_to', 'attachment_ids', 'mail_server_id']
+            fields = ['subject', 'body_html', 'email_from', 'email_to', 'partner_to', 'email_cc',  'reply_to', 'attachment_ids', 'mail_server_id', 'scheduled_date']
         returned_fields = fields + ['partner_ids', 'attachments']
         values = dict.fromkeys(res_ids, False)
 
