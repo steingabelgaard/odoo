@@ -61,6 +61,11 @@ class general_ledger(report_sxw.rml_parse, common_report_header):
         ctx['state'] = data['form']['target_move']
         self.context.update(ctx)
         self.init_query = obj_move._query_get(self.cr, self.uid, obj='l', context=ctx2)
+        ctx3 = ctx2.copy()
+        if 'fiscalyear' in ctx3:
+            del ctx3['fiscalyear']
+        ctx3['all_fiscalyear'] = True
+        self.init_bal_query = obj_move._query_get(self.cr, self.uid, obj='l', context=ctx3)
         if (data['model'] == 'ir.ui.menu'):
             new_ids = [data['form']['chart_account_id']]
             objects = self.pool.get('account.account').browse(self.cr, self.uid, new_ids)
@@ -201,7 +206,7 @@ class general_ledger(report_sxw.rml_parse, common_report_header):
                 LEFT JOIN account_invoice i on (m.id =i.move_id)
                 JOIN account_journal j on (l.journal_id=j.id)
                 WHERE %s AND m.state IN %s AND l.account_id = %%s
-            """ %(self.init_query, tuple(move_state))
+            """ %(self.init_bal_query if account.user_type.report_type in ['asset','liability'] else self.init_query, tuple(move_state))
             self.cr.execute(sql, (account.id,))
             res_init = self.cr.dictfetchall()
         res = res_init + res_lines
