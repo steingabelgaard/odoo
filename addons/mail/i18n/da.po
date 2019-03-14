@@ -364,7 +364,12 @@ msgid ""
 "                            </span>\n"
 "                            <span attrs=\"{'invisible':['|', ('model', '=', False), ('composition_mode', '=', 'mass_mail')]}\">Followers of the document and</span>"
 msgstr ""
-
+"<span attrs=\"{'invisible': [('composition_mode', '!=', 'mass_mail')]}\">\n"
+"                                <strong>Email masse udsendelse</strong> on\n"
+"                                <span attrs=\"{'invisible': [('use_active_domain', '=', True)]}\">på de valgte rekords</span>\n"
+"                                <span attrs=\"{'invisible': [('use_active_domain', '=', False)]}\">på det aktuelle søgefilter</span>.\n"
+"                            </span>\n"
+"                            <span attrs=\"{'invisible':['|', ('model', '=', False), ('composition_mode', '=', 'mass_mail')]}\">Følgere på dokumentet og</span>"
 #. module: mail
 #: model:ir.ui.view,arch_db:mail.email_template_form
 msgid ""
@@ -2940,7 +2945,7 @@ msgstr "Ingen stjernemarkeret besked"
 #: model:ir.model.fields,field_description:mail.field_mail_message_no_auto_thread
 #: model:ir.model.fields,field_description:mail.field_survey_mail_compose_message_no_auto_thread
 msgid "No threading for answers"
-msgstr ""
+msgstr "Svar sendes kun til afsender"
 
 #. module: mail
 #: model:mail.message.subtype,name:mail.mt_note
