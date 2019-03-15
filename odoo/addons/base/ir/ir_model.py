@@ -32,7 +32,7 @@ SAFE_EVAL_BASE = {
 def make_compute(text, deps):
     """ Return a compute function from its code body and dependencies. """
     func = lambda self: safe_eval(text, SAFE_EVAL_BASE, {'self': self}, mode="exec")
-    deps = [arg.strip() for arg in (deps or "").split(",")]
+    deps = [arg.strip() for arg in deps.split(",")] if deps else []
     return api.depends(*deps)(func)
 
 
@@ -287,6 +287,11 @@ class IrModelFields(models.Model):
             raise UserError(_("The Selection Options expression is not a valid Pythonic expression."
                               "Please provide an expression in the [('key','Label'), ...] format."))
 
+    @api.constrains('domain')
+    def _check_domain(self):
+        for field in self:
+            safe_eval(field.domain or '[]')
+
     @api.constrains('name', 'state')
     def _check_name(self):
         for field in self:
@@ -425,6 +430,13 @@ class IrModelFields(models.Model):
                     'title': _("Warning"),
                     'message': _("The table %r if used for other, possibly incompatible fields.") % self.relation_table,
                 }}
+
+    @tools.ormcache('model_name', 'name')
+    def _get_id(self, model_name, name):
+        self.env.cr.execute("SELECT id FROM ir_model_fields WHERE model=%s AND name=%s",
+                            (model_name, name))
+        result = self.env.cr.fetchone()
+        return result and result[0]
 
     @api.multi
     def _drop_column(self):
@@ -695,6 +707,8 @@ class IrModelFields(models.Model):
         # add compute function if given
         if field_data['compute']:
             attrs['compute'] = make_compute(field_data['compute'], field_data['depends'])
+        if field_data.get('sparse'):
+            attrs['sparse'] = field_data['sparse']
 
         return fields.Field.by_type[field_data['ttype']](**attrs)
 

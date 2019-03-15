@@ -121,13 +121,21 @@ exports.PosModel = Backbone.Model.extend({
                 progress: function(prog){ 
                     self.chrome.loading_progress(prog);
                 },
-            }).then(function(){
-                if(self.config.iface_scan_via_proxy){
-                    self.barcode_reader.connect_to_proxy();
-                }
-            }).always(function(){
-                done.resolve();
-            });
+            }).then(
+                function(){
+                        if(self.config.iface_scan_via_proxy){
+                            self.barcode_reader.connect_to_proxy();
+                        }
+                        done.resolve();
+                },
+                function(statusText, url){
+                        if (statusText == 'error' && window.location.protocol == 'https:') {
+                            var error = {message: 'TLSError', url: url};
+                            self.chrome.loading_error(error);
+                        } else {
+                            done.resolve();
+                        }
+                });
         return done;
     },
 
@@ -221,7 +229,7 @@ exports.PosModel = Backbone.Model.extend({
         fields: ['id', 'journal_ids','name','user_id','config_id','start_at','stop_at','sequence_number','login_number'],
         domain: function(self){ return [['state','=','opened'],['user_id','=',session.uid]]; },
         loaded: function(self,pos_sessions){
-            self.pos_session = pos_sessions[0]; 
+            self.pos_session = pos_sessions[0];
         },
     },{
         model: 'pos.config',
@@ -241,6 +249,8 @@ exports.PosModel = Backbone.Model.extend({
 
             self.db.set_uuid(self.config.uuid);
             self.cashier = self.get_cashier();
+            // We need to do it here, since only then the local storage has the correct uuid
+            self.db.save('pos_session_id', self.pos_session.id);
 
             var orders = self.db.get_orders();
             for (var i = 0; i < orders.length; i++) {
@@ -577,6 +587,10 @@ exports.PosModel = Backbone.Model.extend({
 
     // returns the user who is currently the cashier for this point of sale
     get_cashier: function(){
+        // reset the cashier to the current user if session is new
+        if (this.db.load('pos_session_id') !== this.pos_session.id) {
+            this.set_cashier(this.user);
+        }
         return this.db.get_cashier() || this.cashier || this.user;
     },
     // changes the current cashier
@@ -727,12 +741,20 @@ exports.PosModel = Backbone.Model.extend({
             transfer.pipe(function(order_server_id){    
 
                 // generate the pdf and download it
-                self.chrome.do_action('point_of_sale.pos_invoice_report',{additional_context:{ 
-                    active_ids:order_server_id,
-                }}).done(function () {
-                    invoiced.resolve();
-                    done.resolve();
-                });
+                if (order_server_id.length) {
+                    self.chrome.do_action('point_of_sale.pos_invoice_report',{additional_context:{ 
+                        active_ids:order_server_id,
+                    }}).done(function () {
+                        invoiced.resolve();
+                        done.resolve();
+                    });
+                } else {
+                    // The order has been pushed separately in batch when
+                    // the connection came back.
+                    // The user has to go to the backend to print the invoice
+                    invoiced.reject({code:401, message:'Backend Invoice', data:{order: order}});
+                    done.reject();
+                }
             });
 
             return done;
@@ -2078,7 +2100,7 @@ exports.Order = Backbone.Model.extend({
         this.assert_editable();
         var newPaymentline = new exports.Paymentline({},{order: this, cashregister:cashregister, pos: this.pos});
         if(cashregister.journal.type !== 'cash' || this.pos.config.iface_precompute_cash){
-            newPaymentline.set_amount( Math.max(this.get_due(),0) );
+            newPaymentline.set_amount( this.get_due() );
         }
         this.paymentlines.add(newPaymentline);
         this.select_paymentline(newPaymentline);
@@ -2242,10 +2264,10 @@ exports.Order = Backbone.Model.extend({
                 }
             }
         }
-        return round_pr(Math.max(0,due), this.pos.currency.rounding);
+        return round_pr(due, this.pos.currency.rounding);
     },
     is_paid: function(){
-        return this.get_due() === 0;
+        return this.get_due() <= 0;
     },
     is_paid_with_cash: function(){
         return !!this.paymentlines.find( function(pl){
