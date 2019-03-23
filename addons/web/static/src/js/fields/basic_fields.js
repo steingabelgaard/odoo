@@ -925,6 +925,9 @@ var HandleWidget = AbstractField.extend({
 
 var FieldEmail = InputField.extend({
     className: 'o_field_email',
+    events: _.extend({}, InputField.prototype.events, {
+        'click': '_onClick',
+    }),
     prefix: 'mailto',
     supportedFieldTypes: ['char'],
 
@@ -965,7 +968,21 @@ var FieldEmail = InputField.extend({
         this.$el.text(this.value)
             .addClass('o_form_uri o_text_overflow')
             .attr('href', this.prefix + ':' + this.value);
-    }
+    },
+
+    //--------------------------------------------------------------------------
+    // Handlers
+    //--------------------------------------------------------------------------
+
+    /**
+     * Prevent the URL click from opening the record (when used on a list).
+     *
+     * @private
+     * @param {MouseEvent} ev
+     */
+    _onClick: function (ev) {
+        ev.stopPropagation();
+    },
 });
 
 var FieldPhone = FieldEmail.extend({
@@ -1057,6 +1074,9 @@ var FieldPhone = FieldEmail.extend({
 
 var UrlWidget = InputField.extend({
     className: 'o_field_url',
+    events: _.extend({}, InputField.prototype.events, {
+        'click': '_onClick',
+    }),
     supportedFieldTypes: ['char'],
 
     /**
@@ -1098,7 +1118,21 @@ var UrlWidget = InputField.extend({
             .addClass('o_form_uri o_text_overflow')
             .attr('target', '_blank')
             .attr('href', this.value);
-    }
+    },
+
+    //--------------------------------------------------------------------------
+    // Handlers
+    //--------------------------------------------------------------------------
+
+    /**
+     * Prevent the URL click from opening the record (when used on a list).
+     *
+     * @private
+     * @param {MouseEvent} ev
+     */
+    _onClick: function (ev) {
+        ev.stopPropagation();
+    },
 });
 
 var AbstractFieldBinary = AbstractField.extend({
@@ -1979,6 +2013,18 @@ var FieldProgressBar = AbstractField.extend({
             this.$('.o_progressbar_value').val(this.edit_max_value ? max_value : value);
             this.$('.o_progressbar_value').focus().select();
         }
+    },
+    /**
+     * The progress bar has more than one field/value to deal with
+     * i.e. max_value
+     *
+     * @override
+     * @private
+     */
+    _reset: function () {
+        this._super.apply(this, arguments);
+        var new_max_value = this.recordData[this.nodeOptions.max_value];
+        this.max_value =  new_max_value !== undefined ? new_max_value : this.max_value;
     },
     isSet: function () {
         return true;
