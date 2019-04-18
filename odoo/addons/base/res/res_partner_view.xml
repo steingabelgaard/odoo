@@ -354,6 +354,7 @@
                                                 <field name="email"/>
                                                 <field name="phone" widget="phone"/>
                                                 <field name="mobile" widget="phone"/>
+                                                <field name="category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Tags..."/>
                                                 <field name="comment" placeholder="internal note..."/>
                                             </group>
                                         </group>
