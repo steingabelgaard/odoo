@@ -1268,6 +1268,7 @@ class Export(http.Controller):
         fields_sequence = sorted(fields.items(),
             key=lambda field: odoo.tools.ustr(field[1].get('string', '')))
 
+        drop_export_field_names = request.env['ir.model.fields'].search([('model', '=', model), ('export', '=', False)]).mapped('name')
         records = []
         for field_name, field in fields_sequence:
             if import_compat:
@@ -1280,7 +1281,15 @@ class Export(http.Controller):
                         continue
             if not field.get('exportable', True):
                 continue
-
+            if field_name in drop_export_field_names:
+                continue
+        
+            if model == 'res.partner':
+                if field.get('type') in ['one2many', 'many2many']:
+                    continue
+                if field_name[-8:] == '_visible':
+                    continue
+             
             id = prefix + (prefix and '/'or '') + field_name
             name = parent_name + (parent_name and '/' or '') + field['string']
             record = {'id': id, 'string': name,
