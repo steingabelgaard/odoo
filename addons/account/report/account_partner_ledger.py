@@ -66,7 +66,14 @@ class third_party_ledger(report_sxw.rml_parse, common_report_header):
         ctx2 = data['form'].get('used_context',{}).copy()
         self.initial_balance = data['form'].get('initial_balance', True)
         if self.initial_balance:
-            ctx2.update({'initial_bal': True})
+            start_date = self._get_start_date(data)
+            if not start_date and data.get('form', False) and data['form'].get('fiscalyear_id', False):
+                start_date = self.pool.get('account.fiscalyear').browse(self.cr, self.uid, data['form']['fiscalyear_id']).date_start
+            ctx2.update({
+                         'date_from': '1901-01-01',
+                         'date_to': start_date})
+            ctx2.pop('fiscalyear', None)      
+                
         self.init_query = obj_move._query_get(self.cr, self.uid, obj='l', context=ctx2)
         self.reconcil = True
         if data['form']['filter'] == 'unreconciled':
