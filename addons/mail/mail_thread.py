@@ -1752,6 +1752,11 @@ class mail_thread(osv.AbstractModel):
         """ Add partners to the records followers. """
         if context is None:
             context = {}
+
+        # Never subscribe admin
+        if SUPERUSER_ID in partner_ids:
+            partner_ids.remove(SUPERUSER_ID)
+
         # not necessary for computation, but saves an access right check
         if not partner_ids:
             return True
