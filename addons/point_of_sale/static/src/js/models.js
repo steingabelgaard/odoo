@@ -121,13 +121,26 @@ exports.PosModel = Backbone.Model.extend({
                 progress: function(prog){ 
                     self.chrome.loading_progress(prog);
                 },
-            }).then(function(){
-                if(self.config.iface_scan_via_proxy){
-                    self.barcode_reader.connect_to_proxy();
-                }
-            }).always(function(){
-                done.resolve();
-            });
+            }).then(
+                function(){
+                        if(self.config.iface_scan_via_proxy){
+                            self.barcode_reader.connect_to_proxy();
+                        }
+                        done.resolve();
+                },
+                function(statusText, url){
+                        var show_loading_error = (self.gui.current_screen === null);
+                        done.resolve();
+                        if (show_loading_error && statusText == 'error' && window.location.protocol == 'https:') {
+                            self.gui.show_popup('alert', {
+                                title: _t('HTTPS connection to IoT Box failed'),
+                                body: _.str.sprintf(
+                                  _t('Make sure you are using IoT Box v18.12 or higher. Navigate to %s to accept the certificate of your IoT Box.'),
+                                  url
+                                ),
+                            });
+                        }
+                });
         return done;
     },
 
@@ -221,7 +234,7 @@ exports.PosModel = Backbone.Model.extend({
         fields: ['id', 'journal_ids','name','user_id','config_id','start_at','stop_at','sequence_number','login_number'],
         domain: function(self){ return [['state','=','opened'],['user_id','=',session.uid]]; },
         loaded: function(self,pos_sessions){
-            self.pos_session = pos_sessions[0]; 
+            self.pos_session = pos_sessions[0];
         },
     },{
         model: 'pos.config',
@@ -241,6 +254,8 @@ exports.PosModel = Backbone.Model.extend({
 
             self.db.set_uuid(self.config.uuid);
             self.cashier = self.get_cashier();
+            // We need to do it here, since only then the local storage has the correct uuid
+            self.db.save('pos_session_id', self.pos_session.id);
 
             var orders = self.db.get_orders();
             for (var i = 0; i < orders.length; i++) {
@@ -255,6 +270,7 @@ exports.PosModel = Backbone.Model.extend({
             // we attribute a role to the user, 'cashier' or 'manager', depending
             // on the group the user belongs. 
             var pos_users = [];
+            var current_cashier = self.get_cashier();
             for (var i = 0; i < users.length; i++) {
                 var user = users[i];
                 for (var j = 0; j < user.groups_id.length; j++) {
@@ -272,6 +288,9 @@ exports.PosModel = Backbone.Model.extend({
                 // replace the current user with its updated version
                 if (user.id === self.user.id) {
                     self.user = user;
+                }
+                if (user.id === current_cashier.id) {
+                    self.set_cashier(user);
                 }
             }
             self.users = pos_users; 
@@ -573,6 +592,10 @@ exports.PosModel = Backbone.Model.extend({
 
     // returns the user who is currently the cashier for this point of sale
     get_cashier: function(){
+        // reset the cashier to the current user if session is new
+        if (this.db.load('pos_session_id') !== this.pos_session.id) {
+            this.set_cashier(this.user);
+        }
         return this.db.get_cashier() || this.cashier || this.user;
     },
     // changes the current cashier
@@ -723,12 +746,20 @@ exports.PosModel = Backbone.Model.extend({
             transfer.pipe(function(order_server_id){    
 
                 // generate the pdf and download it
-                self.chrome.do_action('point_of_sale.pos_invoice_report',{additional_context:{ 
-                    active_ids:order_server_id,
-                }}).done(function () {
-                    invoiced.resolve();
-                    done.resolve();
-                });
+                if (order_server_id.length) {
+                    self.chrome.do_action('point_of_sale.pos_invoice_report',{additional_context:{ 
+                        active_ids:order_server_id,
+                    }}).done(function () {
+                        invoiced.resolve();
+                        done.resolve();
+                    });
+                } else {
+                    // The order has been pushed separately in batch when
+                    // the connection came back.
+                    // The user has to go to the backend to print the invoice
+                    invoiced.reject({code:401, message:'Backend Invoice', data:{order: order}});
+                    done.reject();
+                }
             });
 
             return done;
@@ -1152,7 +1183,8 @@ exports.Orderline = Backbone.Model.extend({
                 if (unit.rounding) {
                     this.quantity    = round_pr(quant, unit.rounding);
                     var decimals = this.pos.dp['Product Unit of Measure'];
-                    this.quantityStr = formats.format_value(round_di(this.quantity, decimals), { type: 'float', digits: [69, decimals]});
+                    this.quantity = round_di(this.quantity, decimals)
+                    this.quantityStr = formats.format_value(this.quantity, { type: 'float', digits: [69, decimals]});
                 } else {
                     this.quantity    = round_pr(quant, 1);
                     this.quantityStr = this.quantity.toFixed(0);
@@ -1979,7 +2011,9 @@ exports.Order = Backbone.Model.extend({
                 }
             })
 
-            unit_price = line.compute_all(mapped_included_taxes, unit_price, 1, this.pos.currency.rounding, true).total_excluded;
+            if (mapped_included_taxes.length > 0) {
+                unit_price = line.compute_all(mapped_included_taxes, unit_price, 1, this.pos.currency.rounding, true).total_excluded;
+            }
 
             line.set_unit_price(unit_price);
         }
@@ -2071,7 +2105,7 @@ exports.Order = Backbone.Model.extend({
         this.assert_editable();
         var newPaymentline = new exports.Paymentline({},{order: this, cashregister:cashregister, pos: this.pos});
         if(cashregister.journal.type !== 'cash' || this.pos.config.iface_precompute_cash){
-            newPaymentline.set_amount( Math.max(this.get_due(),0) );
+            newPaymentline.set_amount( this.get_due() );
         }
         this.paymentlines.add(newPaymentline);
         this.select_paymentline(newPaymentline);
@@ -2235,10 +2269,10 @@ exports.Order = Backbone.Model.extend({
                 }
             }
         }
-        return round_pr(Math.max(0,due), this.pos.currency.rounding);
+        return round_pr(due, this.pos.currency.rounding);
     },
     is_paid: function(){
-        return this.get_due() === 0;
+        return this.get_due() <= 0;
     },
     is_paid_with_cash: function(){
         return !!this.paymentlines.find( function(pl){
@@ -2316,7 +2350,7 @@ exports.NumpadState = Backbone.Model.extend({
             this.set({
                 buffer: "-" + newChar
             });
-        } else {
+        } else if (!(newChar === '.') || oldBuffer.indexOf('.') === -1) {
             this.set({
                 buffer: (this.get('buffer')) + newChar
             });

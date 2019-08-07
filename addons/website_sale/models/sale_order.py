@@ -193,7 +193,7 @@ class Website(models.Model):
     _inherit = 'website'
 
     pricelist_id = fields.Many2one('product.pricelist', compute='_compute_pricelist_id', string='Default Pricelist')
-    currency_id = fields.Many2one('res.currency', related='pricelist_id.currency_id', string='Default Currency')
+    currency_id = fields.Many2one('res.currency', related='pricelist_id.currency_id', related_sudo=False, string='Default Currency')
     salesperson_id = fields.Many2one('res.users', string='Salesperson')
     salesteam_id = fields.Many2one('crm.team', string='Sales Team')
     pricelist_ids = fields.One2many('product.pricelist', compute="_compute_pricelist_ids",
@@ -239,8 +239,8 @@ class Website(models.Model):
 
         if not pricelists:  # no pricelist for this country, or no GeoIP
             pricelists |= all_pl.filtered(lambda pl: not show_visible or pl.selectable or pl.id in (current_pl, order_pl))
-        else:
-            pricelists |= all_pl.filtered(lambda pl: not show_visible and pl.sudo().code)
+        if not show_visible and not country_code:
+            pricelists |= all_pl.filtered(lambda pl: pl.sudo().code)
 
         # This method is cached, must not return records! See also #8795
         return pricelists.ids
@@ -390,7 +390,7 @@ class Website(models.Model):
             # TODO cache partner_id session
             pricelist = self.env['product.pricelist'].browse(pricelist_id).sudo()
             so_data = self._prepare_sale_order_values(partner, pricelist)
-            sale_order = self.env['sale.order'].sudo().create(so_data)
+            sale_order = self.env['sale.order'].with_context(force_company=request.website.company_id.id).sudo().create(so_data)
 
             # set fiscal position
             if request.website.partner_id.id != partner.id:
@@ -399,7 +399,7 @@ class Website(models.Model):
                 country_code = request.session['geoip'].get('country_code')
                 if country_code:
                     country_id = request.env['res.country'].search([('code', '=', country_code)], limit=1).id
-                    fp_id = request.env['account.fiscal.position'].sudo()._get_fpos_by_region(country_id)
+                    fp_id = request.env['account.fiscal.position'].sudo().with_context(force_company=request.website.company_id.id)._get_fpos_by_region(country_id)
                     sale_order.fiscal_position_id = fp_id
                 else:
                     # if no geolocation, use the public user fp
@@ -456,7 +456,7 @@ class Website(models.Model):
                 if code_pricelist:
                     pricelist_id = code_pricelist.id
                     update_pricelist = True
-            elif code is not None and sale_order.pricelist_id.code:
+            elif code is not None and sale_order.pricelist_id.code and code != sale_order.pricelist_id.code:
                 # code is not None when user removes code and click on "Apply"
                 pricelist_id = partner.property_product_pricelist.id
                 update_pricelist = True

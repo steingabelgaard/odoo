@@ -16,6 +16,7 @@ from docutils.core import publish_string
 from docutils.transforms import Transform, writer_aux
 from docutils.writers.html4css1 import Writer
 import lxml.html
+import psycopg2
 
 try:
     from cStringIO import StringIO
@@ -169,6 +170,7 @@ class Module(models.Model):
                     'doctitle_xform': False,
                     'output_encoding': 'unicode',
                     'xml_declaration': False,
+                    'file_insertion_enabled': False,
                 }
                 output = publish_string(source=module.description or '', settings_overrides=overrides, writer=MyWriter())
                 module.description_html = tools.html_sanitize(output)
@@ -478,6 +480,14 @@ class Module(models.Model):
 
     @api.multi
     def _button_immediate_function(self, function):
+        try:
+            # This is done because the installation/uninstallation/upgrade can modify a currently
+            # running cron job and prevent it from finishing, and since the ir_cron table is locked
+            # during execution, the lock won't be released until timeout.
+            self._cr.execute("SELECT * FROM ir_cron FOR UPDATE NOWAIT")
+        except psycopg2.OperationalError:
+            raise UserError(_("The server is busy right now, module operations are not possible at"
+                              " this time, please try again later."))
         function(self)
 
         self._cr.commit()
@@ -599,7 +609,7 @@ class Module(models.Model):
         res = [0, 0]    # [update, add]
 
         default_version = modules.adapt_version('1.0')
-        known_mods = self.search([])
+        known_mods = self.with_context(lang=None).search([])
         known_mods_names = {mod.name: mod for mod in known_mods}
 
         # iterate through detected modules and update/create them in db
@@ -623,11 +633,10 @@ class Module(models.Model):
                     mod.write(updated_values)
             else:
                 mod_path = modules.get_module_path(mod_name)
-                if not mod_path:
+                if not mod_path or not terp:
                     continue
-                if not terp or not terp.get('installable', True):
-                    continue
-                mod = self.create(dict(name=mod_name, state='uninstalled', **values))
+                state = "uninstalled" if terp.get('installable', True) else "uninstallable"
+                mod = self.create(dict(name=mod_name, state=state, **values))
                 res[1] += 1
 
             mod._update_dependencies(terp.get('depends', []))

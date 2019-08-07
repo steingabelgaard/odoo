@@ -2,7 +2,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import datetime
-import dateutil
 import logging
 import os
 import time
@@ -13,8 +12,19 @@ from odoo import api, fields, models, tools, workflow, _
 from odoo.exceptions import MissingError, UserError, ValidationError
 from odoo.report.report_sxw import report_sxw, report_rml
 from odoo.tools.safe_eval import safe_eval, test_python_expr
+from odoo.tools.misc import wrap_module
 
 _logger = logging.getLogger(__name__)
+
+# build dateutil helper, starting with the relevant *lazy* imports
+import dateutil
+import dateutil.parser
+import dateutil.relativedelta
+import dateutil.rrule
+import dateutil.tz
+mods = {'parser', 'relativedelta', 'rrule', 'tz'}
+attribs = {atr for m in mods for atr in getattr(dateutil, m).__all__}
+dateutil = wrap_module(dateutil, mods | attribs)
 
 
 class IrActions(models.Model):
@@ -126,7 +136,7 @@ class IrActionsReportXml(models.Model):
     def _compute_report_sxw(self):
         for report in self:
             if report.report_rml:
-                self.report_sxw = report.report_rml.replace('.rml', '.sxw')
+                report.report_sxw = report.report_rml.replace('.rml', '.sxw')
 
     def _report_content(self, name):
         data = self[name + '_content_data']
@@ -350,7 +360,10 @@ class IrActionsActWindow(models.Model):
         existing = self.filtered(lambda rec: rec.id in ids)
         if len(existing) < len(self):
             # mark missing records in cache with a failed value
-            exc = MissingError(_("Record does not exist or has been deleted."))
+            exc = MissingError(
+                _("Record does not exist or has been deleted.")
+                + '\n\n({} {}, {} {})'.format(_('Records:'), (self - existing).ids[:6], _('User:'), self._uid)
+            )
             (self - existing)._cache.update(fields.FailedValue(exc))
         return existing
 
@@ -1171,3 +1184,11 @@ class IrActionsActClient(models.Model):
         for record in self:
             params = record.params
             record.params_store = repr(params) if isinstance(params, dict) else params
+
+    def _get_default_form_view(self):
+        doc = super(IrActionsActClient, self)._get_default_form_view()
+        params = doc.find(".//field[@name='params']")
+        params.getparent().remove(params)
+        params_store = doc.find(".//field[@name='params_store']")
+        params_store.getparent().remove(params_store)
+        return doc

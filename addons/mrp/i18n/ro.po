@@ -3,17 +3,18 @@
 # * mrp
 # 
 # Translators:
-# Dorin Hongu <dhongu@gmail.com>, 2016
-# Cozmin Candea <office@terrabit.ro>, 2016
-# Martin Trigaux <mat@odoo.com>, 2016
 # Simonel Criste <simi@erpsystems.ro>, 2016
+# Martin Trigaux, 2016
+# Cozmin Candea <office@terrabit.ro>, 2016
+# Dorin Hongu <dhongu@gmail.com>, 2019
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-06-23 13:27+0000\n"
-"PO-Revision-Date: 2017-06-23 13:27+0000\n"
-"Last-Translator: Simonel Criste <simi@erpsystems.ro>, 2016\n"
+"PO-Revision-Date: 2016-09-07 09:23+0000\n"
+"Last-Translator: Dorin Hongu <dhongu@gmail.com>, 2019\n"
 "Language-Team: Romanian (https://www.transifex.com/odoo/teams/41243/ro/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1863,7 +1864,7 @@ msgstr "Comenzi"
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_mrp_workorder_qty_production
 msgid "Original Production Quantity"
-msgstr ""
+msgstr "Cantitatea planificată inițial"
 
 #. module: mrp
 #: model:ir.actions.act_window,name:mrp.mrp_workcenter_productivity_report
@@ -2240,6 +2241,11 @@ msgstr "Cantitatea obținută"
 #: model:ir.model.fields,field_description:mrp.field_mrp_production_product_qty
 msgid "Quantity To Produce"
 msgstr "Cantitatea de obținut"
+
+#. module: mrp
+#: model:ir.model.fields,field_description:mrp.field_stock_move_quantity_done_store
+msgid "Quantity done store"
+msgstr ""
 
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_mrp_routing_workcenter_batch_size
@@ -2873,6 +2879,11 @@ msgid ""
 msgstr ""
 
 #. module: mrp
+#: model:ir.ui.view,arch_db:mrp.mrp_production_workcenter_form_view_inherit
+msgid "Time the currently logged user spent on this workorder."
+msgstr ""
+
+#. module: mrp
 #: model:ir.ui.view,arch_db:mrp.mrp_production_form_view
 msgid "To Consume"
 msgstr "De consumat"
@@ -2979,6 +2990,7 @@ msgstr "Comandă dezmembrare"
 #, python-format
 msgid "Unbuild Order product quantity has to be strictly positive."
 msgstr ""
+"Comandă dezmembrare cantitatea de produs trebuie să fie strict pozitivă."
 
 #. module: mrp
 #: model:ir.actions.act_window,name:mrp.mrp_unbuild

@@ -3,15 +3,18 @@
 # * stock
 # 
 # Translators:
-# Khishigbat Ganbold <khishigbat@asterisk-tech.mn>, 2017
 # Martin Trigaux, 2017
+# Baskhuu Lodoikhuu <baskhuujacara@gmail.com>, 2018
+# Khishigbat Ganbold <khishigbat@asterisk-tech.mn>, 2019
+# Bayarkhuu Bataa, 2019
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-06-23 13:26+0000\n"
-"PO-Revision-Date: 2017-06-23 13:26+0000\n"
-"Last-Translator: Martin Trigaux, 2017\n"
+"PO-Revision-Date: 2016-09-07 09:29+0000\n"
+"Last-Translator: Bayarkhuu Bataa, 2019\n"
 "Language-Team: Mongolian (https://www.transifex.com/odoo/teams/41243/mn/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,6 +30,9 @@ msgid ""
 "\n"
 "%s --> Product UoM is %s (%s) - Move UoM is %s (%s)"
 msgstr ""
+"\n"
+"\n"
+"%s --> Үндсэн хэмжих нэгж нь %s (%s) - Хөдөлгөөний хэмжих нэгж нь %s (%s)"
 
 #. module: stock
 #: code:addons/stock/models/stock_move.py:231
@@ -108,7 +114,7 @@ msgid ""
 msgstr ""
 "* Шинэ: Агуулахын хөдөлгөөн үүсгэгдээд хараахан батлагдаагүй.\n"
 "* Өөр хөдөлгөөн хүлээж буй: Энэ хөдөлгөөн нь өөр хөдөлгөөнийг хүлээж буй, тухайлбал хэлхээт урсгалд.\n"
-"* Бэлэн болохыг хүлээж буй: Татан авалтын шийдэл хараахан тодорхой болоогүй. Энэ нь товлогчийн ажиллахыг хүлээж буй байж болох бөгөөд бүрдэл хэсгүүдийг үйлдвэрлэх захиалга үүсэхийг хүлээж байж болно...\n"
+"* Үлдэгдэл хүрэхгүй: Татан авалтын шийдэл хараахан тодорхой болоогүй. Энэ нь товлогчийн ажиллахыг хүлээж буй байж болох бөгөөд бүрдэл хэсгүүдийг үйлдвэрлэх захиалга үүсэхийг хүлээж байж болно...\n"
 "* Бэлэн: Бүх бараа нь нөөцлөгдсөн бөгөөд Бэлэн төлөвтэй болсон.\n"
 "* Хийгдсэн: Хүргэлт хийгдсэн."
 
@@ -966,7 +972,7 @@ msgstr "Оноогдсон хөдөлгөөнүүд"
 #. module: stock
 #: model:ir.ui.menu,name:stock.menu_variants_action
 msgid "Attribute Values"
-msgstr "Шинжийн үнэ цэнэ"
+msgstr "Онцлогийн утгууд"
 
 #. module: stock
 #: model:ir.ui.menu,name:stock.menu_attribute_action
@@ -4778,7 +4784,7 @@ msgstr "Буцаалтын бэлтгэх төрөл"
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_stock_config_settings_module_stock_picking_wave
 msgid "Picking Waves"
-msgstr "Бэлтгэх давалгаа"
+msgstr "Ачилт"
 
 #. module: stock
 #: model:ir.ui.view,arch_db:stock.vpicktree
@@ -5437,7 +5443,7 @@ msgstr "Кодын Дараалал"
 #. module: stock
 #: sql_constraint:stock.picking:0
 msgid "Reference must be unique per company!"
-msgstr "Код компаний хэмжээнд үл давхцах байх ёстой!"
+msgstr "Код компанийн хэмжээнд үл давхцах байх ёстой!"
 
 #. module: stock
 #: model:ir.model.fields,help:stock.field_stock_picking_origin
@@ -6928,7 +6934,7 @@ msgid ""
 msgstr ""
 "Бараа болон цуврал дээр ялгаатай огноонууд хөтлөх.\n"
 "                Дараах огноонуудыг хөтлөх боломжтой:\n"
-"                - амьдралын төгсгөл\n"
+"                - хориглох огноо\n"
 "                - огнооноос өмнө сайн\n"
 "                - устгах огноо\n"
 "                - анхааруулах огноо.\n"
@@ -7607,6 +7613,12 @@ msgstr "'Хийгдсэн' хөдөлгөөнийг цуцлах боломжг�
 #, python-format
 msgid "You cannot delete a scrap which is done."
 msgstr "Хийгдсэн хаягдлыг устгах боломжгүй."
+
+#. module: stock
+#: code:addons/stock/models/stock_inventory.py:103
+#, python-format
+msgid "You cannot delete a validated inventory adjustement."
+msgstr ""
 
 #. module: stock
 #: code:addons/stock/models/stock_inventory.py:374

@@ -443,7 +443,9 @@ class GoogleCalendar(models.AbstractModel):
                 if google_attendee.get('found'):
                     continue
 
-                attendee = ResPartner.search([('email', '=', google_attendee['email'])], limit=1)
+                attendee = ResPartner.search([('email', '=ilike', google_attendee['email']), ('user_ids', '!=', False)], limit=1)
+                if not attendee:
+                    attendee = ResPartner.search([('email', '=ilike', google_attendee['email'])], limit=1)
                 if not attendee:
                     data = {
                         'email': partner_email,
@@ -844,7 +846,7 @@ class GoogleCalendar(models.AbstractModel):
                         try:
                             # if already deleted from gmail or never created
                             recs.delete_an_event(current_event[0])
-                        except Exception, e:
+                        except urllib2.HTTPError, e:
                             if e.code in (401, 410,):
                                 pass
                             else:

@@ -50,7 +50,11 @@ class AccountBankStatementImport(models.TransientModel):
         # Create the bank statements
         statement_ids, notifications = self._create_bank_statements(stmts_vals)
         # Now that the import worked out, set it as the bank_statements_source of the journal
-        journal.bank_statements_source = 'file_import'
+        if journal.bank_statements_source != 'file_import':
+            # Use sudo() because only 'account.group_account_manager'
+            # has write access on 'account.journal', but 'account.group_account_user'
+            # must be able to import bank statement files
+            journal.sudo().bank_statements_source = 'file_import'
         # Finally dispatch to reconciliation interface
         action = self.env.ref('account.action_bank_reconcile_bank_statements')
         return {
@@ -215,7 +219,8 @@ class AccountBankStatementImport(models.TransientModel):
                 if 'unique_import_id' not in line_vals \
                    or not line_vals['unique_import_id'] \
                    or not bool(BankStatementLine.sudo().search([('unique_import_id', '=', line_vals['unique_import_id'])], limit=1)):
-                    if line_vals['amount'] != 0:
+                    # HHG: We need zero lines to handle rejected etc.
+                    #if line_vals['amount'] != 0:
                         # Some banks, like ING, create a line for free charges.
                         # We just skip those lines as there's a 'non-zero' constraint
                         # on the amount of account.bank.statement.line

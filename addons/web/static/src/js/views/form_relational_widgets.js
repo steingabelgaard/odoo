@@ -264,6 +264,12 @@ var FieldMany2One = common.AbstractField.extend(common.CompletionFieldMixin, com
             }
         });
 
+        // avoid ignoring autocomplete="off" by obfuscating placeholder, see #30439
+        if ($.browser.chrome && this.$input.attr('placeholder')) {
+            this.$input.attr('placeholder', function (index, val) {
+                return val.split('').join('\ufeff');
+            });
+        }
         var isSelecting = false;
         // autocomplete
         this.$input.autocomplete({
@@ -1115,6 +1121,11 @@ var One2ManyListView = X2ManyListView.extend({
             title: _t("Open: ") + self.x2m.string,
             write_function: function(id, data, options) {
                 return self.x2m.data_update(id, data, options).done(function() {
+                    self.x2m.reload_current_view();
+                });
+            },
+            create_function: function(data, options) {
+                return self.x2m.data_create(data, options).done(function() {
                     self.x2m.reload_current_view();
                 });
             },

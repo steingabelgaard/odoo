@@ -69,6 +69,10 @@ def copy_cache(records, env):
             for record_id in record_ids:
                 if record_id in src_cache:
                     # copy the cached value as such
+                    if isinstance(src_cache[record_id], FailedValue):
+                        # But not if it's a FailedValue, which often is an access error
+                        # because the other environment (eg. sudo()) is well expected to have access.
+                        continue
                     value = dst_cache[record_id] = src_cache[record_id]
                     if field.relational and isinstance(value, tuple):
                         todo[field.comodel_name].update(value)
@@ -316,6 +320,7 @@ class Field(object):
 
         'automatic': False,             # whether the field is automatically created ("magic" field)
         'inherited': False,             # whether the field is inherited (_inherits)
+        'inherited_field': None,        # the corresponding inherited field
 
         'name': None,                   # name of the field
         'model_name': None,             # name of the model of this field
@@ -643,7 +648,7 @@ class Field(object):
     @property
     def base_field(self):
         """ Return the base field of an inherited field, or ``self``. """
-        return self.related_field.base_field if self.inherited else self
+        return self.inherited_field.base_field if self.inherited_field else self
 
     #
     # Company-dependent fields
@@ -653,13 +658,25 @@ class Field(object):
         return model.env['ir.property'].get(self.name, self.model_name)
 
     def _compute_company_dependent(self, records):
-        Property = records.env['ir.property']
+        # read property as superuser, as the current user may not have access
+        context = records.env.context
+        if 'force_company' not in context:
+            field_id = records.env['ir.model.fields']._get_id(self.model_name, self.name)
+            company = records.env['res.company']._company_default_get(self.model_name, field_id)
+            context = dict(context, force_company=company.id)
+        Property = records.env(user=SUPERUSER_ID, context=context)['ir.property']
         values = Property.get_multi(self.name, self.model_name, records.ids)
         for record in records:
             record[self.name] = values.get(record.id)
 
     def _inverse_company_dependent(self, records):
-        Property = records.env['ir.property']
+        # update property as superuser, as the current user may not have access
+        context = records.env.context
+        if 'force_company' not in context:
+            field_id = records.env['ir.model.fields']._get_id(self.model_name, self.name)
+            company = records.env['res.company']._company_default_get(self.model_name, field_id)
+            context = dict(context, force_company=company.id)
+        Property = records.env(user=SUPERUSER_ID, context=context)['ir.property']
         values = {
             record.id: self.convert_to_write(record[self.name], record)
             for record in records
@@ -993,6 +1010,8 @@ class Field(object):
                 recs = record._recompute_check(self)
                 if recs:
                     # recompute the value (only in cache)
+                    if self.recursive:
+                        recs = record
                     self.compute_value(recs)
                     # HACK: if result is in the wrong cache, copy values
                     if recs.env != env:
@@ -1523,6 +1542,9 @@ class Date(Field):
         """ Convert a :class:`date` value into the format expected by the ORM. """
         return value.strftime(DATE_FORMAT) if value else False
 
+    def convert_to_column(self, value, record):
+        return super(Date, self).convert_to_column(value or None, record)
+
     def convert_to_cache(self, value, record, validate=True):
         if not value:
             return False
@@ -1591,6 +1613,9 @@ class Datetime(Field):
     def to_string(value):
         """ Convert a :class:`datetime` value into the format expected by the ORM. """
         return value.strftime(DATETIME_FORMAT) if value else False
+
+    def convert_to_column(self, value, record):
+        return super(Datetime, self).convert_to_column(value or None, record)
 
     def convert_to_cache(self, value, record, validate=True):
         if not value:
@@ -2318,6 +2343,8 @@ class Many2many(_RelationalMulti):
                     self.column2 = '%s_id' % comodel._table
             # check validity of table name
             check_pg_name(self.relation)
+        else:
+            self.relation = self.column1 = self.column2 = None
 
     def _setup_regular_full(self, model):
         super(Many2many, self)._setup_regular_full(model)

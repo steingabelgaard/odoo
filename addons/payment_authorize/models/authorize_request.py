@@ -4,12 +4,14 @@ from urllib2 import urlopen, Request
 from StringIO import StringIO
 import xml.etree.ElementTree as ET
 from uuid import uuid4
+import logging
 
 from odoo import _
 from odoo.exceptions import ValidationError, UserError
 from odoo import _
 
 XMLNS = 'AnetApi/xml/v1/schema/AnetApiSchema.xsd'
+_logger = logging.getLogger(__name__)
 
 
 def strip_ns(xml, ns):
@@ -142,7 +144,7 @@ class AuthorizeAPI():
         etree.SubElement(billTo, "address").text = (partner.street or '' + (partner.street2 if partner.street2 else '')) or None
         etree.SubElement(billTo, "city").text = partner.city
         etree.SubElement(billTo, "state").text = partner.state_id.name or None
-        etree.SubElement(billTo, "zip").text = partner.zip
+        etree.SubElement(billTo, "zip").text = partner.zip or ''
         etree.SubElement(billTo, "country").text = partner.country_id.name or None
         payment = etree.SubElement(payment_profile, "payment")
         creditCard = etree.SubElement(payment, "creditCard")
@@ -183,6 +185,12 @@ class AuthorizeAPI():
         etree.SubElement(customer, "email").text = partner.email or ''
         response = self._authorize_request(root)
         res = dict()
+        if response.find('customerProfileId') is None:  # Warning: do not use bool(etree) as the semantics is very misleading
+            _logger.warning(
+                'Unable to create customer payment profile, data missing from transaction. Transaction_id: %s - Partner_id: %s'
+                % (transaction_id, partner)
+            )
+            return res
         res['profile_id'] = response.find('customerProfileId').text
         res['payment_profile_id'] = response.find('customerPaymentProfileIdList/numericString').text
         root_profile = self._base_tree('getCustomerPaymentProfileRequest')
