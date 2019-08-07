@@ -1754,8 +1754,9 @@ class mail_thread(osv.AbstractModel):
             context = {}
 
         # Never subscribe admin
-        if SUPERUSER_ID in partner_ids:
-            partner_ids.remove(SUPERUSER_ID)
+        admin_pid = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID).partner_id.id
+        if admin_pid in partner_ids:
+            partner_ids.remove(admin_pid)
 
         # not necessary for computation, but saves an access right check
         if not partner_ids:
