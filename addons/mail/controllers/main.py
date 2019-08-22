@@ -174,6 +174,7 @@ class MailController(http.Controller):
 
             models that have an access_token may apply variations on this.
         """
+        _logger.info('MAIL VIEW: %s %s %s %s', model, res_id, message_id, access_token)
         if message_id:
             try:
                 message = request.env['mail.message'].sudo().browse(int(message_id)).exists()
@@ -186,7 +187,7 @@ class MailController(http.Controller):
                 return self._redirect_to_messaging()
         elif res_id and isinstance(res_id, pycompat.string_types):
             res_id = int(res_id)
-
+        _logger.info('MAIL VIEW: redirect_to record')
         return self._redirect_to_record(model, res_id, access_token)
 
     @http.route('/mail/follow', type='http', auth='user', methods=['GET'])
