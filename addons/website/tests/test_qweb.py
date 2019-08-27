@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import re
+import werkzeug
 
 import odoo
 from odoo import tools
@@ -66,22 +67,29 @@ class TestQweb(TransactionCase):
         }).encode('utf8'))
 
 class MockObject(object):
+    _log_call = []
     def __init__(self, *args, **kwargs):
         self.__dict__ = kwargs
     def __call__(self, *args, **kwargs):
+        self._log_call.append((args, kwargs))
         return self
     def __getitem__(self, index):
         return self
 
+def werkzeugRaiseNotFound(*args, **kwargs):
+    raise werkzeug.exceptions.NotFound()
+
 class MockRequest(object):
     """ Class with context manager mocking odoo.http.request for tests """
-    def __init__(self, env, website=None, context=None, multilang=True):
+    def __init__(self, env, website=None, context=None, multilang=True, routing=True):
         app = MockObject(routing={
             'type': 'http',
             'website': True,
             'multilang': multilang,
         })
         app.get_db_router = app.bind = app.match = app
+        if not routing:
+            app.match = werkzeugRaiseNotFound
         self.request = MockObject(
             env=env, context=context or {}, db=None, debug=False,
             website=website, httprequest=MockObject(
@@ -157,3 +165,23 @@ class TestQwebProcessAtt(TransactionCase):
             self._test_att('/b', {'href': 'http://test.cdn/b'})
             self._test_att('/en_US/b', {'href': 'http://test.cdn/b'})
             self._test_att('/fr_FR/b', {'href': '/fr_FR/b'})
+
+    def test_process_att_no_route(self):
+        with MockRequest(self.env, self.website, context={'lang': 'fr_FR'}, routing=False) as request:
+            # default on multilang=True if route is not /{module}/static/
+            self._test_att('/web/static/hi', {'href': '/web/static/hi'})
+            self._test_att('/my-page', {'href': '/fr_FR/my-page'})
+
+    def test_process_att_url_crap(self):
+        with MockRequest(self.env, self.website) as request:
+            # #{fragment} is stripped from URL when testing route
+            self._test_att('/x#y?z', {'href': '/x#y?z'})
+            self.assertEqual(
+                request.httprequest.app._log_call[-1],
+                (('/x',), {'method': 'POST', 'query_args': None})
+            )
+            self._test_att('/x?y#z', {'href': '/x?y#z'})
+            self.assertEqual(
+                request.httprequest.app._log_call[-1],
+                (('/x',), {'method': 'POST', 'query_args': 'y'})
+            )

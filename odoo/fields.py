@@ -661,7 +661,7 @@ class Field(MetaField('DummyField', (object,), {})):
     # on ``path``. See method ``modified`` below for details.
     #
 
-    def resolve_deps(self, model):
+    def resolve_deps(self, model, path0=[], seen=frozenset()):
         """ Return the dependencies of ``self`` as tuples ``(model, field, path)``,
             where ``path`` is an optional list of field names.
         """
@@ -672,11 +672,12 @@ class Field(MetaField('DummyField', (object,), {})):
         for dotnames in self.depends:
             if dotnames == self.name:
                 _logger.warning("Field %s depends on itself; please fix its decorator @api.depends().", self)
-            model, path = model0, dotnames.split('.')
-            for i, fname in enumerate(path):
+            model, path = model0, path0
+            for fname in dotnames.split('.'):
                 field = model._fields[fname]
-                result.append((model, field, path[:i]))
+                result.append((model, field, path))
                 model = model0.env.get(field.comodel_name)
+                path = None if path is None else path + [fname]
 
         # add self's model dependencies
         for mname, fnames in model0._depends.items():
@@ -686,11 +687,14 @@ class Field(MetaField('DummyField', (object,), {})):
                 result.append((model, field, None))
 
         # add indirect dependencies from the dependencies found above
+        seen = seen.union([self])
         for model, field, path in list(result):
             for inv_field in model._field_inverses[field]:
                 inv_model = model0.env[inv_field.model_name]
                 inv_path = None if path is None else path + [field.name]
                 result.append((inv_model, inv_field, inv_path))
+            if not field.store and field not in seen:
+                result += field.resolve_deps(model, path, seen)
 
         return result
 
@@ -901,7 +905,11 @@ class Field(MetaField('DummyField', (object,), {})):
         """
         indexname = '%s_%s_index' % (model._table, self.name)
         if self.index:
-            sql.create_index(model._cr, indexname, model._table, ['"%s"' % self.name])
+            try:
+                with model._cr.savepoint():
+                    sql.create_index(model._cr, indexname, model._table, ['"%s"' % self.name])
+            except psycopg2.OperationalError:
+                _schema.error("Unable to add index for %s", self)
         else:
             sql.drop_index(model._cr, indexname, model._table)
 
@@ -1028,6 +1036,8 @@ class Field(MetaField('DummyField', (object,), {})):
                 recs = record._recompute_check(self)
                 if recs:
                     # recompute the value (only in cache)
+                    if self.recursive:
+                        recs = record
                     self.compute_value(recs)
                     # HACK: if result is in the wrong cache, copy values
                     if recs.env != env:
@@ -2076,8 +2086,8 @@ class _RelationalMulti(_Relational):
         elif isinstance(value, (list, tuple)):
             # value is a list/tuple of commands, dicts or record ids
             comodel = record.env[self.comodel_name]
-            # determine the value ids; by convention empty on new records
-            ids = OrderedSet(record[self.name].ids if record.id else ())
+            # determine the value ids
+            ids = OrderedSet(record[self.name]._ids)
             # modify ids with the commands
             for command in value:
                 if isinstance(command, (tuple, list)):

@@ -4,9 +4,9 @@ import re
 from collections import OrderedDict
 
 from odoo import models
+from odoo.addons.http_routing.models.ir_http import url_for
 from odoo.http import request
 
-from odoo.addons.http_routing.models.ir_http import url_for
 
 re_background_image = re.compile(r"(background-image\s*:\s*url\(\s*['\"]?\s*)([^)'\"]+)")
 
