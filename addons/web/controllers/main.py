@@ -1268,7 +1268,7 @@ class Export(http.Controller):
         fields_sequence = sorted(fields.items(),
             key=lambda field: odoo.tools.ustr(field[1].get('string', '')))
 
-        drop_export_field_names = request.env['ir.model.fields'].search([('model', '=', model), ('export', '=', False)]).mapped('name')
+        drop_export_field_names = request.env['ir.model.fields'].search([('model', '=', model), ('no_export', '=', True)]).mapped('name')
         records = []
         for field_name, field in fields_sequence:
             if import_compat:

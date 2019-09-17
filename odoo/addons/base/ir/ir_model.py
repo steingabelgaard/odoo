@@ -666,7 +666,7 @@ class IrModelFields(models.Model):
     @api.multi
     def write(self, vals):
         # If its only the export field, just store it:
-        if 'export' in vals:
+        if 'no_export' in vals:
             return super(IrModelFields, self).write(vals)
         # if set, *one* column can be renamed here
         column_rename = None
