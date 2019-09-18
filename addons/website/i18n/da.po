@@ -736,7 +736,7 @@ msgstr "<strong>Udgiv dokumentation</strong>"
 #. module: website
 #: model:ir.ui.view,arch_db:website.website_planner
 msgid "<strong>Publish events</strong>"
-msgstr "<strong>Udgiv arrangement</strong>"
+msgstr "<strong>Udgiv arrangementer</strong>"
 
 #. module: website
 #: model:ir.ui.view,arch_db:website.website_planner
