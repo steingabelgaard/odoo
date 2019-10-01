@@ -1752,6 +1752,12 @@ class mail_thread(osv.AbstractModel):
         """ Add partners to the records followers. """
         if context is None:
             context = {}
+
+        # Never subscribe admin
+        admin_pid = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID).partner_id.id
+        if admin_pid in partner_ids:
+            partner_ids.remove(admin_pid)
+
         # not necessary for computation, but saves an access right check
         if not partner_ids:
             return True
