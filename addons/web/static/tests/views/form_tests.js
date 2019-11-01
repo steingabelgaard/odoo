@@ -4854,6 +4854,49 @@ QUnit.module('Views', {
         form.destroy();
     });
 
+    QUnit.test('correct amount of buttons', function (assert) {
+        assert.expect(7);
+
+        var self = this;
+        var buttons = Array(8).join(
+            '<button type="object" class="oe_stat_button" icon="fa-check-square">' +
+                '<field name="bar"/>' +
+            '</button>'
+        );
+        var statButtonSelector = '.oe_stat_button:not(.dropdown-item, .dropdown-toggle)';
+
+        var createFormWithDeviceSizeClass = function (size_class) {
+            return createView({
+                View: FormView,
+                model: 'partner',
+                data: self.data,
+                arch: '<form>' +
+                    '<div name="button_box" class="oe_button_box">'
+                        + buttons +
+                    '</div>' +
+                '</form>',
+                res_id: 2,
+                config: {
+                    device: {size_class: size_class},
+                },
+            });
+        }
+
+        var assertFormContainsNButtonsWithSizeClass = function (size_class, n) {
+            var form = createFormWithDeviceSizeClass(size_class);
+            assert.containsN(form, statButtonSelector, n, 'The form has the expected amount of buttons');
+            form.destroy();
+        }
+
+        assertFormContainsNButtonsWithSizeClass(0, 2);
+        assertFormContainsNButtonsWithSizeClass(1, 2);
+        assertFormContainsNButtonsWithSizeClass(2, 2);
+        assertFormContainsNButtonsWithSizeClass(3, 4);
+        assertFormContainsNButtonsWithSizeClass(4, 7);
+        assertFormContainsNButtonsWithSizeClass(5, 7);
+        assertFormContainsNButtonsWithSizeClass(6, 7);
+    });
+
     QUnit.module('focus and scroll test', {
             after: function () {
                 var content = document.getElementsByClassName('o_content')[0];
@@ -7753,6 +7796,46 @@ QUnit.module('Views', {
         assert.containsOnce(actionManager, '.o_kanban_view');
 
         actionManager.destroy();
+    });
+
+    QUnit.test('edit a record in readonly and switch to edit before it is actually saved', async function (assert) {
+        assert.expect(3);
+
+        const prom = $.Deferred(); // testUtils.makeTestPromise();
+        const form = await createView({
+            View: FormView,
+            model: 'partner',
+            data: this.data,
+            arch: `<form>
+                    <field name="foo"/>
+                    <field name="bar" widget="toggle_button"/>
+                </form>`,
+            mockRPC: function (route, args) {
+                const result = this._super.apply(this, arguments);
+                if (args.method === 'write') { // delay the write RPC
+                    assert.deepEqual(args.args[1], {bar: false});
+                    return prom.then(_.constant(result));
+                }
+                return result;
+            },
+            res_id: 1,
+        });
+
+        // edit the record (in readonly) with toogle_button widget (and delay the write RPC)
+        await testUtils.dom.click(form.$('.o_field_widget[name=bar]'));
+
+        // switch to edit mode
+        await testUtils.form.clickEdit(form);
+
+        assert.hasClass(form.$('.o_form_view'), 'o_form_readonly'); // should wait for the RPC to return
+
+        // make write RPC return
+        prom.resolve();
+        // await testUtils.nextTick();
+
+        assert.hasClass(form.$('.o_form_view'), 'o_form_editable');
+
+        form.destroy();
     });
 
     QUnit.module('FormViewTABMainButtons');

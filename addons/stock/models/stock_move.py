@@ -48,7 +48,7 @@ class StockMove(models.Model):
         states={'done': [('readonly', True)]})
     product_qty = fields.Float(
         'Real Quantity', compute='_compute_product_qty', inverse='_set_product_qty',
-        digits=0, store=True,
+        digits=0, store=True, compute_sudo=True,
         help='Quantity in the default UoM of the product')
     product_uom_qty = fields.Float(
         'Initial Demand',
@@ -433,7 +433,11 @@ class StockMove(models.Model):
                     #Note that, for pulled moves we intentionally don't propagate on the procurement.
                     if propagated_changes_dict:
                         move.move_dest_ids.filtered(lambda m: m.state not in ('done', 'cancel')).write(propagated_changes_dict)
-        track_pickings = not self._context.get('mail_notrack') and any(field in vals for field in ['state', 'picking_id', 'partially_available'])
+        track_pickings = (
+            not self._context.get('mail_notrack')
+            and not self._context.get('tracking_disable')
+            and any(field in vals for field in ['state', 'picking_id', 'partially_available'])
+        )
         if track_pickings:
             to_track_picking_ids = set([move.picking_id.id for move in self if move.picking_id])
             if vals.get('picking_id'):
@@ -512,8 +516,10 @@ class StockMove(models.Model):
             domain = [('location_src_id', '=', move.location_dest_id.id), ('action', 'in', ('push', 'pull_push'))]
             # first priority goes to the preferred routes defined on the move itself (e.g. coming from a SO line)
             warehouse_id = move.warehouse_id or move.picking_id.picking_type_id.warehouse_id
-            rules = self.env['procurement.group']._search_rule(move.route_ids, move.product_id, warehouse_id, domain)
-
+            if not self.env.context.get('force_company', False) and move.location_dest_id.company_id == self.env.user.company_id:
+                rules = self.env['procurement.group']._search_rule(move.route_ids, move.product_id, warehouse_id, domain)
+            else:
+                rules = self.sudo().env['procurement.group']._search_rule(move.route_ids, move.product_id, warehouse_id, domain)
             # Make sure it is not returning the return
             if rules and (not move.origin_returned_move_id or move.origin_returned_move_id.location_dest_id.id != rules.location_id.id):
                 rules._run_push(move)
@@ -672,20 +678,15 @@ class StockMove(models.Model):
                 }
             }
 
-    def _search_picking_for_assignation_domain(self):
-        return [
+    def _search_picking_for_assignation(self):
+        self.ensure_one()
+        picking = self.env['stock.picking'].search([
                 ('group_id', '=', self.group_id.id),
                 ('location_id', '=', self.location_id.id),
                 ('location_dest_id', '=', self.location_dest_id.id),
                 ('picking_type_id', '=', self.picking_type_id.id),
                 ('printed', '=', False),
-                ('state', 'in', ['draft', 'confirmed', 'waiting',
-                    'partially_available', 'assigned'])
-                ]
-
-    def _search_picking_for_assignation(self):
-        self.ensure_one()
-        picking = self.env['stock.picking'].search(self._search_picking_for_assignation_domain(), limit=1)
+                ('state', 'in', ['draft', 'confirmed', 'waiting', 'partially_available', 'assigned'])], limit=1)
         return picking
 
     def _assign_picking(self):
@@ -903,6 +904,7 @@ class StockMove(models.Model):
         # cache invalidation when actually reserving the move.
         reserved_availability = {move: move.reserved_availability for move in self}
         roundings = {move: move.product_id.uom_id.rounding for move in self}
+        move_line_vals_list = []
         for move in self.filtered(lambda m: m.state in ['confirmed', 'waiting', 'partially_available']):
             rounding = roundings[move]
             missing_reserved_uom_quantity = move.product_uom_qty - reserved_availability[move]
@@ -912,7 +914,7 @@ class StockMove(models.Model):
                 # create the move line(s) but do not impact quants
                 if move.product_id.tracking == 'serial' and (move.picking_type_id.use_create_lots or move.picking_type_id.use_existing_lots):
                     for i in range(0, int(missing_reserved_quantity)):
-                        self.env['stock.move.line'].create(move._prepare_move_line_vals(quantity=1))
+                        move_line_vals_list.append(move._prepare_move_line_vals(quantity=1))
                 else:
                     to_update = move.move_line_ids.filtered(lambda ml: ml.product_uom_id == move.product_uom and
                                                             ml.location_id == move.location_id and
@@ -924,7 +926,7 @@ class StockMove(models.Model):
                     if to_update:
                         to_update[0].product_uom_qty += missing_reserved_uom_quantity
                     else:
-                        self.env['stock.move.line'].create(move._prepare_move_line_vals(quantity=missing_reserved_quantity))
+                        move_line_vals_list.append(move._prepare_move_line_vals(quantity=missing_reserved_quantity))
                 assigned_moves |= move
             else:
                 if not move.move_orig_ids:
@@ -1015,6 +1017,7 @@ class StockMove(models.Model):
                             assigned_moves |= move
                             break
                         partially_available_moves |= move
+        self.env['stock.move.line'].create(move_line_vals_list)
         partially_available_moves.write({'state': 'partially_available'})
         assigned_moves.write({'state': 'assigned'})
         self.mapped('picking_id')._check_entire_pack()

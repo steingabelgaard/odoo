@@ -336,7 +336,7 @@ msgstr "<font style=\"font-size: 62px;\">Naše nabídky</font>"
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_carousel
 msgid "<font style=\"font-size: 62px;\">Slide Title</font>"
-msgstr ""
+msgstr "<font style=\"font-size: 62px;\">Název prezentace</font>"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_parallax
@@ -774,7 +774,7 @@ msgstr ""
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.user_navbar
 msgid "<span class=\"sr-only\">Toggle Dropdown</span>"
-msgstr ""
+msgstr "<span class=\"sr-only\">přepnout rozbalovací nabídku</span>"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.user_navbar
@@ -977,7 +977,7 @@ msgstr "Přidat do nabídky"
 #: code:addons/website/static/src/js/tours/banner.js:50
 #, python-format
 msgid "After having checked how it looks on mobile, <b>close the preview</b>."
-msgstr ""
+msgstr "Po ověření, jak to vypadá na mobilu, <b>zavřete náhled</b>."
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.bs_debug_page_ir_ui_view
@@ -1433,6 +1433,8 @@ msgid ""
 "Contact us about anything related to our company or services.<br/>\n"
 "                                                                We'll do our best to get back to you as soon as possible."
 msgstr ""
+"Kontaktujte nás ohledně všeho, co souvisí s naší společností nebo službami.<br/>\n"
+"Budeme se snažit vrátit se k vám co nejdříve."
 
 #. module: website
 #: model:ir.model.fields,field_description:website.field_res_config_settings__cdn_activated
@@ -1781,7 +1783,7 @@ msgstr "Přetáhněte další blok pod úvodem do vaší stránky."
 #: code:addons/website/static/src/js/tours/banner.js:20
 #, python-format
 msgid "Drag the <i>Cover</i> block and drop it in your page."
-msgstr ""
+msgstr "Přetáhněte blok <i>Cover</i> a umístěte jej na svou stránku."
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.bs_debug_page_ir_ui_view
@@ -1920,6 +1922,8 @@ msgid ""
 "Explain the benefits you offer. <br/>Don't write about products or services "
 "here, write about solutions."
 msgstr ""
+"Vysvětlete výhody, které nabízíte. <br/>Zde nepíšete o produktech nebo "
+"službách, ale o řešeních."
 
 #. module: website
 #: model:ir.model.fields,field_description:website.field_ir_actions_server__xml_id
@@ -1963,12 +1967,12 @@ msgstr "Zeslabit"
 #: code:addons/website/static/src/js/menu/new_content.js:26
 #, python-format
 msgid "Failed to install \"%s\""
-msgstr ""
+msgstr "Instalace \"%s\" se nezdařila"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.snippet_options
 msgid "Fast"
-msgstr ""
+msgstr "Rychlý"
 
 #. module: website
 #: model:ir.model.fields,field_description:website.field_res_config_settings__favicon
@@ -4037,7 +4041,7 @@ msgstr ""
 #: code:addons/website/static/src/js/menu/new_content.js:27
 #, python-format
 msgid "The installation of an App is already in progress."
-msgstr ""
+msgstr "Instalace aplikace již probíhá."
 
 #. module: website
 #. openerp-web
@@ -4631,7 +4635,7 @@ msgstr ""
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.website_redirect_form_view
 msgid "Website Redirect Settings"
-msgstr ""
+msgstr "Nastavení přesměrování webových stránek"
 
 #. module: website
 #: model:ir.actions.act_window,name:website.action_website_redirect_list

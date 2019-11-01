@@ -359,13 +359,19 @@ class PurchaseOrder(models.Model):
             # Do not add a contact as a supplier
             partner = self.partner_id if not self.partner_id.parent_id else self.partner_id.parent_id
             if partner not in line.product_id.seller_ids.mapped('name') and len(line.product_id.seller_ids) <= 10:
+                # Convert the price in the right currency.
                 currency = partner.property_purchase_currency_id or self.env.user.company_id.currency_id
+                price = self.currency_id._convert(line.price_unit, currency, line.company_id, line.date_order or fields.Date.today(), round=False)
+                # Compute the price for the template's UoM, because the supplier's UoM is related to that UoM.
+                if line.product_id.product_tmpl_id.uom_po_id != line.product_uom:
+                    default_uom = line.product_id.product_tmpl_id.uom_po_id
+                    price = line.product_uom._compute_price(price, default_uom)
+
                 supplierinfo = {
                     'name': partner.id,
                     'sequence': max(line.product_id.seller_ids.mapped('sequence')) + 1 if line.product_id.seller_ids else 1,
-                    'product_uom': line.product_uom.id,
                     'min_qty': 0.0,
-                    'price': self.currency_id._convert(line.price_unit, currency, line.company_id, line.date_order or fields.Date.today(), round=False),
+                    'price': price,
                     'currency_id': currency.id,
                     'delay': 0,
                 }
@@ -404,14 +410,16 @@ class PurchaseOrder(models.Model):
             'default_company_id': self.company_id.id,
             'company_id': self.company_id.id
         }
-        if self.user_id:
-            result['context']['default_user_id'] = self.user_id.id
         # choose the view_mode accordingly
         if len(self.invoice_ids) > 1 and not create_bill:
             result['domain'] = "[('id', 'in', " + str(self.invoice_ids.ids) + ")]"
         else:
             res = self.env.ref('account.invoice_supplier_form', False)
-            result['views'] = [(res and res.id or False, 'form')]
+            form_view = [(res and res.id or False, 'form')]
+            if 'views' in result:
+                result['views'] = form_view + [(state,view) for state,view in action['views'] if view != 'form']
+            else:
+                result['views'] = form_view
             # Do not set an invoice_id if we want to create a new bill.
             if not create_bill:
                 result['res_id'] = self.invoice_ids.id or False

@@ -10111,6 +10111,12 @@ msgid "Barcode scan in Mobile"
 msgstr "Barcode scan in mobiel"
 
 #. module: base
+#: code:addons/base/models/ir_qweb_fields.py:607
+#, python-format
+msgid "Barcode symbology"
+msgstr "Barcode symboliek"
+
+#. module: base
 #: code:addons/base/models/ir_qweb_fields.py:603
 #, python-format
 msgid "Barcode type"
@@ -12320,7 +12326,7 @@ msgstr "Fouten opsporen"
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_currency__decimal_places
 msgid "Decimal Places"
-msgstr "Decimale plaatsen"
+msgstr "Aantal decimalen"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_decimal_precision

@@ -5,9 +5,9 @@
 # Translators:
 # amos lin <seeing@edirect168.com>, 2018
 # sejun huang <sejun.huang@gmail.com>, 2018
-# Michael Yeung, 2018
 # Ying <acc.tou@gmail.com>, 2019
 # Martin Trigaux, 2019
+# Michael Yeung, 2019
 # 敬雲 林 <chingyun@yuanchih-consult.com>, 2019
 # 
 msgid ""
@@ -210,6 +210,8 @@ msgid ""
 "<i class=\"fa fa-fw fa-usd\" role=\"img\" aria-label=\"Sale orders\" "
 "title=\"Sales orders\"/>"
 msgstr ""
+"<i class=\"fa fa-fw fa-usd\" role=\"img\" aria-label=\"Sale orders\" "
+"title=\"Sales orders\"/>"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.sale_order_portal_template
@@ -262,6 +264,8 @@ msgid ""
 "<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
 "specific.\" groups=\"base.group_multi_company\"/>"
 msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" groups=\"base.group_multi_company\"/>"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.res_config_settings_view_form
@@ -918,7 +922,7 @@ msgstr "配置您的文件佈局"
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.res_config_settings_view_form
 msgid "Configure your products with variants and select optional products"
-msgstr ""
+msgstr "設定產品屬性（例如顏色，大小）為銷售變體"
 
 #. module: sale
 #. openerp-web
@@ -1783,7 +1787,7 @@ msgstr "是首付款嗎？"
 #: model:ir.model.fields,field_description:sale.field_product_attribute_value__is_custom
 #: model:ir.model.fields,field_description:sale.field_product_template_attribute_value__is_custom
 msgid "Is custom value"
-msgstr ""
+msgstr "是自訂數值"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order_line__is_expense
@@ -2214,7 +2218,7 @@ msgstr "選項"
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.view_sales_order_line_filter
 msgid "Order"
-msgstr "訂單"
+msgstr "銷售訂單"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_report__order_id
@@ -2320,7 +2324,7 @@ msgstr "已訂購數量"
 #: model:ir.ui.menu,name:sale.menu_sale_order
 #: model:ir.ui.menu,name:sale.sale_order_menu
 msgid "Orders"
-msgstr "訂單"
+msgstr "銷售訂單"
 
 #. module: sale
 #: model:ir.actions.act_window,name:sale.action_orders_to_invoice
@@ -2947,7 +2951,7 @@ msgstr "請選擇付款方式"
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_product_attribute_custom_value__sale_order_line_id
 msgid "Sale order line"
-msgstr ""
+msgstr "銷售訂單明細"
 
 #. module: sale
 #: selection:crm.team,dashboard_graph_model:0
@@ -3014,7 +3018,7 @@ msgstr "銷售訂單已經確認"
 #: model:ir.model.fields,field_description:sale.field_account_analytic_line__so_line
 #: model_terms:ir.ui.view,arch_db:sale.sale_order_line_view_form_readonly
 msgid "Sales Order Item"
-msgstr "銷售訂單專案"
+msgstr "銷售訂單明細"
 
 #. module: sale
 #: model:ir.model,name:sale.model_sale_order_line
@@ -3214,7 +3218,7 @@ msgstr "發送形式發票"
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.res_config_settings_view_form
 msgid "Send a product-specific email once the invoice is validated"
-msgstr ""
+msgstr "一旦發票支付發送一個特定產品的電子信件"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.sale_onboarding_sample_quotation_step

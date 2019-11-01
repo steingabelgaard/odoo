@@ -237,6 +237,8 @@ msgid ""
 "<p class=\"o_view_nocontent_smiling_face\">\n"
 "                    Create a new project</p>"
 msgstr ""
+"<p class=\"o_view_nocontent_smiling_face\">\n"
+"                    Төсөл үүсгэх</p>"
 
 #. module: project
 #. openerp-web
@@ -248,7 +250,7 @@ msgstr ""
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.portal_my_project
 msgid "<small class=\"text-muted\">Project - </small>"
-msgstr ""
+msgstr "<small class=\"text-muted\">Төсөл - </small>"
 
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.portal_my_task
@@ -263,12 +265,12 @@ msgstr ""
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.portal_my_task
 msgid "<strong class=\"d-block mb-2\">Attachments</strong>"
-msgstr ""
+msgstr "<strong class=\"d-block mb-2\">Хавсралтууд</strong>"
 
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.portal_my_task
 msgid "<strong class=\"d-block mb-2\">Description</strong>"
-msgstr ""
+msgstr "<strong class=\"d-block mb-2\">Тайлбар</strong>"
 
 #. module: project
 #: model_terms:digest.tip,tip_description:project.digest_tip_project_0
@@ -419,7 +421,7 @@ msgstr "Бүгд"
 #. module: project
 #: model:ir.ui.menu,name:project.menu_project_management
 msgid "All Tasks"
-msgstr ""
+msgstr "Бүх даалгавар"
 
 #. module: project
 #. openerp-web
@@ -751,7 +753,7 @@ msgstr "Төсөл үүсгэх"
 #: model_terms:ir.actions.act_window,help:project.open_view_project_all
 #: model_terms:ir.actions.act_window,help:project.open_view_project_all_config
 msgid "Create a new project"
-msgstr ""
+msgstr "Төсөл үүсгэх"
 
 #. module: project
 #: model_terms:ir.actions.act_window,help:project.open_task_type_form
@@ -761,12 +763,12 @@ msgstr ""
 #. module: project
 #: model_terms:ir.actions.act_window,help:project.project_tags_action
 msgid "Create a new tag"
-msgstr ""
+msgstr "Пайз үүсгэх"
 
 #. module: project
 #: model_terms:ir.actions.act_window,help:project.action_view_task
 msgid "Create a new task"
-msgstr ""
+msgstr "Даалгавар үүсгэх"
 
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_task__create_date
@@ -1034,7 +1036,7 @@ msgstr ""
 #: code:addons/project/static/src/js/project_task_kanban_examples.js:39
 #, python-format
 msgid "Editing"
-msgstr ""
+msgstr "Засварлах"
 
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_task__email_from
@@ -2185,12 +2187,12 @@ msgstr "Үнэлгээний давтамж"
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_task__rating_last_feedback
 msgid "Rating Last Feedback"
-msgstr ""
+msgstr "Сүүлд бүртгэсэн санал сэтгэгдлийн үнэлгээ"
 
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_task__rating_last_image
 msgid "Rating Last Image"
-msgstr ""
+msgstr "Сүүлийн зурагны үнэлгээ"
 
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_task__rating_last_value
@@ -2369,7 +2371,7 @@ msgstr ""
 #: code:addons/project/controllers/portal.py:114
 #, python-format
 msgid "Search <span class=\"nolabel\"> (in Content)</span>"
-msgstr ""
+msgstr "Хайлт <span class=\"nolabel\"> (агуулгаар)</span>"
 
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.view_project_project_filter
@@ -2380,19 +2382,19 @@ msgstr "Төсөл Хайх"
 #: code:addons/project/controllers/portal.py:118
 #, python-format
 msgid "Search in All"
-msgstr ""
+msgstr "Бүхнээс хайх"
 
 #. module: project
 #: code:addons/project/controllers/portal.py:116
 #, python-format
 msgid "Search in Customer"
-msgstr ""
+msgstr "Захиалагчаас хайх"
 
 #. module: project
 #: code:addons/project/controllers/portal.py:115
 #, python-format
 msgid "Search in Messages"
-msgstr ""
+msgstr "Зурвасаас хайх"
 
 #. module: project
 #: code:addons/project/controllers/portal.py:117

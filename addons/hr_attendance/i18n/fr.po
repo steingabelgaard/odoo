@@ -390,7 +390,7 @@ msgstr "Ravi de vous revoir, ça fait longtemps! "
 #: code:addons/hr_attendance/static/src/xml/attendance.xml:137
 #, python-format
 msgid "Go back"
-msgstr ""
+msgstr "Retour"
 
 #. module: hr_attendance
 #. openerp-web
@@ -668,6 +668,12 @@ msgstr "Arrivée"
 #: model_terms:ir.ui.view,arch_db:hr_attendance.view_employee_filter_inherit_hr_attendance
 msgid "Signed Out"
 msgstr "Sortie"
+
+#. module: hr_attendance
+#: code:addons/hr_attendance/models/hr_employee.py:155
+#, python-format
+msgid "Such grouping is not allowed."
+msgstr ""
 
 #. module: hr_attendance
 #: sql_constraint:hr.employee:0
