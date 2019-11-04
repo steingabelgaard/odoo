@@ -11802,18 +11802,18 @@ msgstr ""
 #: code:addons/account/account_move_line.py:642
 #, python-format
 msgid "You cannot create journal items on a closed account %s %s."
-msgstr ""
+msgstr "Du kan ikke oprette posteringer på en lukket konto %s %s"
 
 #. module: account
 #: constraint:account.move.line:0
 msgid ""
 "You cannot create journal items on an account of type view or consolidation."
-msgstr ""
+msgstr "Du kan ikke oprette posteringer på en konto af typen Vis eller Konsolidering."
 
 #. module: account
 #: constraint:account.move.line:0
 msgid "You cannot create journal items on closed account."
-msgstr ""
+msgstr "Du kan ikke oprette posteringer på en lukket konto."
 
 #. module: account
 #: constraint:account.move.line:0
