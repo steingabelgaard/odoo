@@ -20,6 +20,7 @@
                         <field name="result_selection"/>
                         <field name="direction_selection"/>
                         <field name="target_move"/>
+                        <field name="display_partner"/>
                     </group>
                     <field name="journal_ids" required="0" invisible="1"/>
                     <footer>

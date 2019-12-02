@@ -24,6 +24,8 @@ from openerp.osv import osv
 from openerp.report import report_sxw
 from common_report_header import common_report_header
 
+import logging
+_logger = logging.getLogger(__name__)
 
 class aged_trial_report(report_sxw.rml_parse, common_report_header):
 
@@ -50,8 +52,10 @@ class aged_trial_report(report_sxw.rml_parse, common_report_header):
         ctx = data['form'].get('used_context', {})
         ctx.update({'fiscalyear': False, 'all_fiscalyear': True})
         self.query = obj_move._query_get(self.cr, self.uid, obj='l', context=ctx)
+        _logger.info('QUERY: %s', self.query)
         self.direction_selection = data['form'].get('direction_selection', 'past')
         self.target_move = data['form'].get('target_move', 'all')
+        self.display_partner = data['form'].get('display_partner', 'all')
         self.date_from = data['form'].get('date_from', time.strftime('%Y-%m-%d'))
         if (data['form']['result_selection'] == 'customer' ):
             self.ACCOUNT_TYPE = ['receivable']
@@ -256,7 +260,8 @@ class aged_trial_report(report_sxw.rml_parse, common_report_header):
             self.total_account[(i+1)] = self.total_account[(i+1)] + (total and total[0] or 0.0)
             values['name'] = partner['name']
 
-            res.append(values)
+            if self.display_partner == 'all' or values['total'] != 0.0 or values['direction'] != 0.0 or values['1'] != 0.0 or values['2'] != 0.0 or values['3'] != 0.0 or values['4'] != 0.0:
+                res.append(values)
 
         total = 0.0
         totals = {}

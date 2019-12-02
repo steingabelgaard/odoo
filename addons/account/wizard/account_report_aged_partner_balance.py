@@ -37,11 +37,14 @@ class account_aged_trial_balance(osv.osv_memory):
                                                  ('future','Future')],
                                                  'Analysis Direction', required=True),
         'journal_ids': fields.many2many('account.journal', 'account_aged_trial_balance_journal_rel', 'account_id', 'journal_id', 'Journals', required=True),
+        'display_partner': fields.selection([('non-zero_balance', 'With balance is not equal to 0'), ('all', 'All Partners')]
+                                    ,'Display Partners'),
     }
     _defaults = {
         'period_length': 30,
         'date_from': lambda *a: time.strftime('%Y-%m-%d'),
         'direction_selection': 'past',
+        'display_partner': 'non-zero_balance',
     }
 
     def _print_report(self, cr, uid, ids, data, context=None):
@@ -50,7 +53,7 @@ class account_aged_trial_balance(osv.osv_memory):
             context = {}
 
         data = self.pre_print_report(cr, uid, ids, data, context=context)
-        data['form'].update(self.read(cr, uid, ids, ['period_length', 'direction_selection'])[0])
+        data['form'].update(self.read(cr, uid, ids, ['period_length', 'direction_selection', 'display_partner'])[0])
 
         period_length = data['form']['period_length']
         if period_length<=0:
