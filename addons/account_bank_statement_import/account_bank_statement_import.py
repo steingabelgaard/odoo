@@ -243,6 +243,15 @@ class AccountBankStatementImport(models.TransientModel):
 
         # Prepare import feedback
         notifications = []
+        if 'notifications' in st_vals:
+            notifications = st_vals['notifications']
+            for notification in notifications:
+                if 'details' in notification and 'unique_ids' in notification['details']:
+                    notification['details']['ids'] = BankStatementLine.search(
+                            [('unique_import_id', 'in', [str(st_vals['journal_id']) + '-' + u_id for u_id in notification['details']['unique_ids']])]).ids
+                    del notification['details']['unique_ids']
+                
+                    
         num_ignored = len(ignored_statement_lines_import_ids)
         if num_ignored > 0:
             notifications += [{
