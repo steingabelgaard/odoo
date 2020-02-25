@@ -4554,7 +4554,7 @@ msgstr "Uuid"
 #: code:addons/point_of_sale/static/src/xml/pos.xml:751
 #, python-format
 msgid "VAT:"
-msgstr "Moms"
+msgstr "CVR: "
 
 #. module: point_of_sale
 #. openerp-web
