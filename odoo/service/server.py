@@ -1090,9 +1090,9 @@ def start(preload=None, stop=False):
         server = PreforkServer(odoo.service.wsgi_server.application)
 
         # Workaround for Python issue24291, fixed in 3.6 (see Python issue26721)
-        if sys.version_info[:2] == (3,5):
-            # turn on buffering also for wfile, to avoid partial writes (Default buffer = 8k)
-            werkzeug.serving.WSGIRequestHandler.wbufsize = -1
+        #if sys.version_info[:2] == (3,5):
+        # turn on buffering also for wfile, to avoid partial writes (Default buffer = 8k)
+        werkzeug.serving.WSGIRequestHandler.wbufsize = -1
     else:
         if platform.system() == "Linux" and sys.maxsize > 2**32 and "MALLOC_ARENA_MAX" not in os.environ:
             # glibc's malloc() uses arenas [1] in order to efficiently handle memory allocation of multi-threaded
