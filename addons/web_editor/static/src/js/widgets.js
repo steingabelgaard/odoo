@@ -8,6 +8,7 @@ var Widget = require('web.Widget');
 var utils = require('web.utils');
 var base = require('web_editor.base');
 var rte = require('web_editor.rte');
+var session = require('web.session');
 
 var QWeb = core.qweb;
 var range = $.summernote.core.range;
@@ -424,7 +425,7 @@ var ImageDialog = Widget.extend({
         }
     },
     fetch_existing: function (needle) {
-        var domain = [['res_model', '=', 'ir.ui.view']].concat(this.domain);
+        var domain = [['res_model', '=', 'ir.ui.view'], ['create_uid', '=', session.uid]].concat(this.domain);
         if (needle && needle.length) {
             domain.push('|', ['datas_fname', 'ilike', needle], ['name', 'ilike', needle]);
         }
