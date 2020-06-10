@@ -235,6 +235,9 @@ class mail_thread(osv.AbstractModel):
         return [('message_ids.to_read', '=', True)]
 
     def _get_followers(self, cr, uid, ids, name, arg, context=None):
+        # HHG Recalc CKR followers - #24864
+        if self._name == 'member.ckr_check':
+            self.pool.get('member.ckr_check')._update_followers(cr, uid, ids, context=context)
         fol_obj = self.pool.get('mail.followers')
         fol_ids = fol_obj.search(cr, SUPERUSER_ID, [('res_model', '=', self._name), ('res_id', 'in', ids)])
         res = dict((id, dict(message_follower_ids=[], message_is_follower=False)) for id in ids)
