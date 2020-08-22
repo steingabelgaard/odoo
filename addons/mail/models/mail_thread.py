@@ -2284,6 +2284,7 @@ class MailThread(models.AbstractModel):
         ``message_subscribe`` public API when not sure about access rights.
 
         :param customer_ids: see ``_insert_followers`` """
+        _logger.info('HHG _message_sub: self: %s, partner: %s, channel_ids: %s, subtype: %s, customer: %s', self, partner_ids, channel_ids, subtype_ids, customer_ids)
         if not self:
             return True
 

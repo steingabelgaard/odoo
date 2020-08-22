@@ -5,6 +5,8 @@ import itertools
 
 from odoo import api, fields, models
 
+import logging
+_logger = logging.getLogger(__name__)
 
 class Followers(models.Model):
     """ mail_followers holds the data related to the follow mechanism inside
@@ -342,5 +344,5 @@ GROUP BY fol.id%s""" % (
                         update[fol_id] = {'subtype_ids': [(4, sid) for sid in new_sids]}
                     if fol_id and old_sids and existing_policy == 'replace':
                         update[fol_id] = {'subtype_ids': [(3, sid) for sid in old_sids]}
-
+        _logger.info('HHG _add_follower new: %s, update: %s', new, update)
         return new, update
