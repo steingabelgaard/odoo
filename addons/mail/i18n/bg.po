@@ -8,7 +8,6 @@
 # Kaloyan Naumov <kaloyan@lumnus.net>, 2019
 # kalatchev, 2019
 # Vladimir Petrov <vladimir.petrov@gmail.com>, 2019
-# Igor Sheludko <igor.sheludko@gmail.com>, 2019
 # Martin Trigaux, 2019
 # Rosen Vladimirov <vladimirov.rosen@gmail.com>, 2019
 # Anton Vassilev, 2019
@@ -16,6 +15,9 @@
 # Albena Mincheva <albena_vicheva@abv.bg>, 2019
 # Maria Boyadjieva <marabo2000@gmail.com>, 2019
 # Ivan Goychev <igoychev.projects@gmail.com>, 2020
+# Igor Sheludko <igor.sheludko@gmail.com>, 2020
+# TIhomir Nikolov <whltd.03@gmail.com>, 2020
+# Александра Николова <alexandra1nikolova@gmail.com>, 2020
 # 
 msgid ""
 msgstr ""
@@ -23,7 +25,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-14 07:34+0000\n"
 "PO-Revision-Date: 2018-08-24 09:20+0000\n"
-"Last-Translator: Ivan Goychev <igoychev.projects@gmail.com>, 2020\n"
+"Last-Translator: Александра Николова <alexandra1nikolova@gmail.com>, 2020\n"
 "Language-Team: Bulgarian (https://www.transifex.com/odoo/teams/41243/bg/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -575,7 +577,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:mail.field_mail_mail__add_sign
 #: model:ir.model.fields,field_description:mail.field_mail_message__add_sign
 msgid "Add Sign"
-msgstr ""
+msgstr "Добави Подпис"
 
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_email_template_preview__user_signature
@@ -1319,7 +1321,7 @@ msgstr "Режим на съставяне"
 #. module: mail
 #: model:ir.model,name:mail.model_res_config_settings
 msgid "Config Settings"
-msgstr ""
+msgstr "Конфиг Настройки"
 
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.res_config_settings_view_form
@@ -2946,7 +2948,7 @@ msgstr "Последни дейности"
 #: model:ir.model.fields,field_description:mail.field_mail_mail__layout
 #: model:ir.model.fields,field_description:mail.field_mail_message__layout
 msgid "Layout"
-msgstr ""
+msgstr "Редайтирай изгледа"
 
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.mail_channel_view_kanban
@@ -4427,7 +4429,7 @@ msgstr "Предпочитан адрес за отговори (тук мога
 #: model_terms:ir.ui.view,arch_db:mail.email_template_form
 #, python-format
 msgid "Preview"
-msgstr "Предварителен преглед"
+msgstr "Преглед"
 
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.email_template_preview_form
@@ -4451,7 +4453,7 @@ msgstr ""
 #: code:addons/mail/static/src/xml/thread.xml:76
 #, python-format
 msgid "Print"
-msgstr "Разпечатайте"
+msgstr "Печат"
 
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_channel__public
@@ -6019,6 +6021,14 @@ msgid ""
 msgstr ""
 "Не можете да изтриете тези групи, тъй като цялата група на компанията е "
 "необходима на други модули."
+
+#. module: mail
+#: code:addons/mail/models/mail_alias.py:89
+#, python-format
+msgid ""
+"You cannot use anything else than unaccented latin characters in the alias "
+"address."
+msgstr ""
 
 #. module: mail
 #: code:addons/mail/models/mail_channel.py:257

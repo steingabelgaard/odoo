@@ -254,7 +254,7 @@ class SaleOrder(models.Model):
     def _compute_remaining_validity_days(self):
         for record in self:
             if record.validity_date:
-                record.remaining_validity_days = (record.validity_date - fields.Date.today()).days + 1
+                record.remaining_validity_days = (record.validity_date - fields.Date.context_today(record)).days + 1
             else:
                 record.remaining_validity_days = 0
 
@@ -293,12 +293,12 @@ class SaleOrder(models.Model):
         return super(SaleOrder, self)._track_subtype(init_values)
 
     @api.multi
-    @api.onchange('partner_shipping_id', 'partner_id')
+    @api.onchange('partner_shipping_id', 'partner_id', 'company_id')
     def onchange_partner_shipping_id(self):
         """
         Trigger the change of fiscal position when the shipping address is modified.
         """
-        self.fiscal_position_id = self.env['account.fiscal.position'].get_fiscal_position(self.partner_id.id, self.partner_shipping_id.id)
+        self.fiscal_position_id = self.env['account.fiscal.position'].with_context(force_company=self.company_id.id).get_fiscal_position(self.partner_id.id, self.partner_shipping_id.id)
         return {}
 
     @api.multi
@@ -333,6 +333,9 @@ class SaleOrder(models.Model):
 
         if self.partner_id.team_id:
             values['team_id'] = self.partner_id.team_id.id
+
+        if self.user_id.id == values.get('user_id'):
+            del values['user_id']
         self.update(values)
 
     @api.onchange('partner_id')
@@ -469,12 +472,12 @@ class SaleOrder(models.Model):
             .default_get(['journal_id'])['journal_id'])
         if not journal_id:
             raise UserError(_('Please define an accounting sales journal for this company.'))
-        vinvoice = self.env['account.invoice'].new({'partner_id': self.partner_invoice_id.id})
+        vinvoice = self.env['account.invoice'].new({'partner_id': self.partner_invoice_id.id, 'type': 'out_invoice'})
         # Get partner extra fields
         vinvoice._onchange_partner_id()
         invoice_vals = vinvoice._convert_to_write(vinvoice._cache)
         invoice_vals.update({
-            'name': self.client_order_ref or '',
+            'name': (self.client_order_ref or '')[:2000],
             'origin': self.name,
             'type': 'out_invoice',
             'account_id': self.partner_invoice_id.property_account_receivable_id.id,
@@ -534,9 +537,10 @@ class SaleOrder(models.Model):
             # Use additional field helper function (for account extensions)
             for line in invoice.invoice_line_ids:
                 line._set_additional_fields(invoice)
-            # Necessary to force computation of taxes. In account_invoice, they are triggered
+            # Necessary to force computation of taxes and cash rounding. In account_invoice, they are triggered
             # by onchanges, which are not triggered when doing a create.
             invoice.compute_taxes()
+            invoice._onchange_cash_rounding()
             invoice.message_post_with_view('mail.message_origin_link',
                 values={'self': invoice, 'origin': references[invoice]},
                 subtype_id=self.env.ref('mail.mt_note').id)
@@ -573,7 +577,7 @@ class SaleOrder(models.Model):
                 if line.display_type == 'line_section':
                     pending_section = line
                     continue
-                if float_is_zero(line.qty_to_invoice, precision_digits=precision):
+                if line.display_type != 'line_note' and float_is_zero(line.qty_to_invoice, precision_digits=precision):
                     continue
                 if group_key not in invoices:
                     inv_data = order._prepare_invoice()
@@ -588,7 +592,7 @@ class SaleOrder(models.Model):
                     if order.client_order_ref and order.client_order_ref not in invoices_name[group_key]:
                         invoices_name[group_key].append(order.client_order_ref)
 
-                if line.qty_to_invoice > 0 or (line.qty_to_invoice < 0 and final):
+                if line.qty_to_invoice > 0 or (line.qty_to_invoice < 0 and final) or line.display_type == 'line_note':
                     if pending_section:
                         section_invoice = pending_section.invoice_line_create_vals(
                             invoices[group_key].id,
@@ -613,7 +617,7 @@ class SaleOrder(models.Model):
             self.env['account.invoice.line'].create(line_vals_list)
 
         for group_key in invoices:
-            invoices[group_key].write({'name': ', '.join(invoices_name[group_key]),
+            invoices[group_key].write({'name': ', '.join(invoices_name[group_key])[:2000],
                                        'origin': ', '.join(invoices_origin[group_key])})
             sale_orders = references[invoices[group_key]]
             if len(sale_orders) == 1:
@@ -741,7 +745,13 @@ class SaleOrder(models.Model):
             'state': 'sale',
             'confirmation_date': fields.Datetime.now()
         })
-        self._action_confirm()
+
+        # Context key 'default_name' is sometimes propagated up to here.
+        # We don't need it and it creates issues in the creation of linked records.
+        context = self._context.copy()
+        context.pop('default_name', None)
+
+        self.with_context(context)._action_confirm()
         if self.env['ir.config_parameter'].sudo().get_param('sale.auto_done_setting'):
             self.action_done()
         return True
@@ -931,6 +941,9 @@ class SaleOrder(models.Model):
         self.ensure_one()
         return 'form_save' if self.require_payment else 'form'
 
+    def add_option_to_order_with_taxcloud(self):
+        self.ensure_one()
+
 
 class SaleOrderLine(models.Model):
     _name = 'sale.order.line'
@@ -988,6 +1001,7 @@ class SaleOrderLine(models.Model):
             else:
                 line.product_updatable = True
 
+    # no trigger product_id.invoice_policy to avoid retroactively changing SO
     @api.depends('qty_invoiced', 'qty_delivered', 'product_uom_qty', 'order_id.state')
     def _get_to_invoice_qty(self):
         """
@@ -1157,7 +1171,7 @@ class SaleOrderLine(models.Model):
     product_updatable = fields.Boolean(compute='_compute_product_updatable', string='Can Edit Product', readonly=True, default=True)
     product_uom_qty = fields.Float(string='Ordered Quantity', digits=dp.get_precision('Product Unit of Measure'), required=True, default=1.0)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure')
-    product_custom_attribute_value_ids = fields.One2many('product.attribute.custom.value', 'sale_order_line_id', string='User entered custom product attribute values')
+    product_custom_attribute_value_ids = fields.One2many('product.attribute.custom.value', 'sale_order_line_id', string='User entered custom product attribute values', copy=True)
 
     # M2M holding the values of product.attribute with create_variant field set to 'no_variant'
     # It allows keeping track of the extra_price associated to those attribute values and add them to the SO line description
@@ -1187,6 +1201,7 @@ class SaleOrderLine(models.Model):
         digits=dp.get_precision('Product Unit of Measure'))
     qty_invoiced = fields.Float(
         compute='_get_invoice_qty', string='Invoiced Quantity', store=True, readonly=True,
+        compute_sudo=True,
         digits=dp.get_precision('Product Unit of Measure'))
 
     untaxed_amount_invoiced = fields.Monetary("Untaxed Invoiced Amount", compute='_compute_untaxed_amount_invoiced', compute_sudo=True, store=True)
@@ -1349,6 +1364,11 @@ class SaleOrderLine(models.Model):
                     price_subtotal = line.price_reduce * line.qty_delivered
                 else:
                     price_subtotal = line.price_reduce * line.product_uom_qty
+                if len(line.tax_id.filtered(lambda tax: tax.price_include)) > 0:
+                    # As included taxes are not excluded from the computed subtotal, `compute_all()` method
+                    # has to be called to retrieve the subtotal without them.
+                    # `price_reduce_taxexcl` cannot be used as it is computed from `price_subtotal` field. (see upper Note)
+                    price_subtotal = line.tax_id.compute_all(price_subtotal)['total_excluded']
 
                 amount_to_invoice = price_subtotal - line.untaxed_amount_invoiced
             line.untaxed_amount_to_invoice = amount_to_invoice
@@ -1454,7 +1474,7 @@ class SaleOrderLine(models.Model):
             return product.with_context(pricelist=self.order_id.pricelist_id.id).price
         product_context = dict(self.env.context, partner_id=self.order_id.partner_id.id, date=self.order_id.date_order, uom=self.product_uom.id)
 
-        final_price, rule_id = self.order_id.pricelist_id.with_context(product_context).get_product_price_rule(self.product_id, self.product_uom_qty or 1.0, self.order_id.partner_id)
+        final_price, rule_id = self.order_id.pricelist_id.with_context(product_context).get_product_price_rule(product or self.product_id, self.product_uom_qty or 1.0, self.order_id.partner_id)
         base_price, currency = self.with_context(product_context)._get_real_price_currency(product, rule_id, self.product_uom_qty, self.product_uom, self.order_id.pricelist_id.id)
         if currency != self.order_id.pricelist_id.currency_id:
             base_price = currency._convert(
@@ -1572,7 +1592,7 @@ class SaleOrderLine(models.Model):
         PricelistItem = self.env['product.pricelist.item']
         field_name = 'lst_price'
         currency_id = None
-        product_currency = None
+        product_currency = product.currency_id
         if rule_id:
             pricelist_item = PricelistItem.browse(rule_id)
             if pricelist_item.pricelist_id.discount_policy == 'without_discount':
@@ -1582,13 +1602,13 @@ class SaleOrderLine(models.Model):
 
             if pricelist_item.base == 'standard_price':
                 field_name = 'standard_price'
-            if pricelist_item.base == 'pricelist' and pricelist_item.base_pricelist_id:
+                product_currency = product.cost_currency_id
+            elif pricelist_item.base == 'pricelist' and pricelist_item.base_pricelist_id:
                 field_name = 'price'
                 product = product.with_context(pricelist=pricelist_item.base_pricelist_id.id)
                 product_currency = pricelist_item.base_pricelist_id.currency_id
             currency_id = pricelist_item.pricelist_id.currency_id
 
-        product_currency = product_currency or(product.company_id and product.company_id.currency_id) or self.env.user.company_id.currency_id
         if not currency_id:
             currency_id = product_currency
             cur_factor = 1.0
