@@ -1632,7 +1632,7 @@ msgstr "Tipo ritardo"
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_activity_type__delay_unit
 msgid "Delay units"
-msgstr ""
+msgstr "Unità di ritardo"
 
 #. module: mail
 #. openerp-web
@@ -2847,6 +2847,13 @@ msgstr "È una notifica"
 #: model:ir.model.fields,field_description:mail.field_mail_notification__is_read
 msgid "Is Read"
 msgstr "Letta"
+
+#. module: mail
+#: code:addons/mail/models/mail_notification.py:0
+#, python-format
+msgid "Can not update the message or recipient of a notification."
+msgstr ""
+"Impossibile aggiornare il messaggio o il destinatario di una notifica."
 
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_channel__is_subscribed
@@ -5389,6 +5396,12 @@ msgstr ""
 "quell’indirizzo."
 
 #. module: mail
+#: code:addons/mail/models/mail_channel.py:0
+#, python-format
+msgid "The partner can not join this channel"
+msgstr ""
+
+#. module: mail
 #: code:addons/mail/models/mail_activity.py:243
 #: code:addons/mail/models/mail_message.py:704
 #: code:addons/mail/models/mail_message.py:874
@@ -6101,6 +6114,24 @@ msgstr ""
 "casella di posta."
 
 #. module: mail
+#: cod:addons/mail/models/mail_channel.py:0
+#, python-format
+msgid "You can not remove this partner from this channel"
+msgstr ""
+
+#. module: mail
+#: code:addons/mail/models/mail_channel.py:0
+#, python-format
+msgid "You can not write on the record of other users"
+msgstr ""
+
+#. module: mail
+#: code:addons/mail/models/mail_channel.py:0
+#, python-format
+msgid "You can not write on this field"
+msgstr ""
+
+#. module: mail
 #: code:addons/mail/models/res_users.py:87
 #, python-format
 msgid ""
@@ -6153,8 +6184,8 @@ msgstr "Sei stato assegnato a "
 #. openerp-web
 #: code:addons/mail/static/src/js/services/mail_notification_manager.js:198
 #, python-format
-msgid "You have been invited to: "
-msgstr "È stato ricevuto un invito per:"
+msgid "You have been invited to: %s"
+msgstr ""
 
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.mail_channel_notify_moderation
@@ -6544,7 +6575,7 @@ msgstr "questo documento"
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.message_activity_assigned
 msgid "to close for"
-msgstr ""
+msgstr "da chiudere entro il"
 
 #. module: mail
 #: code:addons/mail/models/mail_thread.py:1081
