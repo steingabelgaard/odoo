@@ -210,15 +210,32 @@ class AccountInvoice(models.Model):
                         if line_elements:
                             invoice_line_form.quantity = float(line_elements[0].text)
 
-                        # Price Unit.
+                        # Price Unit. v12 version
+                        # line_elements = element.xpath('.//ram:GrossPriceProductTradePrice/ram:ChargeAmount', namespaces=tree.nsmap)
+                        # if line_elements:
+                        #    invoice_line_form.price_unit = float(line_elements[0].text) / invoice_line_form.quantity
+                        # else:
+                        #    line_elements = element.xpath('.//ram:NetPriceProductTradePrice/ram:ChargeAmount', namespaces=tree.nsmap)
+                        #    if line_elements:
+                        #        invoice_line_form.price_unit = float(line_elements[0].text) / invoice_line_form.quantity
+
+                        # Price Unit. Backported from v14 - HHG
                         line_elements = element.xpath('.//ram:GrossPriceProductTradePrice/ram:ChargeAmount', namespaces=tree.nsmap)
                         if line_elements:
-                            invoice_line_form.price_unit = float(line_elements[0].text) / invoice_line_form.quantity
+                            quantity_elements = element.xpath('.//ram:GrossPriceProductTradePrice/ram:BasisQuantity', namespaces=tree.nsmap)
+                            if quantity_elements:
+                                invoice_line_form.price_unit = float(line_elements[0].text) / float(quantity_elements[0].text)
+                            else:
+                                invoice_line_form.price_unit = float(line_elements[0].text)
                         else:
                             line_elements = element.xpath('.//ram:NetPriceProductTradePrice/ram:ChargeAmount', namespaces=tree.nsmap)
                             if line_elements:
-                                invoice_line_form.price_unit = float(line_elements[0].text) / invoice_line_form.quantity
-
+                                quantity_elements = element.xpath('.//ram:NetPriceProductTradePrice/ram:BasisQuantity', namespaces=tree.nsmap)
+                                if quantity_elements:
+                                    invoice_line_form.price_unit = float(line_elements[0].text) / float(quantity_elements[0].text)
+                                else:
+                                    invoice_line_form.price_unit = float(line_elements[0].text)
+                                    
                         # Discount.
                         line_elements = element.xpath('.//ram:AppliedTradeAllowanceCharge/ram:CalculationPercent', namespaces=tree.nsmap)
                         if line_elements:
