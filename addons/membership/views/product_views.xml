@@ -104,7 +104,12 @@
                     <field colspan="4" name="description" placeholder="Add a description..."/>
                     <label for="description_sale"/>
                     <field colspan="4" name="description_sale" placeholder="This note will be displayed on quotations..."/>
-                    </sheet>
+                    </sheet>     
+                	<div class="oe_chatter">
+                    	<field name="message_follower_ids" widget="mail_followers"/>
+                    	<field name="activity_ids" widget="mail_activity"/>
+                    	<field name="message_ids" widget="mail_thread"/>
+                	</div>
                  </form>
             </field>
         </record>
