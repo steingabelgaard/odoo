@@ -8,6 +8,9 @@ from odoo.tools import pycompat
 from odoo.tools.misc import formatLang
 from odoo.tools import misc
 
+import logging
+_logger = logging.getLogger(__name__)
+
 
 class AccountReconciliation(models.AbstractModel):
     _name = 'account.reconciliation.widget'
@@ -100,7 +103,8 @@ class AccountReconciliation(models.AbstractModel):
         self.env['res.partner']._apply_ir_rules(ir_rules_query, 'read')
         from_clause, where_clause, where_clause_params = ir_rules_query.get_sql()
         if where_clause:
-            where_partner = ('AND %s' % where_clause).replace('res_partner', 'p3')
+            _logger.info('WHERE CLAUSE: %s', where_clause)
+            where_partner = ('AND %s' % where_clause).replace('"res_partner"', '"p3"')
             params += where_clause_params
         else:
             where_partner = ''
