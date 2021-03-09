@@ -17,7 +17,7 @@ class TemplatePreview(models.TransientModel):
         if not template_id:
             return []
         template = self.env['mail.template'].browse(int(template_id))
-        records = self.env[template.model_id.model].search([], limit=10)
+        records = self.env[template.model_id.model].search([], order="id desc", limit=10)
         records |= records.browse(default_res_id)
         return records.name_get()
 
