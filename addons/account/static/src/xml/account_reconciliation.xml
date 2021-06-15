@@ -194,6 +194,16 @@
             <td class="o_td_label">Analytic Tags.</td>
             <td class="o_td_field"></td>
         </tr>
+        <!-- SG File attachment -->
+        <tr class="create_filename" style="display: none;">
+            <td class="o_td_label">Filename</td>
+            <td class="o_td_field"></td>
+        </tr>
+        <tr class="create_filedata">
+            <td class="o_td_label">File</td>
+            <td class="o_td_field"></td>
+        </tr>
+        <!--  SG END -->
     </table>
     <table class="float-right">
         <tbody>

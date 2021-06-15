@@ -571,6 +571,12 @@ var LineRenderer = Widget.extend(FieldManagerMixin, {
         }, {
             type: 'char', //TODO is it a bug or a feature when type date exists ?
             name: 'date',
+        }, {  // S&G: File attachment
+        	type: 'binary',
+        	name: 'filedata',
+        }, {
+        	type: 'char',
+        	name: 'filename', // S&G END
         }], {
             account_id: {
                 string: _t("Account"),
@@ -608,6 +614,13 @@ var LineRenderer = Widget.extend(FieldManagerMixin, {
             self.fields.date = new basic_fields.FieldDate(self,
                 'date', record, {mode: 'edit'});
 
+			// S&G File attachment
+			self.fields.filename = new basic_fields.FieldChar(self,
+                'filename', record, {mode: 'edit'});
+			self.fields.filedata = new basic_fields.FieldBinaryFile(self,
+                'filedata', record, {mode: 'edit', filename: 'filename'});
+            // S&G END
+                
             var $create = $(qweb.render("reconciliation.line.create", {'state': state, 'group_tags': self.group_tags, 'group_acc': self.group_acc}));
             self.fields.account_id.appendTo($create.find('.create_account_id .o_td_field'))
                 .then(addRequiredStyle.bind(self, self.fields.account_id));
@@ -621,6 +634,12 @@ var LineRenderer = Widget.extend(FieldManagerMixin, {
             self.fields.amount.appendTo($create.find('.create_amount .o_td_field'))
                 .then(addRequiredStyle.bind(self, self.fields.amount));
             self.fields.date.appendTo($create.find('.create_date .o_td_field'))
+            
+            // S&G File attachment
+            self.fields.filename.appendTo($create.find('.create_filename .o_td_field'))
+            self.fields.filedata.appendTo($create.find('.create_filedata .o_td_field'))
+            // S&G END
+            
             self.$('.create').append($create);
 
             function addRequiredStyle(widget) {
