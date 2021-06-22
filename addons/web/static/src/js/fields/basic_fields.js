@@ -2732,7 +2732,8 @@ var JournalDashboardGraph = AbstractField.extend({
                     self.chart = nv.models.discreteBarChart()
                         .x(function (d) { return d.label; })
                         .y(function (d) { return d.value; })
-                        .showValues(false)
+                        .showValues(true)
+                        .valueFormat(d3.format(''))
                         .showYAxis(false)
                         .color(['#875A7B', '#526774', '#FA8072'])
                         .margin({'left': 0, 'right': 0, 'top': 20, 'bottom': 20});
