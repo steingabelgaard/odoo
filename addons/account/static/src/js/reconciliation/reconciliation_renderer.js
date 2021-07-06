@@ -476,7 +476,7 @@ var LineRenderer = Widget.extend(FieldManagerMixin, {
                                 else {
                                     $('.create_force_tax_included').removeClass('d-none');
                                 }
-                            } 
+                            }
                         });
                     });
                 });
@@ -569,6 +569,9 @@ var LineRenderer = Widget.extend(FieldManagerMixin, {
             type: 'float',
             name: 'amount',
         }, {
+            type: 'binary',  // File attachment field
+            name: 'file',
+        }, {
             type: 'char', //TODO is it a bug or a feature when type date exists ?
             name: 'date',
         }], {
@@ -604,7 +607,11 @@ var LineRenderer = Widget.extend(FieldManagerMixin, {
 
             self.fields.amount = new basic_fields.FieldFloat(self,
                 'amount', record, {mode: 'edit'});
-            
+
+            // Set up file attachment field
+            self.fields.file = new basic_fields.FieldBinaryFile(self,
+                'file', record, {mode: 'edit'});
+
             self.fields.date = new basic_fields.FieldDate(self,
                 'date', record, {mode: 'edit'});
 
@@ -620,6 +627,9 @@ var LineRenderer = Widget.extend(FieldManagerMixin, {
                 .then(addRequiredStyle.bind(self, self.fields.label));
             self.fields.amount.appendTo($create.find('.create_amount .o_td_field'))
                 .then(addRequiredStyle.bind(self, self.fields.amount));
+            // Include file attachment field on form
+            self.fields.file.appendTo($create.find('.create_file .o_td_field'))
+                .then(addRequiredStyle.bind(self, self.fields.file));
             self.fields.date.appendTo($create.find('.create_date .o_td_field'))
             self.$('.create').append($create);
 
@@ -676,6 +686,12 @@ var LineRenderer = Widget.extend(FieldManagerMixin, {
                 return;
             }
             this.trigger_up('update_proposition', {'data': event.data.changes});
+            // If type is "binary", we need an extra trigger to store filename
+            if (event.target.field.type == 'binary') {
+                var changes = {};
+                changes[event.target.name + '_filename'] = event.target.filename_value;
+                this.trigger_up('update_proposition', {'data': changes});
+            }
         }
     },
     /**
