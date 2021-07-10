@@ -628,9 +628,8 @@ var LineRenderer = Widget.extend(FieldManagerMixin, {
             self.fields.amount.appendTo($create.find('.create_amount .o_td_field'))
                 .then(addRequiredStyle.bind(self, self.fields.amount));
             // Include file attachment field on form
-            self.fields.file.appendTo($create.find('.create_file .o_td_field'))
-                .then(addRequiredStyle.bind(self, self.fields.file));
-            self.fields.date.appendTo($create.find('.create_date .o_td_field'))
+            self.fields.file.appendTo($create.find('.create_file .o_td_field'));
+            self.fields.date.appendTo($create.find('.create_date .o_td_field'));
             self.$('.create').append($create);
 
             function addRequiredStyle(widget) {
@@ -688,6 +687,8 @@ var LineRenderer = Widget.extend(FieldManagerMixin, {
             this.trigger_up('update_proposition', {'data': event.data.changes});
             // If type is "binary", we need an extra trigger to store filename
             if (event.target.field.type == 'binary') {
+                // Must set value manually (because stopPropagation is called?)
+                event.target.value = event.data.changes['file'];
                 var changes = {};
                 changes[event.target.name + '_filename'] = event.target.filename_value;
                 this.trigger_up('update_proposition', {'data': changes});
