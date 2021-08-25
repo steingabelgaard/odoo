@@ -234,6 +234,8 @@ var MessagingMenu = Widget.extend({
         if (this._isShown()) {
             this._updatePreviews();
         }
+        // Updated count may change element width
+        core.bus.trigger('resize');
     },
 
     //--------------------------------------------------------------------------
