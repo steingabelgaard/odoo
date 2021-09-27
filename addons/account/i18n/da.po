@@ -6198,7 +6198,7 @@ msgstr "Journal bilag til momskontrol"
 
 #. module: account
 #. openerp-web
-#: code:addons/account/static/src/js/reconciliation/reconciliation_action.js:326
+#: code:addons/account/static/src/js/reconciliation/reconciliation_action.js:332
 #: model:ir.actions.client,name:account.action_manual_reconcile
 #, python-format
 msgid "Journal Items to Reconcile"
