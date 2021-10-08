@@ -327,7 +327,20 @@ var CrossTabBus = Longpolling.extend({
         }
         // update channels
         else if (key === this._generateKey('channels')) {
-            this._channels = value;
+            // HHG: Fix from https://github.com/odoo/odoo/commit/2e532a301e4f75669e00e009ddb526d3373ff5dd
+            /* if the channels have not changed, do nothing
+               else, sync the local attribute, and call restart polling
+               (the method does take care of synchronising the channels in both ways,
+               depending on if we are master or not) */
+            if (_.difference(this._channels, channels).length > 0 || _.difference(channels, this._channels).length > 0) {
+                this._channels = value;
+                if (this._pollRpc) {
+                    this._pollRpc.abort();
+                } else {
+                    this.startPolling();
+                }
+            }
+            // HHG: End of fix
         }
         // update options
         else if (key === this._generateKey('options')) {
