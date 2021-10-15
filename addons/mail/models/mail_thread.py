@@ -2216,9 +2216,14 @@ class MailThread(models.AbstractModel):
             author = self.env['res.partner'].sudo().browse(kw_author)
         else:
             author = self.env.user.partner_id
-        if not author.email:
-            raise exceptions.UserError(_("Unable to log message, please configure the sender's email address."))
-        email_from = formataddr((author.name, author.email))
+        # JS: Too many things are failing, when we cannot post messages
+        # if not author.email:
+        #    raise exceptions.UserError(_("Unable to log message, please configure the sender's email address."))
+        email = author.email
+        if not email:
+            # We suppose that public partner has some kind of generic noreply address
+            email = self.env.ref('base.public_partner').sudo().email or 'noreply@example.com'
+        email_from = formataddr((author.name, email))
 
         message_values = {
             'subject': subject,
@@ -2415,7 +2420,7 @@ class MailThread(models.AbstractModel):
 
         new_partners, new_channels = dict(), dict()
 
-        # return data related to auto subscription based on subtype matching (aka: 
+        # return data related to auto subscription based on subtype matching (aka:
         # default task subtypes or subtypes from project triggering task subtypes)
         updated_relation = dict()
         child_ids, def_ids, all_int_ids, parent, relation = self.env['mail.message.subtype']._get_auto_subscription_subtypes(self._name)
