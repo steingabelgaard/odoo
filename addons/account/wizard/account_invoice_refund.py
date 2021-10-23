@@ -104,7 +104,7 @@ class AccountInvoiceRefund(models.TransientModel):
                             else:
                                 invoice[field] = invoice[field] or False
                         inv_refund = inv_obj.create(invoice)
-                        body = _('Correction of <a href=# data-oe-model=account.invoice data-oe-id=%d>%s</a><br>Reason: %s') % (inv.id, inv.number, description)
+                        body = _('Correction of <a href=# data-oe-model=account.invoice data-oe-id=%d>%s</a><br>Reason: %s') % (inv.id, inv.number, form.description)
                         inv_refund.message_post(body=body)
                         if inv_refund.payment_term_id.id:
                             inv_refund._onchange_payment_term_date_invoice()
