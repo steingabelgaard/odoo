@@ -513,7 +513,10 @@ class IrMailServer(models.Model):
             for address in extract_rfc2822_addresses(base)
             if address
         ]
-        assert smtp_to_list, self.NO_VALID_RECIPIENT
+        # Replace assert with raise
+        # assert smtp_to_list, self.NO_VALID_RECIPIENT
+        if not smtp_to_list:
+            raise AssertionError(self.NO_VALID_RECIPIENT)
 
         x_forge_to = message['X-Forge-To']
         if x_forge_to:
