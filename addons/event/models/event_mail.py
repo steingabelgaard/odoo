@@ -97,7 +97,7 @@ class EventMailScheduler(models.Model):
             else:
                 date, sign = self.event_id.date_end, 1
 
-            self.scheduled_date = date + _INTERVALS[self.interval_unit](sign * self.interval_nbr)
+            self.scheduled_date = date + _INTERVALS[self.interval_unit](sign * self.interval_nbr) if date else False
 
     @api.one
     def execute(self):
