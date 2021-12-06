@@ -431,7 +431,7 @@ class IrMailServer(models.Model):
         # Use the default bounce address **only if** no Return-Path was
         # provided by caller.  Caller may be using Variable Envelope Return
         # Path (VERP) to detect no-longer valid email addresses.
-        smtp_from = '<catchall@laerforlivet.dk>' #message['Return-Path'] or self._get_default_bounce_address() or message['From']
+        smtp_from = message['Return-Path'] or self._get_default_bounce_address() or message['From']
         assert smtp_from, "The Return-Path or From header is required for any outbound email"
 
         # The email's "Envelope From" (Return-Path), and all recipient addresses must only contain ASCII characters.
@@ -451,7 +451,10 @@ class IrMailServer(models.Model):
             for address in extract_rfc2822_addresses(base)
             if address
         ]
-        assert smtp_to_list, self.NO_VALID_RECIPIENT
+        # Replace assert with raise
+        # assert smtp_to_list, self.NO_VALID_RECIPIENT
+        if not smtp_to_list:
+            raise AssertionError(self.NO_VALID_RECIPIENT)
 
         x_forge_to = message['X-Forge-To']
         if x_forge_to:
