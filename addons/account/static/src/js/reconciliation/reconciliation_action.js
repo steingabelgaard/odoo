@@ -329,7 +329,7 @@ var StatementAction = AbstractAction.extend(ControlPanelMixin, {
  * manual reconciliation and mark data as reconciliate
  */
 var ManualAction = StatementAction.extend({
-    title: core._t('Journal Items to Reconcile'),
+    title: core._t('Journal bilag til udligning'),
     config: {
         Model: ReconciliationModel.ManualModel,
         ActionRenderer: ReconciliationRenderer.ManualRenderer,
