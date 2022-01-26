@@ -303,7 +303,7 @@ var LineRenderer = Widget.extend(FieldManagerMixin, {
                     self.model.get(recordID), {
                         mode: 'edit',
                         attrs: {
-                            placeholder: self._initialState.st_line.communication_partner_name || '',
+                            placeholder: self._initialState.st_line.communication_partner_name || 'Vælg partner',
                         }
                     }
                 )
