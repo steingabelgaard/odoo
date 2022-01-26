@@ -1285,8 +1285,9 @@ class Export(http.Controller):
                 continue
         
             if model == 'res.partner':
-                if field.get('type') in ['one2many', 'many2many']:
-                    continue
+                # S&G Issue 31863 Re-introduce relations in Export
+                # if field.get('type') in ['one2many', 'many2many']:
+                #    continue
                 if field_name[-8:] == '_visible':
                     continue
              
