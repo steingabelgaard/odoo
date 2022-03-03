@@ -11,7 +11,8 @@ from collections import namedtuple
 
 import io
 import base64
-
+import logging
+_logger = logging.getLogger(__name__)
 
 DEFAULT_FACTURX_DATE_FORMAT = '%Y%m%d'
 
@@ -180,7 +181,9 @@ class AccountInvoice(models.Model):
 
             # Invoice lines.
             elements = tree.xpath('//ram:IncludedSupplyChainTradeLineItem', namespaces=tree.nsmap)
+
             if elements:
+                tax_amount = 0  # S&G: Tax sum
                 for element in elements:
                     with invoice_form.invoice_line_ids.new() as invoice_line_form:
 
@@ -256,6 +259,15 @@ class AccountInvoice(models.Model):
 
                             if tax:
                                 invoice_line_form.invoice_line_tax_ids.add(tax)
+                            else:  # S&G In case no tax setup:
+                                tax_amount += invoice_line_form.price_subtotal * (percentage / 100)
+                # S&G Add TAX line if no tax setup
+                if tax_amount:
+                    with invoice_form.invoice_line_ids.new() as invoice_line_form:
+                        invoice_line_form.price_unit = tax_amount
+                        invoice_line_form.name = 'Ikke matched moms m.m.'
+                        invoice_line_form.sequence = 1000
+
             elif amount_total_import:
                 # No lines in BASICWL.
                 with invoice_form.invoice_line_ids.new() as invoice_line_form:
