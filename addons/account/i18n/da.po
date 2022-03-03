@@ -11492,7 +11492,7 @@ msgstr "Fjern udligning"
 #. module: account
 #: model:ir.actions.act_window,name:account.action_account_unreconcile
 msgid "Unreconcile Entries"
-msgstr "Uudlignede posteringer"
+msgstr "Fjern udligninger"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.account_unreconcile_view
