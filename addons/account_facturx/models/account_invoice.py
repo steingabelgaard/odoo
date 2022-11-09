@@ -207,6 +207,10 @@ class AccountInvoice(models.Model):
                                 product = self.env['product.product'].search([('barcode', '=', line_elements[0].text)])
                                 if product:
                                     invoice_line_form.product_id = product
+                        # S&G: Let the invoice line name win
+                        line_elements = element.xpath('.//ram:SpecifiedTradeProduct/ram:Name', namespaces=tree.nsmap)
+                        if line_elements:
+                            invoice_line_form.name = line_elements[0].text
 
                         # Quantity.
                         line_elements = element.xpath('.//ram:SpecifiedLineTradeDelivery/ram:BilledQuantity', namespaces=tree.nsmap)
