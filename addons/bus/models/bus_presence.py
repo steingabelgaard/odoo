@@ -61,7 +61,10 @@ class BusPresence(models.Model):
         if not presence:  # create a new presence for the user
             values['user_id'] = self._uid
             values['last_presence'] = last_presence
-            self.create(values)
+            # From v15, logger is muted in "update" before callingg "_update",
+            # so we assume it's safe to also ignore create errors
+            with tools.mute_logger('odoo.sql_db'):
+                self.create(values)
         else:  # update the last_presence if necessary, and write values
             if presence.last_presence < last_presence:
                 values['last_presence'] = last_presence
