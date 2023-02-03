@@ -93,8 +93,10 @@ class ResPartnerBank(models.Model):
     company_id = fields.Many2one('res.company', 'Company', default=lambda self: self.env.user.company_id, ondelete='cascade')
     qr_code_valid = fields.Boolean(string="Has all required arguments", compute="_validate_qr_code_arguments")
 
+    # If we redefine constraint in another module, Odoo will still try to re-apply original constraint on base updates
+    # (see https://github.com/odoo/odoo/issues/40740 )
     _sql_constraints = [
-        ('unique_number', 'unique(sanitized_acc_number, company_id)', 'Account Number must be unique'),
+        ('unique_number', 'unique(sanitized_acc_number, company_id, partner_id)', 'Account Number must be unique'),
     ]
 
     @api.depends('acc_number')
