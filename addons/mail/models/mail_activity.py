@@ -280,7 +280,7 @@ class MailActivity(models.Model):
 
         # continue as sudo because activities are somewhat protected
         activity = super(MailActivity, self.sudo()).create(values_w_defaults)
-        activity_user = activity.sudo(self.env.user)
+        activity_user = activity.sudo(self.env.uid)  # S&G Issue 39088 self.env.user -> self.env.uid
         activity_user._check_access('create')
         need_sudo = False
         try:  # in multicompany, reading the partner might break
