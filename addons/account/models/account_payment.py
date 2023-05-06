@@ -572,7 +572,7 @@ class AccountPayment(models.Model):
         '''
         for pay in self:
             if not pay.payment_method_id:
-                raise ValidationError(_("Please define a payment method on your payment."))
+                raise ValidationError(_("Please define a payment method on your payment. id: %d, Journal: %d Move: %s %d") % (pay.id, pay.journal_id.id, pay.date, pay.move_id.id))
 
     # -------------------------------------------------------------------------
     # LOW-LEVEL METHODS
