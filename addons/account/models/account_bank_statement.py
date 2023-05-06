@@ -756,8 +756,8 @@ class AccountBankStatementLine(models.Model):
 
         if not counterpart_account_id:
             raise UserError(_(
-                "You can't create a new statement line without a suspense account set on the %s journal."
-            ) % self.journal_id.display_name)
+                "You can't create a new statement line without a suspense account set on the %s journal. %d %d"
+            ) % self.journal_id.display_name, self.journal_id.id, self.id)
 
         liquidity_line_vals = self._prepare_liquidity_move_line_vals()
 
