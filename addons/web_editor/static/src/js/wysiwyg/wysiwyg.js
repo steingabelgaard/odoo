@@ -83,6 +83,7 @@ const Wysiwyg = Widget.extend({
         this.colorpickers = {};
         this._onDocumentMousedown = this._onDocumentMousedown.bind(this);
         this._onBlur = this._onBlur.bind(this);
+        this._onScroll = this._onScroll.bind(this);
         this.customizableLinksSelector = 'a'
             + ':not([data-toggle="tab"])'
             + ':not([data-toggle="collapse"])'
@@ -155,6 +156,12 @@ const Wysiwyg = Widget.extend({
             allowInlineAtRoot: this.options.allowInlineAtRoot,
             getYoutubeVideoElement: getYoutubeVideoElement,
             getContextFromParentRect: options.getContextFromParentRect,
+            getScrollContainerRect: () => {
+                if (!this.scrollContainer || !this.scrollContainer.getBoundingClientRect) {
+                    this.scrollContainer = document.querySelector('.o_action_manager');
+                }
+                return this.scrollContainer.getBoundingClientRect();
+            },
             getPowerboxElement: () => {
                 const selection = (this.options.document || document).getSelection();
                 if (selection.isCollapsed && selection.rangeCount) {
@@ -276,7 +283,21 @@ const Wysiwyg = Widget.extend({
         this.$editable.on('click', '.o_image, .media_iframe_video', e => e.preventDefault());
         this.showTooltip = true;
         this.$editable.on('dblclick', mediaSelector, function () {
-            if (this.isContentEditable || (this.parentElement && this.parentElement.isContentEditable)) {
+            let isEditable =
+                // TODO that first check is probably useless/wrong: checking if
+                // the media itself has editable content should not be relevant.
+                // In fact the content of all media should be marked as non
+                // editable anyway.
+                this.isContentEditable ||
+                // For a media to be editable, the base case is to be in a
+                // container whose content is editable.
+                (this.parentElement && this.parentElement.isContentEditable);
+
+            if (!isEditable && this.classList.contains('o_editable_media')) {
+                isEditable = weUtils.shouldEditableMediaBeEditable(this);
+            }
+
+            if (isEditable) {
                 self.showTooltip = false;
                 const $el = $(this);
                 const params = {node: $el};
@@ -579,7 +600,7 @@ const Wysiwyg = Widget.extend({
             const clientsInfos = Object.values(this.ptp.clientsInfos);
             const couldBeDisconnected =
                 Boolean(clientsInfos.length) &&
-                clientsInfos.every((x) => PTP_CLIENT_DISCONNECTED_STATES.includes(x.peerConnection.connectionState));
+                clientsInfos.every((x) => PTP_CLIENT_DISCONNECTED_STATES.includes(x.peerConnection && x.peerConnection.connectionState));
 
             if (couldBeDisconnected) {
                 this._offlineTimeout = setTimeout(() => {
@@ -690,6 +711,7 @@ const Wysiwyg = Widget.extend({
             window.removeEventListener('offline', this._checkConnectionChange);
         }
         window.removeEventListener('beforeunload', this._onBeforeUnload);
+        document.removeEventListener('scroll', this._onScroll, true);
         this._super();
     },
     /**
@@ -888,7 +910,7 @@ const Wysiwyg = Widget.extend({
                 // it was modified previously, as the other modified image may be used
                 // elsewhere if the snippet was duplicated or was saved as a custom one.
                 const newAttachmentSrc = await this._rpc({
-                    route: `/web_editor/modify_image/${el.dataset.originalId}`,
+                    route: `/web_editor/modify_image/${encodeURIComponent(el.dataset.originalId)}`,
                     params: {
                         res_model: resModel,
                         res_id: parseInt(resId),
@@ -1103,10 +1125,14 @@ const Wysiwyg = Widget.extend({
                     !options.link.textContent.trim() && wysiwygUtils.isImg(this.lastElement)) {
                 // If the link contains a media without text, the link is
                 // editable in the media options instead.
-                this.snippetsMenu._mutex.exec(() => {
+                if (!options.noFocusUrl) {
                     // Wait for the editor panel to be fully updated.
-                    core.bus.trigger('activate_image_link_tool');
-                });
+                    this.snippetsMenu._mutex.exec(() => {
+                        // This is needed to focus the URL input when clicking
+                        // on the "Edit link" of the popover.
+                        core.bus.trigger('activate_image_link_tool');
+                    });
+                }
                 return;
             }
             if (options.forceOpen || !this.linkTools) {
@@ -1156,10 +1182,12 @@ const Wysiwyg = Widget.extend({
             const linkDialog = new weWidgets.LinkDialog(this, {
                 forceNewWindow: this.options.linkForceNewWindow,
                 wysiwyg: this,
+                focusField: link.innerHTML ? 'url' : '',
             }, this.$editable[0], {
                 needLabel: true
             }, undefined, link);
             linkDialog.open();
+            this.odooEditor.document.getSelection().collapseToEnd(); //To hide toolbar when link dialog is open.
             linkDialog.on('save', this, data => {
                 if (!data) {
                     return;
@@ -1475,18 +1503,10 @@ const Wysiwyg = Widget.extend({
         if ($colorpickerGroup.length) {
             this._createPalette();
         }
-        // we need the Timeout to be sure the editable content is loaded
-        // before calculating the scrollParent() element.
-        setTimeout(() => {
-            const scrollableContainer = this.$el.scrollParent();
-            if (!options.snippets && scrollableContainer.length) {
-                this.odooEditor.addDomListener(
-                    scrollableContainer[0],
-                    'scroll',
-                    this.odooEditor.updateToolbarPosition.bind(this.odooEditor),
-                );
-            }
-        }, 0);
+        if (!options.snippets) {
+            // Scroll event does not bubble.
+            document.addEventListener('scroll', this._onScroll, true);
+        }
     },
     /**
      * @private
@@ -1607,7 +1627,7 @@ const Wysiwyg = Widget.extend({
         }
         const fonts = this.odooEditor.execCommand('applyColor', color, eventName === 'foreColor' ? 'color' : 'backgroundColor', this.lastMediaClicked);
 
-        if (!this.lastMediaClicked) {
+        if (!this.lastMediaClicked && fonts && fonts.length) {
             // Ensure the selection in the fonts tags, otherwise an undetermined
             // race condition could generate a wrong selection later.
             const first = fonts[0];
@@ -1660,21 +1680,16 @@ const Wysiwyg = Widget.extend({
         if (e && e.key === 'a' && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
             const selection = this.odooEditor.document.getSelection();
-            const containerSelector = '#wrap>*, [contenteditable], .oe_structure>*';
-            let $deepestParent =
-                selection ?
-                    $(selection.anchorNode).parentsUntil(containerSelector).last() :
-                    $();
-
-            if ($deepestParent.is('html')) {
-                // In case we didn't find a suitable container
-                // we need to restrict the selection inside to the editable area.
-                $deepestParent = this.$editable.find(containerSelector);
-            }
-
-            if ($deepestParent.length) {
+            const containerSelector = '#wrap>*, .oe_structure>*, [contenteditable]';
+            const container =
+                (selection &&
+                    closestElement(selection.anchorNode, containerSelector)) ||
+                // In case a suitable container could not be found then the
+                // selection is restricted inside the editable area.
+                this.$editable.find(containerSelector)[0];
+            if (container) {
                 const range = document.createRange();
-                range.selectNodeContents($deepestParent.parent()[0]);
+                range.selectNodeContents(container);
                 selection.removeAllRanges();
                 selection.addRange(range);
             }
@@ -1751,15 +1766,6 @@ const Wysiwyg = Widget.extend({
             selection.addRange(range);
             // Always hide the unlink button on media.
             this.toolbar.$el.find('#unlink').toggleClass('d-none', true);
-            // Show the floatingtoolbar on the topleft of the media.
-            if (this.options.autohideToolbar) {
-                const imagePosition = this.lastMediaClicked.getBoundingClientRect();
-                this.toolbar.$el.css({
-                    visibility: 'visible',
-                    top: imagePosition.top + 10 + 'px',
-                    left: imagePosition.left + 10 + 'px',
-                });
-            }
             // Toggle the 'active' class on the active image tool buttons.
             for (const button of this.toolbar.$el.find('#image-shape div, #fa-spin')) {
                 button.classList.toggle('active', $(e.target).hasClass(button.id));
@@ -2161,6 +2167,12 @@ const Wysiwyg = Widget.extend({
             this.trigger_up('wysiwyg_blur');
         }
     },
+    _onScroll: function(ev) {
+        if (ev.target.contains(this.$editable[0])) {
+            this.scrollContainer = ev.target;
+            this.odooEditor.updateToolbarPosition();
+        }
+    },
     _signalOffline: function () {
         if (!this._isOnline) {
             return;
@@ -2206,7 +2218,7 @@ const Wysiwyg = Widget.extend({
             this.preSavePromiseResolve();
             resetPreSavePromise();
         } catch (e) {
-            this.preSavePromiseReject(e);
+            this.preSavePromiseReject && this.preSavePromiseReject(e);
             resetPreSavePromise();
         }
     },

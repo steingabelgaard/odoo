@@ -524,7 +524,7 @@ class ResPartner(models.Model):
             ('move_type', 'in', ('out_invoice', 'out_refund')),
             ('partner_id', 'in', all_child.ids)
         ]
-        action['context'] = {'default_move_type': 'out_invoice', 'move_type': 'out_invoice', 'journal_type': 'sale', 'search_default_unpaid': 1, 'active_test': False}
+        action['context'] = {'default_move_type': 'out_invoice', 'move_type': 'out_invoice', 'journal_type': 'sale', 'search_default_unpaid': 1}
         return action
 
     def can_edit_vat(self):
@@ -583,3 +583,11 @@ class ResPartner(models.Model):
                     _logger.debug('Another transaction already locked partner rows. Cannot update partner ranks.')
                 else:
                     raise e
+
+    def _merge_method(self, destination, source):
+        """
+        Prevent merging partners that are linked to already hashed journal items.
+        """
+        if self.env['account.move.line'].search([('move_id.inalterable_hash', '!=', False), ('partner_id', 'in', source.ids)], limit=1):
+            raise UserError(_('Partners that are used in hashed entries cannot be merged.'))
+        return super()._merge_method(destination, source)
