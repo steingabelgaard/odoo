@@ -9,14 +9,15 @@
 # Сергей Шебанин <sergey@shebanin.ru>, 2021
 # Alena Vlasova, 2023
 # alenafairy, 2023
+# Wil Odoo, 2024
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server saas~14.5\n"
+"Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-14 10:29+0000\n"
+"POT-Creation-Date: 2024-08-14 15:43+0000\n"
 "PO-Revision-Date: 2021-09-14 12:25+0000\n"
-"Last-Translator: alenafairy, 2023\n"
+"Last-Translator: Wil Odoo, 2024\n"
 "Language-Team: Russian (https://app.transifex.com/odoo/teams/41243/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -61,6 +62,7 @@ msgstr "Конфигурационные настройки"
 #: model:ir.model.fields,help:project_timesheet_holidays.field_res_config_settings__internal_project_id
 msgid "Default project value for timesheet generated from time off type."
 msgstr ""
+"Значение проекта по умолчанию для табеля, сформированного по типу отгулов."
 
 #. module: project_timesheet_holidays
 #: model:ir.model,name:project_timesheet_holidays.model_hr_employee
@@ -87,8 +89,8 @@ msgstr ""
 "формироваться в модуле Отсутствие."
 
 #. module: project_timesheet_holidays
-#: code:addons/project_timesheet_holidays/models/res_company.py:0
-#: code:addons/project_timesheet_holidays/models/res_company.py:0
+#: code:addons/project_timesheet_holidays/__init__.py:0
+#: code:addons/project_timesheet_holidays/__init__.py:0
 #, python-format
 msgid "Internal"
 msgstr "Внутреннее"
@@ -128,7 +130,7 @@ msgid ""
 msgstr ""
 
 #. module: project_timesheet_holidays
-#: code:addons/project_timesheet_holidays/models/res_company.py:0
+#: code:addons/project_timesheet_holidays/__init__.py:0
 #: code:addons/project_timesheet_holidays/models/res_company.py:0
 #: model:ir.model,name:project_timesheet_holidays.model_hr_leave
 #, python-format
@@ -165,3 +167,5 @@ msgid ""
 "You cannot delete timesheets linked to time off. Please, cancel the time off"
 " instead."
 msgstr ""
+"Вы не можете удалить табели учета рабочего времени, связанные с отгулами. "
+"Пожалуйста, отмените отгулы."

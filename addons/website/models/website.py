@@ -465,7 +465,8 @@ class Website(models.Model):
                         rendered_snippets.append(rendered_snippet)
                 except ValueError as e:
                     logger.warning(e)
-            page_view_id.save(value=''.join(rendered_snippets), xpath="(//div[hasclass('oe_structure')])[last()]")
+            page_view_id.save(value=f'<div class="oe_structure">{"".join(rendered_snippets)}</div>',
+                              xpath="(//div[hasclass('oe_structure')])[last()]")
 
         def set_images(images):
             names = self.env['ir.model.data'].search([
@@ -975,7 +976,7 @@ class Website(models.Model):
         if country:
             country_id = self.env['res.country'].search([('code', '=', country)], limit=1).id
 
-        website_id = self._get_current_website_id(domain_name, country_id, fallback=fallback)
+        website_id = self.sudo()._get_current_website_id(domain_name, country_id, fallback=fallback)
         return self.browse(website_id)
 
     @tools.cache('domain_name', 'country_id', 'fallback')
@@ -1198,7 +1199,7 @@ class Website(models.Model):
                 func = rule.endpoint.routing['sitemap']
                 if func is False:
                     continue
-                for loc in func(self.env, rule, query_string):
+                for loc in func(self.with_context(lang=self.default_lang_id.code).env, rule, query_string):
                     yield loc
                 continue
 
@@ -1234,7 +1235,7 @@ class Website(models.Model):
 
                     for rec in converter.generate(uid=self.env.uid, dom=query, args=val):
                         newval.append(val.copy())
-                        newval[-1].update({name: rec})
+                        newval[-1].update({name: rec.with_context(lang=self.default_lang_id.code)})
                 values = newval
 
             for value in values:
@@ -1593,16 +1594,15 @@ class Website(models.Model):
         """
         fuzzy_term = False
         search_details = self._search_get_details(search_type, order, options)
+        count, results = self._search_exact(search_details, search, limit, order)
+        if count > 0:
+            return count, results, fuzzy_term
         if search and options.get('allowFuzzy', True):
             fuzzy_term = self._search_find_fuzzy_term(search_details, search)
             if fuzzy_term:
                 count, results = self._search_exact(search_details, fuzzy_term, limit, order)
                 if fuzzy_term.lower() == search.lower():
                     fuzzy_term = False
-            else:
-                count, results = self._search_exact(search_details, search, limit, order)
-        else:
-            count, results = self._search_exact(search_details, search, limit, order)
         return count, results, fuzzy_term
 
     def _search_exact(self, search_details, search, limit, order):

@@ -8,16 +8,16 @@
 # Martin Trigaux, 2023
 # 敬雲 林 <chingyun@yuanchih-consult.com>, 2023
 # Benson <Benson.Dr@Gmail.com>, 2023
-# Wil Odoo, 2023
-# Tony Ng, 2023
+# Wil Odoo, 2024
+# Tony Ng, 2024
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-18 09:52+0000\n"
+"POT-Creation-Date: 2024-08-14 15:42+0000\n"
 "PO-Revision-Date: 2021-09-14 12:18+0000\n"
-"Last-Translator: Tony Ng, 2023\n"
+"Last-Translator: Tony Ng, 2024\n"
 "Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -105,6 +105,12 @@ msgid "%d moves"
 msgstr "%d 傳票"
 
 #. module: account
+#: code:addons/account/models/account_account_tag.py:0
+#, python-format
+msgid "%s (%s)"
+msgstr "%s (%s)"
+
+#. module: account
 #: code:addons/account/models/account_tax.py:0
 #, python-format
 msgid "%s (Copy)"
@@ -169,7 +175,7 @@ msgstr "- 只限已過賬記項"
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.report_journal
 msgid "- Posted and Draft Entries"
-msgstr ""
+msgstr "- 已過賬及草稿記項"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_move_line_form
@@ -238,6 +244,15 @@ msgstr "30%直接支付，所剩餘額60天"
 #: model:account.payment.term,name:account.account_payment_term_45days
 msgid "45 Days"
 msgstr "45天"
+
+#. module: account
+#: model_terms:ir.ui.view,arch_db:account.report_invoice_document
+msgid ""
+"<br/>\n"
+"                            on this account:"
+msgstr ""
+"<br/>\n"
+"                            在此賬戶上："
 
 #. module: account
 #: model:mail.template,body_html:account.email_template_edi_credit_note
@@ -527,8 +542,8 @@ msgid ""
 "<span attrs=\"{'invisible': [('reconciled_statements_count','&gt;', 1)]}\">Statement</span>\n"
 "                                <span attrs=\"{'invisible': [('reconciled_statements_count','&lt;=', 1)]}\">Statements</span>"
 msgstr ""
-"<span attrs=\"{'invisible': [('reconciled_statements_count','&gt;', 1)]}\">對帳單</span>\n"
-"                             <span attrs=\"{'invisible': [('reconciled_statements_count','&lt;=', 1)]}\">對帳單</span>"
+"<span attrs=\"{'invisible': [('reconciled_statements_count','&gt;', 1)]}\">結單</span>\n"
+"                                <span attrs=\"{'invisible': [('reconciled_statements_count','&lt;=', 1)]}\">結單</span>"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.portal_my_invoices
@@ -606,7 +621,7 @@ msgstr ""
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_reconcile_model_form
 msgid "<span class=\"o_form_label o_td_label\">Match Invoice/bill with</span>"
-msgstr ""
+msgstr "<span class=\"o_form_label o_td_label\">將發票/賬單配對至</span>"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_reconcile_model_line_form
@@ -855,7 +870,7 @@ msgstr "<span title=\"Balance in General Ledger\">總帳餘額</span>"
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.account_journal_dashboard_kanban_view
 msgid "<span title=\"Latest Statement\">Latest Statement</span>"
-msgstr "<span title=\"Latest Statement\">最新對帳單</span>"
+msgstr "<span title=\"最新結單\">最新結單</span>"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.account_journal_dashboard_kanban_view
@@ -882,7 +897,7 @@ msgstr "<span> 從 </span>"
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_position_form
 msgid "<span> To </span>"
-msgstr "<span> 到 </span>"
+msgstr "<span> 至 </span>"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.bill_preview
@@ -1026,11 +1041,6 @@ msgstr "<strong class=\"text-center\">請用您的銀行APP掃瞄我.</strong><b
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.report_invoice_document
-msgid "<strong>Amount Due</strong>"
-msgstr "<strong>到期金額</strong>"
-
-#. module: account
-#: model_terms:ir.ui.view,arch_db:account.report_invoice_document
 msgid "<strong>Credit Note Date:</strong>"
 msgstr "<strong>折讓單日期:</strong>"
 
@@ -1126,7 +1136,7 @@ msgstr "<strong>類型:</strong>"
 #: code:addons/account/models/account_move.py:0
 #, python-format
 msgid "@From: %(email)s"
-msgstr "@From: %(email)s"
+msgstr "@由：%(email)s"
 
 #. module: account
 #: model_terms:ir.actions.act_window,help:account.action_view_bank_statement_tree
@@ -1252,14 +1262,6 @@ msgid "A tax fiscal position could be defined only one time on same taxes."
 msgstr "稅務財政情況在相同的稅上面只能定義一次."
 
 #. module: account
-#: code:addons/account/models/account_tax.py:0
-#, python-format
-msgid ""
-"A tax should only use tags from its country. You should use another tax and "
-"a fiscal position if you wish to uses the tags from foreign tax reports."
-msgstr "稅金應該只使用來自其國家的標籤. 如果您希望使用外國稅務報表中的標籤，您應該使用另一種稅金和財務狀況."
-
-#. module: account
 #: code:addons/account/models/res_users.py:0
 #, python-format
 msgid ""
@@ -1324,7 +1326,7 @@ msgstr "會計項目現金捨入"
 #. module: account
 #: model:ir.model,name:account.model_account_chart_template
 msgid "Account Chart Template"
-msgstr "項目表模版"
+msgstr "賬目總表範本"
 
 #. module: account
 #: model:ir.model,name:account.model_account_common_report
@@ -1675,7 +1677,7 @@ msgstr "會計"
 #. module: account
 #: model:ir.actions.act_window,name:account.open_account_journal_dashboard_kanban
 msgid "Accounting Dashboard"
-msgstr "會計概覽畫面"
+msgstr "會計Dashboard"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_invoice_filter
@@ -1818,6 +1820,7 @@ msgstr "啟用來建立銷售收據"
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_account_tag__active
 #: model:ir.model.fields,field_description:account.field_account_fiscal_position__active
+#: model:ir.model.fields,field_description:account.field_account_fiscal_position_tax__tax_dest_active
 #: model:ir.model.fields,field_description:account.field_account_incoterms__active
 #: model:ir.model.fields,field_description:account.field_account_journal__active
 #: model:ir.model.fields,field_description:account.field_account_payment_term__active
@@ -2044,7 +2047,7 @@ msgstr "{link}的調整分錄：{percent:.2f}%的{amount}在{new_date}上確認"
 #: code:addons/account/wizard/account_automatic_entry_wizard.py:0
 #, python-format
 msgid "Adjusting Entry of {date} ({percent:.2f}% recognized on {new_date})"
-msgstr ""
+msgstr "調整記項，日期：{date}（已實現 {percent:.2f}%，日期：{new_date}）"
 
 #. module: account
 #: code:addons/account/wizard/account_automatic_entry_wizard.py:0
@@ -2296,6 +2299,7 @@ msgstr "總額幣別"
 #: model:ir.model.fields,field_description:account.field_account_move__amount_residual
 #: model:ir.model.fields,field_description:account.field_account_payment__amount_residual
 #: model_terms:ir.ui.view,arch_db:account.portal_my_invoices
+#: model_terms:ir.ui.view,arch_db:account.report_invoice_document
 #: model_terms:ir.ui.view,arch_db:account.view_invoice_tree
 msgid "Amount Due"
 msgstr "到期金額"
@@ -2624,14 +2628,6 @@ msgid "Associated Account Templates"
 msgstr "關聯的會計模板"
 
 #. module: account
-#: code:addons/account/populate/res_company.py:0
-#, python-format
-msgid ""
-"At least one localization is needed to be installed in order to populate the"
-" database with accounting"
-msgstr "至少需要安裝一個在地化項目表才能開始使用會計系統"
-
-#. module: account
 #: model_terms:ir.ui.view,arch_db:account.account_invoice_send_wizard_form
 #: model_terms:ir.ui.view,arch_db:account.account_tour_upload_bill
 msgid "Attach a file"
@@ -2670,7 +2666,7 @@ msgstr "作者"
 msgid ""
 "Author of the message. If not set, email_from may hold an email address that"
 " did not match any partner."
-msgstr "訊息的作者. 如果沒設定，email_from 可能儲存一個不匹配任何合作夥伴的 email地址."
+msgstr "訊息的作者。如果未設定，email_from 可能儲存一個不符合任何合作夥伴記錄的電郵地址。"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_reconcile_model_search
@@ -3351,13 +3347,13 @@ msgstr "結轉"
 #: code:addons/account/models/account_tax_report.py:0
 #, python-format
 msgid "Carryover Lines For %s"
-msgstr "結轉明細於 %s"
+msgstr "結轉資料行：%s"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_tax_report_line__carryover_line_ids
 #: model_terms:ir.ui.view,arch_db:account.account_tax_report_line_form
 msgid "Carryover lines"
-msgstr "結轉明細"
+msgstr "結轉資料行"
 
 #. module: account
 #: code:addons/account/models/chart_template.py:0
@@ -3607,12 +3603,12 @@ msgstr "會計項目列表"
 #: model_terms:ir.ui.view,arch_db:account.view_account_chart_template_form
 #: model_terms:ir.ui.view,arch_db:account.view_account_chart_template_tree
 msgid "Chart of Accounts Template"
-msgstr "會計項目表模版"
+msgstr "賬目總表範本"
 
 #. module: account
 #: model:ir.actions.act_window,name:account.action_account_chart_template_form
 msgid "Chart of Accounts Templates"
-msgstr "會計項目表模版"
+msgstr "賬目總表範本"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_list
@@ -3843,6 +3839,7 @@ msgstr "指合作夥伴公司"
 #: model:ir.model.fields,field_description:account.field_account_tax_carryover_line__company_id
 #: model:ir.model.fields,field_description:account.field_account_tax_repartition_line__company_id
 #: model_terms:ir.ui.view,arch_db:account.view_account_analytic_default_form_search
+#: model_terms:ir.ui.view,arch_db:account.view_account_invoice_filter
 #: model_terms:ir.ui.view,arch_db:account.view_account_invoice_report_search
 #: model_terms:ir.ui.view,arch_db:account.view_account_move_filter
 #: model_terms:ir.ui.view,arch_db:account.view_account_payment_search
@@ -4072,6 +4069,11 @@ msgstr "無法安裝新的項目表，因為會計分錄已經存在."
 #: model_terms:ir.ui.view,arch_db:account.view_account_reconcile_model_form
 msgid "Counterpart Entries"
 msgstr "對應分錄"
+
+#. module: account
+#: model:ir.model.fields,help:account.field_res_company__multi_vat_foreign_country_ids
+msgid "Countries for which the company has a VAT number"
+msgstr "公司擁有增值稅編號的國家"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_account_tag__country_id
@@ -4437,6 +4439,7 @@ msgstr "建立於"
 #. module: account
 #: code:addons/account/wizard/account_automatic_entry_wizard.py:0
 #: code:addons/account/wizard/accrued_orders.py:0
+#: model:ir.model.fields,field_description:account.field_account_analytic_account__credit
 #: model:ir.model.fields,field_description:account.field_account_move_line__credit
 #: model_terms:ir.ui.view,arch_db:account.report_journal
 #, python-format
@@ -4806,6 +4809,7 @@ msgstr "資料一致性檢查"
 #: model:ir.model.fields,field_description:account.field_tax_adjustments_wizard__date
 #: model:ir.model.fields.selection,name:account.selection__account_print_journal__sort_selection__date
 #: model_terms:ir.ui.view,arch_db:account.report_journal
+#: model_terms:ir.ui.view,arch_db:account.view_account_invoice_filter
 #: model_terms:ir.ui.view,arch_db:account.view_account_invoice_report_search
 #: model_terms:ir.ui.view,arch_db:account.view_account_move_filter
 #: model_terms:ir.ui.view,arch_db:account.view_account_move_line_filter
@@ -4870,6 +4874,7 @@ msgstr ""
 #. module: account
 #: code:addons/account/wizard/account_automatic_entry_wizard.py:0
 #: code:addons/account/wizard/accrued_orders.py:0
+#: model:ir.model.fields,field_description:account.field_account_analytic_account__debit
 #: model:ir.model.fields,field_description:account.field_account_move_line__debit
 #: model_terms:ir.ui.view,arch_db:account.report_journal
 #, python-format
@@ -5093,6 +5098,26 @@ msgstr "刪除電子郵件"
 #: model:ir.model.fields,field_description:account.field_account_invoice_send__auto_delete_message
 msgid "Delete Message Copy"
 msgstr "刪除訊息備份"
+
+#. module: account
+#: model:account.account.tag,name:account.demo_ceo_wages_account
+msgid "Demo CEO Wages Account"
+msgstr "CEO薪資科目範例"
+
+#. module: account
+#: model:account.account.tag,name:account.demo_capital_account
+msgid "Demo Capital Account"
+msgstr "資金科目範例"
+
+#. module: account
+#: model:account.account.tag,name:account.demo_sale_of_land_account
+msgid "Demo Sale of Land Account"
+msgstr "出售土地科目範例"
+
+#. module: account
+#: model:account.account.tag,name:account.demo_stock_account
+msgid "Demo Stock Account"
+msgstr "庫存科目範例"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_account__deprecated
@@ -5349,12 +5374,12 @@ msgstr "應收憑單的分配"
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_tax__refund_repartition_line_ids
 msgid "Distribution for Refund Invoices"
-msgstr "折讓應收憑單的分配"
+msgstr "退款發票的分配"
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_tax__refund_repartition_line_ids
 msgid "Distribution when the tax is used on a refund"
-msgstr "稅款用於折讓時的分配"
+msgstr "稅款用於退款時的分配"
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_tax__invoice_repartition_line_ids
@@ -5530,6 +5555,11 @@ msgid "Dynamic Reports"
 msgstr "動態報表"
 
 #. module: account
+#: model:ir.model.fields,help:account.field_account_tax_repartition_line__tag_ids_domain
+msgid "Dynamic domain used for the tag that can be set on tax"
+msgstr "稅項可用標籤所使用的動態網域"
+
+#. module: account
 #: model:ir.model.fields,field_description:account.field_res_config_settings__module_l10n_eu_oss
 msgid "EU Intra-community Distance Selling"
 msgstr "歐盟內部遠端銷售"
@@ -5580,7 +5610,7 @@ msgstr "電子郵件行程"
 msgid ""
 "Email address of the sender. This field is set when no matching partner is "
 "found and replaces the author_id field in the chatter."
-msgstr "發送者的Email地址. 當找不到合作夥伴的匹配的郵件時候，這個欄位就被設定. 並且Chatter中的作者id被替換掉."
+msgstr "發送人的電郵地址。當找不到符合的合作夥伴時，這個欄位就會被設定，並在聊天工具中取代 author_id 欄位。"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_res_company__invoice_is_email
@@ -5865,6 +5895,11 @@ msgid "Financial Tags"
 msgstr "財務會計標籤"
 
 #. module: account
+#: model:account.account.tag,name:account.account_tag_financing
+msgid "Financing Activities"
+msgstr "財務會計科目活動"
+
+#. module: account
 #: model:ir.model.fields,field_description:account.field_account_reconcile_model_partner_mapping__payment_ref_regex
 msgid "Find Text in Label"
 msgstr "在摘要中查尋文字"
@@ -5939,6 +5974,7 @@ msgstr "會計期間"
 #: model:ir.model.fields,field_description:account.field_account_invoice_report__fiscal_position_id
 #: model:ir.model.fields,field_description:account.field_account_move__fiscal_position_id
 #: model:ir.model.fields,field_description:account.field_account_payment__fiscal_position_id
+#: model:ir.model.fields,field_description:account.field_res_company__fiscal_position_ids
 #: model:ir.model.fields,field_description:account.field_res_partner__property_account_position_id
 #: model:ir.model.fields,field_description:account.field_res_users__property_account_position_id
 #: model_terms:ir.ui.view,arch_db:account.view_account_position_filter
@@ -6102,6 +6138,11 @@ msgid "Foreign Tax ID"
 msgstr "外幣稅務編號"
 
 #. module: account
+#: model:ir.model.fields,field_description:account.field_res_company__multi_vat_foreign_country_ids
+msgid "Foreign VAT countries"
+msgstr "國外增值稅國家"
+
+#. module: account
 #: model:ir.model.fields,field_description:account.field_account_fiscal_position__foreign_vat_header_mode
 msgid "Foreign Vat Header Mode"
 msgstr "外幣增值稅頭模式"
@@ -6138,7 +6179,7 @@ msgstr "由"
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.report_journal
 msgid "From :"
-msgstr ""
+msgstr "從："
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_move_line_filter
@@ -6181,12 +6222,12 @@ msgstr "完全核銷"
 #. module: account
 #: model:ir.model.fields.selection,name:account.selection__account_move_reversal__refund_method__cancel
 msgid "Full Refund"
-msgstr "全額折讓"
+msgstr "全額退款"
 
 #. module: account
 #: model:ir.model.fields.selection,name:account.selection__account_move_reversal__refund_method__modify
 msgid "Full refund and new draft invoice"
-msgstr "全部折讓及新的應收憑單草稿"
+msgstr "全部退款及新的發票草稿"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_invoice_filter
@@ -6850,7 +6891,7 @@ msgstr ""
 msgid ""
 "Incorrect fiscal year date: day is out of range for month. Month: %s; Day: "
 "%s"
-msgstr "‎會計年度日期‎‎不正確: 日期超出了月的範圍. 月:%s；日:%s"
+msgstr "財政年度日期不正確：日子超出月份範圍。月：%s，日：%s"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_bank_statement_line__invoice_incoterm_id
@@ -7011,8 +7052,10 @@ msgstr "內部統計"
 #. module: account
 #: code:addons/account/models/partner.py:0
 #, python-format
-msgid "Invalid \"Zip Range\", please configure it properly."
-msgstr "無效的\"郵編範圍\"，請正確的設定."
+msgid ""
+"Invalid \"Zip Range\", You have to configure both \"From\" and \"To\" values"
+" for the zip range and \"To\" should be greater than \"From\"."
+msgstr "「郵遞區號範圍」無效，你必須為郵遞區號範圍設定「由」及「至」數值，而且「至」數值應大於「由」。"
 
 #. module: account
 #: code:addons/account/models/company.py:0
@@ -7024,6 +7067,11 @@ msgstr "會計年度的最後一天無效"
 #: model:ir.model.fields,field_description:account.field_account_move_line__tax_tag_invert
 msgid "Invert Tags"
 msgstr "反轉標籤"
+
+#. module: account
+#: model:account.account.tag,name:account.account_tag_investing
+msgid "Investing & Extraordinary Activities"
+msgstr "投資與特別活動"
 
 #. module: account
 #: code:addons/account/models/account_move.py:0
@@ -7080,7 +7128,7 @@ msgstr "應收憑單日期"
 #: model:ir.model.fields,field_description:account.field_account_move__invoice_filter_type_domain
 #: model:ir.model.fields,field_description:account.field_account_payment__invoice_filter_type_domain
 msgid "Invoice Filter Type Domain"
-msgstr "應收憑單篩選類型域"
+msgstr "發票篩選類型範圍"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_bank_statement_line__invoice_has_matching_suspense_amount
@@ -7469,6 +7517,7 @@ msgstr "一月"
 #: model_terms:ir.ui.view,arch_db:account.report_hash_integrity
 #: model_terms:ir.ui.view,arch_db:account.report_journal
 #: model_terms:ir.ui.view,arch_db:account.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:account.view_account_invoice_filter
 #: model_terms:ir.ui.view,arch_db:account.view_account_journal_search
 #: model_terms:ir.ui.view,arch_db:account.view_account_move_filter
 #: model_terms:ir.ui.view,arch_db:account.view_account_move_line_filter
@@ -8453,6 +8502,11 @@ msgid "Memo:"
 msgstr "備忘:"
 
 #. module: account
+#: model:ir.model,name:account.model_base_partner_merge_automatic_wizard
+msgid "Merge Partner Wizard"
+msgstr "合併合作夥伴引導"
+
+#. module: account
 #: model:ir.model.fields,field_description:account.field_account_account__message_has_error
 #: model:ir.model.fields,field_description:account.field_account_account_template__message_has_error
 #: model:ir.model.fields,field_description:account.field_account_bank_statement__message_has_error
@@ -8658,6 +8712,12 @@ msgstr "抵消稅金平衡"
 #: model:ir.model.fields,help:account.field_account_payment__amount_signed
 msgid "Negative value of amount field if payment_type is outbound"
 msgstr "如果payment_type 為支出金額欄位的負值"
+
+#. module: account
+#: code:addons/account/models/account_tax.py:0
+#, python-format
+msgid "Nested group of taxes are not allowed."
+msgstr "稅項組別不可以是巢狀結構。"
 
 #. module: account
 #: model:ir.model.fields.selection,name:account.selection__account_bank_statement__state__open
@@ -9069,6 +9129,11 @@ msgid "Off-Balance Sheet"
 msgstr "資產負債表外"
 
 #. module: account
+#: model:account.account.tag,name:account.demo_office_furniture_account
+msgid "Office Furniture"
+msgstr "辦公家具"
+
+#. module: account
 #: model:ir.model.fields.selection,name:account.selection__account_reconcile_model__matching_order__old_first
 #: model:ir.model.fields.selection,name:account.selection__account_reconcile_model_template__matching_order__old_first
 msgid "Oldest first"
@@ -9259,6 +9324,11 @@ msgstr "此項目的期初貸方值."
 #: model:ir.model.fields,help:account.field_account_account__opening_debit
 msgid "Opening debit value for this account."
 msgstr "此項目的期初借方值."
+
+#. module: account
+#: model:account.account.tag,name:account.account_tag_operating
+msgid "Operating Activities"
+msgstr "營運活動"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_reconcile_model_form
@@ -9590,7 +9660,7 @@ msgstr "部分核銷"
 #. module: account
 #: model:ir.model.fields.selection,name:account.selection__account_move_reversal__refund_method__refund
 msgid "Partial Refund"
-msgstr "部分折讓"
+msgstr "部分退款"
 
 #. module: account
 #: model:ir.model.fields.selection,name:account.selection__account_invoice_report__payment_state__partial
@@ -9609,6 +9679,7 @@ msgstr "部分支付"
 #: model_terms:ir.ui.view,arch_db:account.report_journal
 #: model_terms:ir.ui.view,arch_db:account.view_account_analytic_default_form_search
 #: model_terms:ir.ui.view,arch_db:account.view_account_analytic_line_filter_inherit_account
+#: model_terms:ir.ui.view,arch_db:account.view_account_invoice_filter
 #: model_terms:ir.ui.view,arch_db:account.view_account_invoice_report_search
 #: model_terms:ir.ui.view,arch_db:account.view_account_move_filter
 #: model_terms:ir.ui.view,arch_db:account.view_account_move_line_filter
@@ -9669,6 +9740,12 @@ msgstr "核銷模型的對應合作夥伴"
 #: model:ir.model.fields,field_description:account.field_account_reconcile_model__match_partner
 msgid "Partner should be set"
 msgstr "應設定合作夥伴"
+
+#. module: account
+#: code:addons/account/models/partner.py:0
+#, python-format
+msgid "Partners that are used in hashed entries cannot be merged."
+msgstr "雜湊記項使用的合作夥伴，不可合併。"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.res_config_settings_view_form
@@ -9835,7 +9912,7 @@ msgstr "付款條件"
 #. module: account
 #: model:ir.model,name:account.model_account_payment_term_line
 msgid "Payment Terms Line"
-msgstr "付款條件項目"
+msgstr "付款條款資料行"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_reconcile_model__allow_payment_tolerance
@@ -9984,7 +10061,7 @@ msgstr "對帳單明細百分比"
 #: code:addons/account/models/account_payment_term.py:0
 #, python-format
 msgid "Percentages on the Payment Terms lines must be between 0 and 100."
-msgstr "付款條件明細的百分比必須介於0到100之間."
+msgstr "付款條款資料行的百分比，須在 0 至 100 之間。"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_invoice_filter
@@ -10673,35 +10750,35 @@ msgstr "有問題的付款的相關單據. 比如校驗碼、文件名等."
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.account_journal_dashboard_kanban_view
 msgid "Refund"
-msgstr "折讓"
+msgstr "退款"
 
 #. module: account
 #: code:addons/account/models/account_move.py:0
 #, python-format
 msgid "Refund Created"
-msgstr "已建立折讓"
+msgstr "已建立退款"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_in_invoice_refund_tree
 msgid "Refund Currency"
-msgstr "折讓幣別"
+msgstr "退款幣別"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_move_reversal
 msgid "Refund Date"
-msgstr "折讓日期"
+msgstr "退款日期"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_tax_repartition_line__refund_tax_id
 #: model:ir.model.fields,field_description:account.field_account_tax_repartition_line_template__refund_tax_id
 msgid "Refund Tax"
-msgstr "折讓稅金"
+msgstr "退款稅金"
 
 #. module: account
 #: model:ir.actions.act_window,name:account.action_move_in_refund_type
 #: model:ir.ui.menu,name:account.menu_action_move_in_refund_type
 msgid "Refunds"
-msgstr "折讓"
+msgstr "退款"
 
 #. module: account
 #: code:addons/account/models/account_move.py:0
@@ -10775,12 +10852,12 @@ msgstr "重新分配應收憑單"
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_tax_template__refund_repartition_line_ids
 msgid "Repartition for Refund Invoices"
-msgstr "重新分配折讓憑單"
+msgstr "重新分配退款發票"
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_tax_template__refund_repartition_line_ids
 msgid "Repartition when the tax is used on a refund"
-msgstr "折讓使用稅款時的重新分配"
+msgstr "退款使用稅款時的重新分配"
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_tax_template__invoice_repartition_line_ids
@@ -11272,7 +11349,7 @@ msgstr "搜尋銀行對帳單明細"
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_chart_template_seacrh
 msgid "Search Chart of Account Templates"
-msgstr "搜尋項目表模板"
+msgstr "搜尋賬目總表範本"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_position_filter
@@ -11432,7 +11509,7 @@ msgstr "選擇第一個合作夥伴"
 #. module: account
 #: model:ir.model.fields,help:account.field_account_payment_term_line__value
 msgid "Select here the kind of valuation related to this payment terms line."
-msgstr "在這裡選擇與此付款條件相關的值."
+msgstr "請在此處選擇與此付款條件資料行相關的估值類型。"
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_invoice_send__model_object_field
@@ -11658,6 +11735,7 @@ msgid "Set active to false to hide the Journal without removing it."
 msgstr "設定為未啟用，可以隱藏日記帳而不用刪除它."
 
 #. module: account
+#: model:ir.model.fields,help:account.field_account_fiscal_position_tax__tax_dest_active
 #: model:ir.model.fields,help:account.field_account_tax__active
 #: model:ir.model.fields,help:account.field_account_tax_template__active
 msgid "Set active to false to hide the tax without removing it."
@@ -12449,7 +12527,7 @@ msgstr "稅金計算的捨入方法"
 #. module: account
 #: model:ir.model,name:account.model_account_tax_carryover_line
 msgid "Tax carryover line"
-msgstr "稅款結轉明細"
+msgstr "稅項結轉資料行"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_chart_template__property_tax_payable_account_id
@@ -12480,7 +12558,7 @@ msgid ""
 "Tax distribution line templates should apply to either invoices or refunds, "
 "not both at the same time. invoice_tax_id and refund_tax_id should not be "
 "set together."
-msgstr "稅金分配明細模板應適用於應收憑單或折讓單，而不是同時適用.  invoice_tax_id 和refund_tax_id 不應設定在一起."
+msgstr "稅金分配明細模板應適用於發票或退款單，而不是同時適用.  invoice_tax_id 和refund_tax_id 不應設定在一起."
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_move_line__tax_repartition_line_id
@@ -12495,8 +12573,7 @@ msgid ""
 "Tax distribution lines should apply to either invoices or refunds, not both "
 "at the same time. invoice_tax_id and refund_tax_id should not be set "
 "together."
-msgstr ""
-"稅金分配明細應適用於應收憑單或折讓單，而不是同時適用於兩者.  invoice_tax_id 和refund_tax_id 不應設定在一起."
+msgstr "稅金分配明細應適用於發票或退款單，而不是同時適用於兩者.  invoice_tax_id 和refund_tax_id 不應設定在一起."
 
 #. module: account
 #: model:ir.model.constraint,message:account.constraint_account_tax_name_company_uniq
@@ -13231,6 +13308,14 @@ msgid "The company this distribution line belongs to."
 msgstr "該分銷明細所屬的公司."
 
 #. module: account
+#: code:addons/account/models/partner.py:0
+#, python-format
+msgid ""
+"The country code of the foreign VAT number does not match any country in the"
+" group."
+msgstr "外國增值稅號碼的國家/地區代碼，不符合組別中任何國家/地區。"
+
+#. module: account
 #: model:ir.model.fields,help:account.field_account_tax_group__country_id
 msgid "The country for which this tax group is applicable."
 msgstr "此稅組適用的國家/地區."
@@ -13521,7 +13606,7 @@ msgstr "如果所選日期不存在，將使用該月的最後一天."
 #: code:addons/account/models/account_payment_term.py:0
 #, python-format
 msgid "The last line of a Payment Term should have the Balance type."
-msgstr "付款期限的最後明細應該有餘額類型."
+msgstr "付款條款的最後一行資料行，類型應為「結餘」。"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_payment_term_form
@@ -13612,7 +13697,7 @@ msgid ""
 "The order in which distribution lines are displayed and matched. For refunds"
 " to work properly, invoice distribution lines should be arranged in the same"
 " order as the credit note distribution lines they correspond to."
-msgstr "分配明細的顯示和匹配順序. 為使折讓正常工作，發票分配明細的排列順序應與其對應的折讓單分配明細的順序相同."
+msgstr "分配明細的顯示和匹配順序. 為使退款正常工作，發票分配明細的排列順序應與其對應的退款單分配明細的順序相同."
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_tax_carryover_line__tax_report_id
@@ -13817,6 +13902,14 @@ msgstr ""
 "                        任何先前存在的外幣金額的虧損."
 
 #. module: account
+#: code:addons/account/models/account_payment.py:0
+#, python-format
+msgid ""
+"The selected payment method is not available for this payment, please select"
+" the payment method again."
+msgstr "所選付款方式不適用於本次付款，請重新選擇付款方式。"
+
+#. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_payment_form
 msgid "The selected payment method requires a bank account but none is set on"
 msgstr "選擇的付款方式需要銀行帳戶，但沒有設定"
@@ -13885,7 +13978,7 @@ msgstr ""
 msgid ""
 "The sequences of this journal are different for Invoices and Refunds but you"
 " selected some of both types."
-msgstr "對於憑單和折讓，此日記帳的順序不同，但您選擇了這兩種類型中的一種."
+msgstr "對於發票和退款，此日記帳的順序不同，但您選擇了這兩種類型中的一種."
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_bank_statement_form
@@ -13959,7 +14052,7 @@ msgstr "使用此標籤的稅務報表明細"
 msgid ""
 "The tax set to apply this distribution on invoices. Mutually exclusive with "
 "refund_tax_id"
-msgstr "在應收憑單上應用此分配的稅金設定. 與refund_tax_id互斥"
+msgstr "在發票上應用此分配的稅金設定. 與refund_tax_id互斥"
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_tax_repartition_line__refund_tax_id
@@ -13967,7 +14060,7 @@ msgstr "在應收憑單上應用此分配的稅金設定. 與refund_tax_id互斥
 msgid ""
 "The tax set to apply this distribution on refund invoices. Mutually "
 "exclusive with invoice_tax_id"
-msgstr "在折讓憑單上應用此分配的稅金設定. 與invoice_tax_id互斥"
+msgstr "在退款發票上應用此分配的稅金設定. 與invoice_tax_id互斥"
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_cash_rounding__rounding_method
@@ -14200,7 +14293,7 @@ msgstr "當第三方在您的資料庫中不存在的時候(或者找不到)，�
 #. module: account
 #: model_terms:ir.actions.act_window,help:account.open_account_journal_dashboard_kanban
 msgid "This is the accounting dashboard"
-msgstr "這是「會計概覽畫面」"
+msgstr "這是「會計Dashboard」"
 
 #. module: account
 #: code:addons/account/models/account_journal.py:0
@@ -14339,7 +14432,7 @@ msgstr "至"
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.report_journal
 msgid "To :"
-msgstr ""
+msgstr "致："
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_bank_statement_line__to_check
@@ -15335,7 +15428,7 @@ msgstr "您僅能發送應收憑單."
 msgid ""
 "You can only set an account having the payable type on payment terms lines "
 "for vendor bill."
-msgstr "您只能在供應商帳單的付款條件明細上設定具有應付類型的項目."
+msgstr "你只可對供應商賬單的付款條款資料行，設定一個類型為「應付」的賬戶。"
 
 #. module: account
 #: code:addons/account/models/account_move.py:0
@@ -15343,7 +15436,7 @@ msgstr "您只能在供應商帳單的付款條件明細上設定具有應付類
 msgid ""
 "You can only set an account having the receivable type on payment terms "
 "lines for customer invoice."
-msgstr "您只能為客戶應收憑單的付款條件明細設定具有應收款類型的項目."
+msgstr "你只可對客戶發票的付款條款資料行，設定一個類型為「應收」的賬戶。"
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_journal__invoice_reference_type
@@ -15403,7 +15496,7 @@ msgid ""
 msgstr "您不能為屬於不同公司的分錄建立付款."
 
 #. module: account
-#: code:addons/account/models/account_payment_method.py:0
+#: code:addons/account/models/account_journal.py:0
 #, python-format
 msgid ""
 "You can't have two payment method lines of the same payment type (%s) and "
@@ -15424,7 +15517,7 @@ msgstr "您不能手動更改日記帳分錄 %s 的狀態，因為它是由銀�
 msgid ""
 "You can't open the register payment wizard without at least one "
 "receivable/payable line."
-msgstr "如果沒有至少一個應收/應付明細，您將無法打開付款登記視窗."
+msgstr "若未有最少一行應收/應付資料行，便無法開啟登記付款精靈。"
 
 #. module: account
 #: code:addons/account/models/account_bank_statement.py:0
@@ -15446,9 +15539,9 @@ msgstr "您無法登記付款，因為所選日記帳項目沒有任何餘款要
 #: code:addons/account/wizard/account_payment_register.py:0
 #, python-format
 msgid ""
-"You can't register payments for journal items being either all inbound, "
-"either all outbound."
-msgstr "您不能為全部收入或全部支出的日記帳項目登記付款."
+"You can't register payments for both inbound and outbound moves at the same "
+"time."
+msgstr "不可同時登記入賬及支賬分錄的付款。"
 
 #. module: account
 #: code:addons/account/models/account_analytic_line.py:0
@@ -15501,6 +15594,14 @@ msgstr "不能更改已經包含日記帳項目的所屬公司."
 #: code:addons/account/models/partner.py:0
 #, python-format
 msgid ""
+"You cannot create a fiscal position with a country outside of the selected "
+"country group."
+msgstr "你不可使用所選國家/地區組別以外的國家/地區，建立財務規則。"
+
+#. module: account
+#: code:addons/account/models/partner.py:0
+#, python-format
+msgid ""
 "You cannot create a fiscal position with a foreign VAT within your fiscal "
 "country without assigning it a state."
 msgstr "您不能在不為其分配狀態的情況下在您的財政國家內建立具有外國增值稅的財政政策."
@@ -15530,10 +15631,24 @@ msgid ""
 msgstr "您不能建立已處於已過帳狀態的日記帳傳票. 請建立草稿日記帳傳票，並在之後過帳."
 
 #. module: account
+#: code:addons/account/models/account_account.py:0
+#, python-format
+msgid "You cannot create recursive groups."
+msgstr "你不可建立遞歸群組。"
+
+#. module: account
 #: code:addons/account/models/account_move.py:0
 #, python-format
 msgid "You cannot delete an item linked to a posted entry."
 msgstr "您不能刪除連結到已過帳分錄的項目."
+
+#. module: account
+#: code:addons/account/models/account_account_tag.py:0
+#, python-format
+msgid ""
+"You cannot delete this account tag (%s), it is used on the chart of account "
+"definition."
+msgstr "你不可刪除此賬戶標籤（%s），因為它要用於賬目總表的定義內。"
 
 #. module: account
 #: code:addons/account/models/account_move.py:0
@@ -15542,6 +15657,14 @@ msgid ""
 "You cannot delete this entry, as it has already consumed a sequence number "
 "and is not the last one in the chain. You should probably revert it instead."
 msgstr "您不能刪除此分錄，因為它已經消耗了一個序列號並且不是相應鏈中的最後一個. 你可能應該要還原它."
+
+#. module: account
+#: code:addons/account/models/ir_actions_report.py:0
+#, python-format
+msgid ""
+"You cannot delete this report (%s), it is used by the accounting PDF "
+"generation engine."
+msgstr "你不可刪除此報告（%s），因為會計 PDF 生成引擎會使用。"
 
 #. module: account
 #: code:addons/account/models/res_config_settings.py:0
@@ -15611,6 +15734,12 @@ msgid ""
 "You cannot have more than one account with \"Current Year Earnings\" as "
 "type. (accounts: %s)"
 msgstr "您不能有一個以上以\"年度營收\"為類型的科目. (項目: %s)"
+
+#. module: account
+#: code:addons/account/models/account_account.py:0
+#, python-format
+msgid "You cannot merge accounts."
+msgstr "你不可合併賬戶。"
 
 #. module: account
 #: code:addons/account/models/account_move.py:0
@@ -15714,7 +15843,7 @@ msgid ""
 msgstr "如果某些部分對帳仍待處理，則您無法切換項目以阻止對帳."
 
 #. module: account
-#: code:addons/account/models/account_account.py:0
+#: code:addons/account/models/account_move.py:0
 #, python-format
 msgid "You cannot switch the type of a posted document."
 msgstr "已過賬文件不能更改類別。"
@@ -15753,7 +15882,7 @@ msgstr "您不能在此日記帳中使用此項目(%s)，請檢查相關日計�
 msgid ""
 "You cannot use this wizard on journal entries belonging to different "
 "companies."
-msgstr "您不能對屬於不同公司的日記帳分錄使用此視窗."
+msgstr "此精靈不可用於其他公司的日記賬記項。"
 
 #. module: account
 #: code:addons/account/models/account_move.py:0
@@ -15762,7 +15891,7 @@ msgid ""
 "You cannot validate an invoice with a negative total amount. You should "
 "create a credit note instead. Use the action menu to transform it into a "
 "credit note or refund."
-msgstr "您不能驗證總金額為負的應收憑單. 您應該改建一個折讓單. 使用操作功能表將其轉換為折讓單或退款."
+msgstr "您不能驗證總金額為負的發票. 您應該改建一個退款單. 使用操作功能表將其轉換為退款單或退款."
 
 #. module: account
 #: code:addons/account/models/account_move.py:0
@@ -15836,7 +15965,7 @@ msgstr "您應該在公司設定中設定\"匯率虧損項目\"，以自動管�
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.account_default_terms_and_conditions
 msgid "You should update this document to reflect your T&amp;C."
-msgstr "您應該更新此文件以反映您的 T&amp;C."
+msgstr "你應該更新此文件，以反映你的條款及細則。"
 
 #. module: account
 #: code:addons/account/models/chart_template.py:0
@@ -16107,6 +16236,11 @@ msgid ""
 "reserves the right to request a fixed interest payment amounting to 10% of "
 "the sum remaining due."
 msgstr "保留要求支付固定利息的權利，相當於剩餘到期金額的10%."
+
+#. module: account
+#: model:ir.model.fields,field_description:account.field_account_tax_repartition_line__tag_ids_domain
+msgid "tag domain"
+msgstr "標籤範疇"
 
 #. module: account
 #: code:addons/account/models/account_move.py:0
