@@ -40,8 +40,8 @@
 
         /**
          * If the event comes from the organizer we delete the event, else we the event is decline for the attendee
-         * @override 
-         */
+         * JS: We do not want this behaviour - delete is delete for everybody!
+         *
         _onDeleteRecord: function (ev) {
             const event = _.find(this.model.data.data, e => e.id === ev.data.id && e.attendee_id === ev.data.event.attendee_id);
             if (this.getSession().partner_id === event.attendee_id && this.getSession().partner_id === event.record.partner_id[0]) {
@@ -53,6 +53,7 @@
                 });
             }
         },
+        */
 
         /**
          * @override
