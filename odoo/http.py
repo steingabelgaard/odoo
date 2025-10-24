@@ -198,10 +198,10 @@ class WebRequest(object):
     def __init__(self, httprequest):
         self.httprequest = httprequest
         self.httpresponse = None
-        self.disable_db = False
         self.endpoint = None
         self.endpoint_arguments = None
         self.auth_method = None
+        self._db = self.session.db
         self._cr = None
         self._uid = None
         self._context = None
@@ -285,7 +285,7 @@ class WebRequest(object):
             finally:
                 self._cr.close()
         # just to be sure no one tries to re-use the request
-        self.disable_db = True
+        self._db = None
         self.uid = None
 
     def set_handler(self, endpoint, arguments, auth):
@@ -393,7 +393,9 @@ class WebRequest(object):
         The database linked to this request. Can be ``None``
         if the current request uses the ``none`` authentication.
         """
-        return self.session.db if not self.disable_db else None
+        if not self._db:
+            self._db = self.session.db
+        return self._db
 
     def csrf_token(self, time_limit=None):
         """ Generates and returns a CSRF token for the current session
@@ -1033,7 +1035,6 @@ class OpenERPSession(sessions.Session):
         self.rotate = True
         self.db = db
         self.login = login
-        request.disable_db = False
 
         user = request.env(user=uid)['res.users'].browse(uid)
         if not user._mfa_url():
@@ -1178,6 +1179,49 @@ mimetypes.add_type('application/x-font-ttf', '.ttf')
 # Add potentially missing (detected on windows) svg mime types
 mimetypes.add_type('image/svg+xml', '.svg')
 
+
+def make_request_wrap_methods(attr):
+    def getter(self):
+        return getattr(self._HTTPRequest__wrapped, attr)
+
+    def setter(self, value):
+        return setattr(self._HTTPRequest__wrapped, attr, value)
+
+    return getter, setter
+
+
+class HTTPRequest:
+    def __init__(self, environ):
+        httprequest = werkzeug.wrappers.Request(environ)
+        httprequest.user_agent_class = UserAgent  # use vendored userAgent since it will be removed in 2.1
+        httprequest.parameter_storage_class = werkzeug.datastructures.ImmutableOrderedMultiDict
+
+        self.__wrapped = httprequest
+        self.__environ = self.__wrapped.environ
+        self.environ = {
+            key: value
+            for key, value in self.__environ.items()
+            if not key.startswith(('werkzeug.', 'wsgi.')) or key in ['wsgi.url_scheme']
+        }
+
+    def __enter__(self):
+        return self
+
+
+HTTPREQUEST_ATTRIBUTES = [
+    '__str__', '__repr__', '__exit__',
+    'accept_charsets', 'accept_languages', 'accept_mimetypes', 'access_route', 'args', 'authorization', 'base_url',
+    'charset', 'content_encoding', 'content_length', 'content_md5', 'content_type', 'cookies', 'data', 'date',
+    'encoding_errors', 'files', 'form', 'full_path', 'get_data', 'get_json', 'headers', 'host', 'host_url', 'if_match',
+    'if_modified_since', 'if_none_match', 'if_range', 'if_unmodified_since', 'is_json', 'is_secure', 'json', 'method',
+    'mimetype', 'mimetype_params', 'origin', 'path', 'pragma', 'query_string', 'range', 'referrer', 'remote_addr',
+    'remote_user', 'root_path', 'root_url', 'scheme', 'script_root', 'server', 'session', 'trusted_hosts', 'url',
+    'url_charset', 'url_root', 'user_agent', 'values',
+]
+for attr in HTTPREQUEST_ATTRIBUTES:
+    setattr(HTTPRequest, attr, property(*make_request_wrap_methods(attr)))
+
+
 class Response(werkzeug.wrappers.Response):
     """ Response object passed through controller route chain.
 
@@ -1244,7 +1288,7 @@ class DisableCacheMiddleware(object):
 
     def __call__(self, environ, start_response):
         def start_wrapped(status, headers):
-            req = werkzeug.wrappers.Request(environ)
+            req = HTTPRequest(environ)
             root.setup_session(req)
             if req.session and req.session.debug and not 'wkhtmltopdf' in req.headers.get('User-Agent'):
                 cache_control_value = 'no-cache'
@@ -1435,9 +1479,7 @@ class Root(object):
         Performs the actual WSGI dispatching for the application.
         """
         try:
-            httprequest = werkzeug.wrappers.Request(environ)
-            httprequest.user_agent_class = UserAgent  # use vendored userAgent since it will be removed in 2.1
-            httprequest.parameter_storage_class = werkzeug.datastructures.ImmutableOrderedMultiDict
+            httprequest = HTTPRequest(environ)
 
             current_thread = threading.current_thread()
             current_thread.url = httprequest.url
