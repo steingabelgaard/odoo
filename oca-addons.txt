@@ -89,3 +89,18 @@ odoo-addon-web_notify>=15.0dev,<15.1dev
 odoo-addon-web_responsive>=15.0dev,<15.1dev
 odoo-addon-website-odoo-debranding>=15.0dev,<15.1dev
 
+# Patchede addons
+odoo-addon-web_access_rule_buttons @ git+https://github.com/OCA/web@refs/pull/2294/head#subdirectory=setup/web_access_rule_buttons
+odoo-addon-base_export_async @ git+https://github.com/OCA/queue@refs/pull/498/head#subdirectory=setup/base_export_async
+odoo-addon-ir_filters_multi_company @ git+https://github.com/OCA/multi-company@refs/pull/465/head#subdirectory=setup/ir_filters_multi_company
+odoo-addon-auth_admin_passkey @ git+https://github.com/OCA/server-auth@refs/pull/362/head#subdirectory=setup/auth_admin_passkey
+odoo-addon-account_statement_import_file_reconciliation_widget @ git+https://github.com/OCA/bank-statement-import@refs/pull/566/head#subdirectory=setup/account_statement_import_file_reconciliation_widget
+odoo-addon-account_bank_statement_reopen_skip_undo_reconciliation @ git+https://github.com/OCA/account-reconcile@refs/pull/526/head#subdirectory=setup/account_bank_statement_reopen_skip_undo_reconciliation
+odoo-addon-partner_multi_relation @ git+https://github.com/OCA/partner-contact@refs/pull/1508/head#subdirectory=setup/partner_multi_relation
+odoo-addon-sql_export_mail @ git+https://github.com/OCA/reporting-engine@refs/pull/777/head#subdirectory=setup/sql_export_mail
+odoo-addon-queue_job_web_notify @ git+https://github.com/OCA/queue@refs/pull/707/head#subdirectory=setup/queue_job_web_notify
+odoo-addon-queue_job_context @ git+https://github.com/OCA/queue@refs/pull/725/head#subdirectory=setup/queue_job_context
+odoo-addon-mis_builder_analytic @ git+https://github.com/OCA/mis-builder-contrib@refs/pull/44/head#subdirectory=setup/mis_builder_analytic
+odoo-addon-membership_extension @ git+https://github.com/OCA/vertical-association@refs/pull/163/head#subdirectory=setup/membership_extension
+odoo-addon-web_widget_x2many_2d_matrix @ git+https://github.com/OCA/web@15.0#subdirectory=setup/web_widget_x2many_2d_matrix
+
