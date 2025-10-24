@@ -147,7 +147,7 @@ odoo-addon-contract>=15.0dev,<15.1dev
 odoo-addon-contract-payment-mode>=15.0dev,<15.1dev
 odoo-addon-contract-sale>=15.0dev,<15.1dev
 odoo-addon-contract-sale-generation>=15.0dev,<15.1dev
-odoo-addon-date-rangev
+odoo-addon-date-range>=15.0dev,<15.1dev
 odoo-addon-disable-odoo-online>=15.0dev,<15.1dev
 odoo-addon-dms>=15.0dev,<15.1dev
 odoo-addon-github-connector>=15.0dev,<15.1dev
