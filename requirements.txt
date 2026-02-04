@@ -107,3 +107,4 @@ mock==5.2.0
 mysql-connector==2.2.9
 numpy==1.24.4
 oauthlib==3.3.1
+openupgradelib
