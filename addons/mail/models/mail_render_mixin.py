@@ -476,7 +476,7 @@ class MailRenderMixin(models.AbstractModel):
         for res_id, rendered_html in rendered.items():
             base_url = None
             if model:
-                base_url = self.env[model].browse(res_id).with_prefetch(res_ids).get_base_url()
+                base_url = self.env[model].browse(res_id).with_prefetch(res_ids).sudo().get_base_url()
             rendered[res_id] = self._replace_local_links(rendered_html, base_url)
         return rendered
 
