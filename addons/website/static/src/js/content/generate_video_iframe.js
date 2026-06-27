@@ -9,35 +9,7 @@ const SUPPORTED_DOMAINS = [
     "player.vimeo.com",
     "vimeo.com",
     "dailymotion.com",
-    "player.youku.com",
-    "youku.com",
 ];
-
-/**
- * Escapes a string to HTML interpolation.
- * Remark: this function is already available in the codebase (see:
- * `web/.../core/utils/strings.js`), but we need to reimplement it
- * here for non-lazy code.
- *
- * @param {String} str The string to escape.
- * @returns {String}
- */
-export function escape(str) {
-    if (!str) {
-        return "";
-    }
-    for (const [unescaped, escaped] of [
-        ["&", "&amp;"],
-        ["<", "&lt;"],
-        [">", "&gt;"],
-        ["'", "&#x27;"],
-        ['"', "&quot;"],
-        ["`", "&#x60;"],
-    ]) {
-        str = str.replaceAll(unescaped, escaped);
-    }
-    return str;
-}
 
 /**
  * Builds a video iframe for a saved `src` and appends it to the DOM.
@@ -59,7 +31,7 @@ export function generateVideoIframe(parentEl) {
 
     // Rebuild the iframe. Depending on version / compatibility / instance, the
     // src is saved in the 'data-src' attribute or the 'data-oe-expression' one.
-    const src = escape(parentEl.dataset.oeExpression || parentEl.dataset.src);
+    const src = parentEl.dataset.oeExpression || parentEl.dataset.src;
     // Validate the src to only accept supported domains we can trust
     const m = src.match(/^(?:https?:)?\/\/([^/?#]+)/);
     if (!m) {
@@ -74,6 +46,7 @@ export function generateVideoIframe(parentEl) {
     const iframeEl = document.createElement("iframe");
     iframeEl.setAttribute("frameborder", "0");
     iframeEl.setAttribute("allowfullscreen", "allowfullscreen");
+    iframeEl.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
     parentEl.appendChild(iframeEl);
 
     _manageIframeSrc(parentEl, src);

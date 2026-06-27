@@ -8,13 +8,13 @@
 # Wil Odoo, 2025
 # Anastasiia Koroleva, 2025
 #
-# "Anastasiia Koroleva (koan)" <koan@odoo.com>, 2025.
+# "Anastasiia Koroleva (koan)" <koan@odoo.com>, 2025, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-01 07:25+0000\n"
-"PO-Revision-Date: 2025-10-22 09:40+0000\n"
+"POT-Creation-Date: 2026-04-10 18:38+0000\n"
+"PO-Revision-Date: 2026-04-14 08:24+0000\n"
 "Last-Translator: \"Anastasiia Koroleva (koan)\" <koan@odoo.com>\n"
 "Language-Team: Russian <https://translate.odoo.com/projects/odoo-18/"
 "stock_account/ru/>\n"
@@ -23,9 +23,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || ("
-"n%100>=11 && n%100<=14)? 2 : 3);\n"
-"X-Generator: Weblate 5.12.2\n"
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+"X-Generator: Weblate 5.16.2\n"
 
 #. module: stock_account
 #. odoo-python
@@ -54,8 +54,8 @@ msgstr " [Учтено на %s]"
 #: code:addons/stock_account/wizard/stock_valuation_layer_revaluation.py:0
 msgid " lot/serial number cost updated from %(previous)s to %(new_cost)s."
 msgstr ""
-" себестоимость по партии/серийному номеру обновлена с %(previous)s до "
-"%(new_cost)s."
+" себестоимость по партии/серийному номеру обновлена с %(previous)s до %"
+"(new_cost)s."
 
 #. module: stock_account
 #. odoo-python
@@ -68,7 +68,8 @@ msgstr ""
 #. odoo-python
 #: code:addons/stock_account/wizard/stock_valuation_layer_revaluation.py:0
 msgid ""
-"%(user)s changed stock valuation from  %(previous)s to %(new_value)s - %(product)s\n"
+"%(user)s changed stock valuation from  %(previous)s to %(new_value)s - %"
+"(product)s\n"
 "%(reason)s"
 msgstr ""
 "Пользователь %(user)s изменил оценку запасов с %(previous)s на %(new_value)s "
@@ -79,15 +80,13 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_revaluation_form_view
 msgid ""
 ")\n"
-"                            <small class=\"mx-2 fst-italic\">Use a negative added value to record a decrease in the product value</small>"
+"                            <small class=\"mx-2 fst-italic\">Use a negative "
+"added value to record a decrease in the product value</small>"
 msgstr ""
 ")\n"
-"                           <small class=\"mx-2 fst-italic\">Используйте отрицательную добавленную стоимость, чтобы зафиксировать уменьшение стоимости продукта</small>"
-
-#. module: stock_account
-#: model_terms:ir.ui.view,arch_db:stock_account.stock_account_report_invoice_document
-msgid "6.00"
-msgstr "6.00"
+"                           <small class=\"mx-2 fst-italic\">Используйте "
+"отрицательную добавленную стоимость, чтобы зафиксировать уменьшение "
+"стоимости продукта</small>"
 
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.view_category_property_form
@@ -179,8 +178,8 @@ msgstr "Скорректировать оценку"
 #: model:ir.model.fields,help:stock_account.field_res_config_settings__module_stock_landed_costs
 #: model_terms:ir.ui.view,arch_db:stock_account.res_config_settings_view_form
 msgid ""
-"Affect landed costs on reception operations and split them among products to"
-" update their cost price."
+"Affect landed costs on reception operations and split them among products to "
+"update their cost price."
 msgstr ""
 "Влияйте на стоимость земли на операциях приема и распределяйте ее между "
 "продуктами, чтобы обновить их себестоимость."
@@ -240,12 +239,12 @@ msgstr "Отменить"
 #. odoo-python
 #: code:addons/stock_account/models/stock_move.py:0
 msgid ""
-"Cannot find a stock input account for the product %s. You must define one on"
-" the product category, or on the location, before processing this operation."
+"Cannot find a stock input account for the product %s. You must define one on "
+"the product category, or on the location, before processing this operation."
 msgstr ""
 "Не удается найти учетную запись входа в акции для продукта %s. Перед "
-"обработкой этой операции необходимо определить ее в категории продукта или в"
-" местоположении."
+"обработкой этой операции необходимо определить ее в категории продукта или в "
+"местоположении."
 
 #. module: stock_account
 #. odoo-python
@@ -256,8 +255,8 @@ msgid ""
 "operation."
 msgstr ""
 "Невозможно найти учетную запись вывода запасов для продукта %s.. Перед "
-"обработкой этой операции необходимо определить ее в категории продукта или в"
-" местоположении."
+"обработкой этой операции необходимо определить ее в категории продукта или в "
+"местоположении."
 
 #. module: stock_account
 #. odoo-python
@@ -303,8 +302,8 @@ msgid ""
 "Configuration error. Please configure the price difference account on the "
 "product or its category to process this operation."
 msgstr ""
-"Ошибка конфигурации. Чтобы обработать эту операцию, настройте учетную запись"
-" разницы цен на продукте или его категории."
+"Ошибка конфигурации. Чтобы обработать эту операцию, настройте учетную запись "
+"разницы цен на продукте или его категории."
 
 #. module: stock_account
 #. odoo-python
@@ -329,11 +328,11 @@ msgstr "Метод калькуляции себестоимости"
 #. odoo-python
 #: code:addons/stock_account/models/product.py:0
 msgid ""
-"Costing method change for product category %(category)s: from %(old_method)s"
-" to %(new_method)s."
+"Costing method change for product category %(category)s: from %(old_method)s "
+"to %(new_method)s."
 msgstr ""
-"Изменение метода калькуляции для категории продукции %(category)s: с "
-"%(old_method)s на %(new_method)s."
+"Изменение метода калькуляции для категории продукции %(category)s: с %"
+"(old_method)s на %(new_method)s."
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer_revaluation__account_id
@@ -343,11 +342,17 @@ msgstr "Контрагентский счет"
 #. module: stock_account
 #: model:ir.model.fields,help:stock_account.field_product_category__property_stock_account_input_categ_id
 msgid ""
-"Counterpart journal items for all incoming stock moves will be posted in this account, unless there is a specific valuation account\n"
-"                set on the source location. This is the default value for all products in this category. It can also directly be set on each product."
+"Counterpart journal items for all incoming stock moves will be posted in "
+"this account, unless there is a specific valuation account\n"
+"                set on the source location. This is the default value for "
+"all products in this category. It can also directly be set on each product."
 msgstr ""
-"Контрагентные журнальные статьи для всех входящих перемещений запасов будут размещаться на этом счете, если только не установлен специальный счет оценки\n"
-"                установленный для исходного местоположения. Это значение по умолчанию для всех продуктов в данной категории. Его также можно задать непосредственно для каждого продукта."
+"Контрагентные журнальные статьи для всех входящих перемещений запасов будут "
+"размещаться на этом счете, если только не установлен специальный счет "
+"оценки\n"
+"                установленный для исходного местоположения. Это значение по "
+"умолчанию для всех продуктов в данной категории. Его также можно задать "
+"непосредственно для каждого продукта."
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_picking__country_code
@@ -432,13 +437,13 @@ msgstr "Отображение серийного номера и номера �
 #. odoo-python
 #: code:addons/stock_account/models/product.py:0
 msgid ""
-"Due to a change of product category (from %(old_category)s to "
-"%(new_category)s), the costing method has changed for product %(product)s: "
+"Due to a change of product category (from %(old_category)s to %"
+"(new_category)s), the costing method has changed for product %(product)s: "
 "from %(old_method)s to %(new_method)s."
 msgstr ""
-"В связи с изменением категории товара (с %(old_category)s на "
-"%(new_category)s), изменился метод расчета себестоимости для товара "
-"%(product)s: с %(old_method)s на %(new_method)s."
+"В связи с изменением категории товара (с %(old_category)s на %"
+"(new_category)s), изменился метод расчета себестоимости для товара %"
+"(product)s: с %(old_method)s на %(new_method)s."
 
 #. module: stock_account
 #: model:ir.model.fields.selection,name:stock_account.selection__product_category__property_cost_method__fifo
@@ -602,12 +607,17 @@ msgstr "Ручная оценка стоимости акций: %s."
 #: model:ir.model.fields,help:stock_account.field_product_template__valuation
 #: model:ir.model.fields,help:stock_account.field_stock_valuation_layer_revaluation__property_valuation
 msgid ""
-"Manual: The accounting entries to value the inventory are not posted automatically.\n"
-"        Automated: An accounting entry is automatically created to value the inventory when a product enters or leaves the company.\n"
+"Manual: The accounting entries to value the inventory are not posted "
+"automatically.\n"
+"        Automated: An accounting entry is automatically created to value the "
+"inventory when a product enters or leaves the company.\n"
 "        "
 msgstr ""
-"Вручную: Бухгалтерские проводки по оценке запасов не выполняются автоматически.\n"
-"        Автоматизированный: Бухгалтерская проводка автоматически создается для определения стоимости запасов, когда товар поступает в компанию или покидает ее.\n"
+"Вручную: Бухгалтерские проводки по оценке запасов не выполняются "
+"автоматически.\n"
+"        Автоматизированный: Бухгалтерская проводка автоматически создается "
+"для определения стоимости запасов, когда товар поступает в компанию или "
+"покидает ее.\n"
 "        "
 
 #. module: stock_account
@@ -647,13 +657,22 @@ msgstr "Товар"
 #. odoo-python
 #: code:addons/stock_account/models/product.py:0
 msgid ""
-"Product %(product)s has quantity in valued location %(location)s without any lot.\n"
+"Product %(product)s has quantity in valued location %(location)s without any "
+"lot.\n"
 "Please assign lots to all your quantities before enabling lot valuation."
 msgstr ""
 "Товар %(product)s имеет остаток в оцениваемой локации %(location)s без "
 "указания партии.\n"
 "Пожалуйста, присвойте партии всем вашим остаткам перед включением оценки по "
 "партиям."
+
+#. module: stock_account
+#. odoo-python
+#: code:addons/stock_account/models/stock_move_line.py:0
+msgid ""
+"Product %(product)s is valuated by lot: an explicit Lot/Serial number is "
+"required."
+msgstr ""
 
 #. module: stock_account
 #: model:ir.model,name:stock_account.model_product_category
@@ -766,6 +785,12 @@ msgstr "Позиции комплектования к возврату"
 
 #. module: stock_account
 #. odoo-python
+#: code:addons/stock_account/models/product.py:0
+msgid "Revaluation of %(name)s (negative inventory)"
+msgstr "Переоценка %(name)s (отрицательный остаток запасов)"
+
+#. module: stock_account
+#. odoo-python
 #: code:addons/stock_account/wizard/stock_valuation_layer_revaluation.py:0
 msgid "Revaluation of %s"
 msgstr "Переоценка %s"
@@ -792,14 +817,21 @@ msgstr "Стандартная цена"
 #: model:ir.model.fields,help:stock_account.field_product_template__cost_method
 #: model:ir.model.fields,help:stock_account.field_stock_quant__cost_method
 msgid ""
-"Standard Price: The products are valued at their standard cost defined on the product.\n"
-"        Average Cost (AVCO): The products are valued at weighted average cost.\n"
-"        First In First Out (FIFO): The products are valued supposing those that enter the company first will also leave it first.\n"
+"Standard Price: The products are valued at their standard cost defined on "
+"the product.\n"
+"        Average Cost (AVCO): The products are valued at weighted average "
+"cost.\n"
+"        First In First Out (FIFO): The products are valued supposing those "
+"that enter the company first will also leave it first.\n"
 "        "
 msgstr ""
-"Стандартная цена: Продукты оцениваются по их стандартной стоимости, указанной на продукте.\n"
-"        Средняя стоимость (AVCO): Продукция оценивается по средневзвешенной стоимости.\n"
-"        Первым пришел, первым ушел (FIFO): Продукция оценивается исходя из предположения, что те товары, которые первыми поступают в компанию, также первыми ее покидают.\n"
+"Стандартная цена: Продукты оцениваются по их стандартной стоимости, "
+"указанной на продукте.\n"
+"        Средняя стоимость (AVCO): Продукция оценивается по средневзвешенной "
+"стоимости.\n"
+"        Первым пришел, первым ушел (FIFO): Продукция оценивается исходя из "
+"предположения, что те товары, которые первыми поступают в компанию, также "
+"первыми ее покидают.\n"
 "        "
 
 #. module: stock_account
@@ -906,8 +938,7 @@ msgid ""
 "The Stock Input and/or Output accounts cannot be the same as the Stock "
 "Valuation account."
 msgstr ""
-"Счета ввода и/или вывода запасов не могут совпадать со счетом оценки "
-"запасов."
+"Счета ввода и/или вывода запасов не могут совпадать со счетом оценки запасов."
 
 #. module: stock_account
 #. odoo-python
@@ -1004,8 +1035,8 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/stock_account/static/src/fields/boolean_confirm.js:0
 msgid ""
-"This operation might lead in a loss of data. Valuation will be identical for"
-" all lots/SN. Do you want to proceed ? "
+"This operation might lead in a loss of data. Valuation will be identical for "
+"all lots/SN. Do you want to proceed ? "
 msgstr ""
 "Эта операция может привести к потере данных. Оценка будет одинаковой для "
 "всех партий/серийных номеров. Продолжить? "
@@ -1014,8 +1045,8 @@ msgstr ""
 #. odoo-python
 #: code:addons/stock_account/models/product.py:0
 msgid ""
-"This product is valuated by lot/serial number. Changing the cost will update"
-" the cost of every lot/serial number in stock."
+"This product is valuated by lot/serial number. Changing the cost will update "
+"the cost of every lot/serial number in stock."
 msgstr ""
 "Товар оценивается по партиям/серийным номерам. Изменение себестоимости "
 "обновит стоимость для всех партий/серийных номеров на складе."
@@ -1066,8 +1097,8 @@ msgstr "Перевод"
 #: model:ir.model.fields,help:stock_account.field_stock_move__to_refund
 #: model:ir.model.fields,help:stock_account.field_stock_return_picking_line__to_refund
 msgid ""
-"Trigger a decrease of the delivered/received quantity in the associated Sale"
-" Order/Purchase Order"
+"Trigger a decrease of the delivered/received quantity in the associated Sale "
+"Order/Purchase Order"
 msgstr ""
 "Спровоцировать уменьшение количества поставленного/полученного товара в "
 "связанном заказе на продажу/заказе на покупку"
@@ -1176,11 +1207,11 @@ msgstr "Оценка по партиям/серийным номерам"
 #. odoo-python
 #: code:addons/stock_account/models/product.py:0
 msgid ""
-"Valuation method change for product category %(category)s: from "
-"%(old_method)s to %(new_method)s."
+"Valuation method change for product category %(category)s: from %"
+"(old_method)s to %(new_method)s."
 msgstr ""
-"Изменение метода оценки для категории продукции %(category)s: с "
-"%(old_method)s на %(new_method)s."
+"Изменение метода оценки для категории продукции %(category)s: с %"
+"(old_method)s на %(new_method)s."
 
 #. module: stock_account
 #: model:ir.model.fields,help:stock_account.field_stock_valuation_layer_revaluation__adjusted_layer_ids
@@ -1208,13 +1239,14 @@ msgstr "Значение Svl"
 #: model:ir.model.fields,help:stock_account.field_stock_lot__standard_price
 msgid ""
 "Value of the lot (automatically computed in AVCO).\n"
-"        Used to value the product when the purchase cost is not known (e.g. inventory adjustment).\n"
+"        Used to value the product when the purchase cost is not known (e.g. "
+"inventory adjustment).\n"
 "        Used to compute margins on sale orders."
 msgstr ""
 "Стоимость партии (автоматически рассчитывается при использовании метода "
 "AVCO).\n"
-"        Используется для оценки товара, когда стоимость закупки неизвестна ("
-"например, при инвентаризации).\n"
+"        Используется для оценки товара, когда стоимость закупки неизвестна "
+"(например, при инвентаризации).\n"
 "        Также используется для расчета маржи по заказам на продажу."
 
 #. module: stock_account
@@ -1235,12 +1267,18 @@ msgstr ""
 #. module: stock_account
 #: model:ir.model.fields,help:stock_account.field_product_category__property_stock_account_output_categ_id
 msgid ""
-"When doing automated inventory valuation, counterpart journal items for all outgoing stock moves will be posted in this account,\n"
-"                unless there is a specific valuation account set on the destination location. This is the default value for all products in this category.\n"
+"When doing automated inventory valuation, counterpart journal items for all "
+"outgoing stock moves will be posted in this account,\n"
+"                unless there is a specific valuation account set on the "
+"destination location. This is the default value for all products in this "
+"category.\n"
 "                It can also directly be set on each product."
 msgstr ""
-"При автоматической оценке запасов на этом счете будут отражаться контрагентские статьи журнала для всех исходящих перемещений запасов,\n"
-"                если только для места назначения не установлен специальный счет оценки. Это значение по умолчанию для всех продуктов в данной категории.\n"
+"При автоматической оценке запасов на этом счете будут отражаться "
+"контрагентские статьи журнала для всех исходящих перемещений запасов,\n"
+"                если только для места назначения не установлен специальный "
+"счет оценки. Это значение по умолчанию для всех продуктов в данной "
+"категории.\n"
 "                Его также можно задать непосредственно для каждого продукта."
 
 #. module: stock_account
@@ -1317,15 +1355,14 @@ msgid ""
 "rights."
 msgstr ""
 "Вы не можете обновить стоимость продукта в автоматической оценке, так как "
-"это приведет к созданию записи в журнале, для которой у вас нет прав "
-"доступа."
+"это приведет к созданию записи в журнале, для которой у вас нет прав доступа."
 
 #. module: stock_account
 #. odoo-python
 #: code:addons/stock_account/models/product.py:0
 msgid ""
-"You don't have any input valuation account defined on your product category."
-" You must define one before processing this operation."
+"You don't have any input valuation account defined on your product category. "
+"You must define one before processing this operation."
 msgstr ""
 "Для вашей категории товаров не определен счет входной оценки. Вы должны "
 "определить его перед обработкой этой операции."
@@ -1344,8 +1381,8 @@ msgstr ""
 #. odoo-python
 #: code:addons/stock_account/models/product.py:0
 msgid ""
-"You don't have any stock input account defined on your product category. You"
-" must define one before processing this operation."
+"You don't have any stock input account defined on your product category. You "
+"must define one before processing this operation."
 msgstr ""
 "Для вашей категории товаров не определен счет ввода запасов. Вы должны "
 "определить его перед обработкой этой операции."
@@ -1366,8 +1403,8 @@ msgstr ""
 #: code:addons/stock_account/models/stock_move.py:0
 #: code:addons/stock_account/models/stock_valuation_layer.py:0
 msgid ""
-"You don't have any stock valuation account defined on your product category."
-" You must define one before processing this operation."
+"You don't have any stock valuation account defined on your product category. "
+"You must define one before processing this operation."
 msgstr ""
 "Вы не имеете каких-либо запасов учетной записи, определенной на вашей "
 "категории продукта. Необходимо определить перед обработкой этой операции."
@@ -1403,3 +1440,6 @@ msgstr "единицы"
 #: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_graph
 msgid "valuation graph"
 msgstr "график оценки"
+
+#~ msgid "6.00"
+#~ msgstr "6.00"

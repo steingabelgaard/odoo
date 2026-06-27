@@ -31,6 +31,7 @@ export const WEBSOCKET_CLOSE_CODES = Object.freeze({
     SESSION_EXPIRED: 4001,
     KEEP_ALIVE_TIMEOUT: 4002,
     RECONNECTING: 4003,
+    CLOSING_HANDSHAKE_ABORTED: 4004,
 });
 export const WORKER_STATE = Object.freeze({
     CONNECTED: "CONNECTED",
@@ -258,9 +259,10 @@ export class WebsocketWorker {
             this.isWaitingForNewUID = false;
             this.currentUID = uid;
         }
-        if ((this.currentUID !== uid && isCurrentUserKnown) || this.currentDB !== db) {
+        this.currentDB ||= db;
+        if ((this.currentUID !== uid && isCurrentUserKnown) || (db && this.currentDB !== db)) {
             this.currentUID = uid;
-            this.currentDB = db;
+            this.currentDB = db || this.currentDB;
             if (this.websocket) {
                 this.websocket.close(WEBSOCKET_CLOSE_CODES.CLEAN);
             }
@@ -339,8 +341,15 @@ export class WebsocketWorker {
         // WebSocket was not closed cleanly, let's try to reconnect.
         this.broadcast("reconnecting", { closeCode: code });
         this.isReconnecting = true;
-        if (code === WEBSOCKET_CLOSE_CODES.KEEP_ALIVE_TIMEOUT) {
-            // Don't wait to reconnect on keep alive timeout.
+        if (
+            [
+                WEBSOCKET_CLOSE_CODES.KEEP_ALIVE_TIMEOUT,
+                WEBSOCKET_CLOSE_CODES.CLOSING_HANDSHAKE_ABORTED,
+            ].includes(code)
+        ) {
+            // Don't wait to reconnect: keep-alive shouldn't be noticed, and the
+            // closing handshake was aborted because the client explicitly tried
+            // to connect while the socket was stuck in the closing state.
             this.connectRetryDelay = 0;
         }
         if (code === WEBSOCKET_CLOSE_CODES.SESSION_EXPIRED) {
@@ -485,10 +494,13 @@ export class WebsocketWorker {
         }
         this._removeWebsocketListeners();
         if (this._isWebsocketClosing()) {
-            // close event was not triggered and will never be, broadcast the
-            // disconnect event for consistency sake.
-            this.lastChannelSubscription = null;
-            this.broadcast("disconnect", { code: WEBSOCKET_CLOSE_CODES.ABNORMAL_CLOSURE });
+            // The close event didn’t trigger. Trigger manually to maintain
+            // correct state and lifecycle handling.
+            this._onWebsocketClose(
+                new CloseEvent("close", { code: WEBSOCKET_CLOSE_CODES.CLOSING_HANDSHAKE_ABORTED })
+            );
+            this.websocket = null;
+            return;
         }
         this._updateState(WORKER_STATE.CONNECTING);
         this.websocket = new WebSocket(this.websocketURL);

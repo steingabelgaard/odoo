@@ -1,7 +1,8 @@
-import { test } from "@odoo/hoot";
-import { testEditor } from "./_helpers/editor";
+import { click, expect, test } from "@odoo/hoot";
+import { setupEditor, testEditor } from "./_helpers/editor";
 import { unformat } from "./_helpers/format";
 import { setColor } from "./_helpers/user_actions";
+import { animationFrame } from "@odoo/hoot-mock";
 
 test("should apply a color to a slice of text in a span in a font", async () => {
     await testEditor({
@@ -14,13 +15,15 @@ test("should apply a color to a slice of text in a span in a font", async () => 
     });
 });
 
-test("should apply a color to the qweb tag", async () => {
+test("should apply a color to the qweb tag (1)", async () => {
     await testEditor({
         contentBefore: `<div><p t-esc="'Test'" contenteditable="false">[Test]</p></div>`,
         stepFunction: setColor("rgb(255, 0, 0)", "color"),
         contentAfter: `<div>[<p t-esc="'Test'" contenteditable="false" style="color: rgb(255, 0, 0);">Test</p>]</div>`,
     });
+});
 
+test("should apply a color to the qweb tag (2)", async () => {
     await testEditor({
         contentBefore: `<div><p t-field="record.display_name" contenteditable="false">[Test]</p></div>`,
         stepFunction: setColor("rgb(255, 0, 0)", "color"),
@@ -43,7 +46,7 @@ test("should get ready to type with a different color", async () => {
     await testEditor({
         contentBefore: "<p>ab[]cd</p>",
         stepFunction: setColor("rgb(255, 0, 0)", "color"),
-        contentAfter: '<p>ab<font style="color: rgb(255, 0, 0);">[]\u200B</font>cd</p>',
+        contentAfter: '<p>ab<font style="color: rgb(255, 0, 0);">\u200B[]</font>cd</p>',
     });
 });
 
@@ -51,7 +54,7 @@ test("should get ready to type with a different background color", async () => {
     await testEditor({
         contentBefore: "<p>ab[]cd</p>",
         stepFunction: setColor("rgb(255, 0, 0)", "backgroundColor"),
-        contentAfter: '<p>ab<font style="background-color: rgb(255, 0, 0);">[]\u200B</font>cd</p>',
+        contentAfter: '<p>ab<font style="background-color: rgb(255, 0, 0);">\u200B[]</font>cd</p>',
     });
 });
 
@@ -206,12 +209,15 @@ test("should not apply font tag to t nodes (protects if else nodes separation)",
     });
 });
 
-test("should remove font tag after removing font color", async () => {
+test("should remove font tag after removing font color (1)", async () => {
     await testEditor({
         contentBefore: '<p><font style="color: rgb(255, 0, 0);">[abcabc]</font></p>',
         stepFunction: setColor("", "color"),
         contentAfter: "<p>[abcabc]</p>",
     });
+});
+
+test("should remove font tag after removing font color (2)", async () => {
     await testEditor({
         contentBefore: '<p><font class="text-400">[abcabc]</font></p>',
         stepFunction: setColor("", "color"),
@@ -219,12 +225,15 @@ test("should remove font tag after removing font color", async () => {
     });
 });
 
-test("should remove font tag after removing background color applied as style", async () => {
+test("should remove font tag after removing background color applied as style (1)", async () => {
     await testEditor({
         contentBefore: '<p><font style="background-color: rgb(255, 0, 0);">[abcabc]</font></p>',
         stepFunction: setColor("", "backgroundColor"),
         contentAfter: "<p>[abcabc]</p>",
     });
+});
+
+test("should remove font tag after removing background color applied as style (2)", async () => {
     await testEditor({
         contentBefore: '<p><font class="bg-200">[abcabc]</font></p>',
         stepFunction: setColor("", "backgroundColor"),
@@ -232,7 +241,7 @@ test("should remove font tag after removing background color applied as style", 
     });
 });
 
-test("should remove font tag if font-color and background-color both are removed one by one", async () => {
+test("should remove font tag if font-color and background-color both are removed one by one (1)", async () => {
     await testEditor({
         contentBefore: '<p><font style="color: rgb(255, 0, 0);" class="bg-200">[abcabc]</font></p>',
         stepFunction: (editor) => {
@@ -241,6 +250,9 @@ test("should remove font tag if font-color and background-color both are removed
         },
         contentAfter: "<p>[abcabc]</p>",
     });
+});
+
+test("should remove font tag if font-color and background-color both are removed one by one (2)", async () => {
     await testEditor({
         contentBefore:
             '<p><font style="background-color: rgb(255, 0, 0);" class="text-900">[abcabc]</font></p>',
@@ -544,13 +556,15 @@ test("should remove background gradient and apply new background color if gradie
         contentAfter: '<p><font style="background-color: rgb(255, 0, 0);">[abcd]</font></p>',
     });
 });
-test("should not split unsplittable element when applying color", async () => {
+test("should not split unsplittable element when applying color (1)", async () => {
     await testEditor({
         contentBefore: '<div style="color: rgb(255, 0, 0);"><p>[test]</p></div>',
         stepFunction: setColor("rgb(0, 0, 255)", "color"),
         contentAfter:
             '<div style="color: rgb(255, 0, 0);"><p><font style="color: rgb(0, 0, 255);">[test]</font></p></div>',
     });
+});
+test("should not split unsplittable element when applying color (2)", async () => {
     await testEditor({
         contentBefore: '<div style="color: rgb(255, 0, 0);"><p>t[es]t</p></div>',
         stepFunction: setColor("rgb(0, 0, 255)", "color"),
@@ -632,5 +646,66 @@ test("should remove remove color from `td`", async () => {
                 </tbody>
             </table>
         `),
+    });
+});
+
+test("Should properly apply color when selection on feff", async () => {
+    const { el, editor } = await setupEditor(
+        unformat(`
+            <font style="color: #6e4a8b;">
+                \ufeff
+                <a href="#">\ufeffa\ufeff</a>
+                \ufeff
+                <font style="color: #008f8c;">b</font>
+            </font>
+        `)
+    );
+    const font = el.querySelector("font");
+    const [feff1, , feff2] = font.childNodes;
+    editor.shared.selection.setSelection({
+        anchorNode: feff2,
+        anchorOffset: 1,
+        focusNode: feff1,
+        focusOffset: 0,
+    });
+    await animationFrame();
+    await click(".o-select-color-foreground");
+    await animationFrame();
+    await click('[data-color="#FF0000"]');
+    await animationFrame();
+    expect(el).toHaveInnerHTML(
+        unformat(`
+            <div class="o-paragraph">
+                <font style="color: rgb(255, 0, 0);">
+                    <a href="#">
+                        a
+                    </a>
+                </font>
+                <font style="color: #6e4a8b;">
+                    <font style="color: #008f8c;">
+                        b
+                    </font>
+                </font>
+            </div>
+        `)
+    );
+    // Ensure the link inherited the font color.
+    const a = el.querySelector("a");
+    expect(getComputedStyle(a).color).toBe("rgb(255, 0, 0)");
+});
+
+test("should be able to remove color applied by 'text-*' classes (1)", async () => {
+    await testEditor({
+        contentBefore: '<p><span class="text-muted">[a]</span></p>',
+        stepFunction: setColor("", "color"),
+        contentAfter: "<p>[a]</p>",
+    });
+});
+
+test("should be able to remove color applied by 'text-*' classes (2)", async () => {
+    await testEditor({
+        contentBefore: '<p><a href="#" class="text-muted">[a]</a></p>',
+        stepFunction: setColor("", "color"),
+        contentAfter: '<p><a href="#">[a]</a></p>',
     });
 });

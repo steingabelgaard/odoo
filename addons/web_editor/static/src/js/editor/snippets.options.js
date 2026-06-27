@@ -564,7 +564,11 @@ const UserValueWidget = publicWidget.Widget.extend({
                 this._triggerWidgetsValues.push(...dataValue.split(/\s*,\s*/g));
             } else if (validMethodNames.includes(key)) {
                 this._methodsNames.push(key);
-                this._methodsParams.optionsPossibleValues[key] = dataValue.split(/\s*\|\s*/g);
+                if (this._methodsParams.noSplit) {
+                    this._methodsParams.optionsPossibleValues[key] = [dataValue];
+                } else {
+                    this._methodsParams.optionsPossibleValues[key] = dataValue.split(/\s*\|\s*/g);
+                }
             } else {
                 this._methodsParams[key] = dataValue;
             }
@@ -1847,6 +1851,7 @@ const ColorpickerUserValueWidget = SelectUserValueWidget.extend({
         if (wysiwyg) {
             options.document = this.$target[0].ownerDocument;
             options.getTemplate = wysiwyg.getColorpickerTemplate.bind(wysiwyg);
+            options.getEditableCustomColors = wysiwyg.colorPalettesProps?.background?.getEditableCustomColors;
         }
         this.colorPaletteWrapper?.destroy();
         const sidebarDocument = this.colorPaletteEl.ownerDocument;
@@ -2285,7 +2290,7 @@ const ListUserValueWidget = UserValueWidget.extend({
         }
         currentValues.forEach(value => {
             if (typeof value === 'object') {
-                const recordData = value;
+                const recordData = { ...value };
                 const { id, display_name } = recordData;
                 delete recordData.id;
                 delete recordData.display_name;
@@ -9705,7 +9710,14 @@ registry.DynamicSvg = SnippetOptionWidget.extend({
                 return;
         }
         const newURL = new URL(target.src, window.location.origin);
-        newURL.searchParams.set(params.colorName, normalizeColor(widgetValue));
+        let color = widgetValue ? normalizeColor(widgetValue) : '';
+        if (!color) {
+            // Reset uses theme palette colors to keep dynamic SVGs valid.
+            const colorId = params.colorName.slice(1);
+            color = weUtils.getCSSVariableValue(`o-color-${colorId}`)
+                || weUtils.DEFAULT_PALETTE[colorId];
+        }
+        newURL.searchParams.set(params.colorName, color);
         const src = newURL.pathname + newURL.search;
         await loadImage(src);
         target.src = src;

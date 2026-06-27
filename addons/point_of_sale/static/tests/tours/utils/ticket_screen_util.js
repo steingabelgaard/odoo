@@ -178,6 +178,12 @@ export function refundedNoteContains(text) {
         trigger: `.ticket-screen .refund-note:contains("${text}")`,
     });
 }
+export function noLinesToRefund() {
+    return inLeftSide({
+        content: "No lines are marked for to refund or refunding",
+        trigger: ".ticket-screen:not(:has(.to-refund-highlight))",
+    });
+}
 export function tipContains(amount) {
     return [
         {
@@ -192,6 +198,14 @@ export function receiptTotalIs(amount) {
         },
     ];
 }
+export function receiptTotalAmountIs(amount) {
+    return [
+        {
+            trigger: `.receipt-total .pos-receipt-right-align:contains("${amount}")`,
+        },
+    ];
+}
+
 export function receiptChangeIs(amount) {
     return [
         {

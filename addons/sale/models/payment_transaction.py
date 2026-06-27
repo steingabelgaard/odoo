@@ -134,7 +134,10 @@ class PaymentTransaction(models.Model):
         :return: None
         """
         super()._log_message_on_linked_documents(message)
-        author = self.env.user.partner_id if self.env.uid == SUPERUSER_ID else self.partner_id
+        if self.env.uid == SUPERUSER_ID or self.env.context.get('payment_backend_action'):
+            author = self.env.user.partner_id
+        else:
+            author = self.partner_id
         for order in self.sale_order_ids or self.source_transaction_id.sale_order_ids:
             order.message_post(body=message, author_id=author.id)
 
@@ -213,7 +216,8 @@ class PaymentTransaction(models.Model):
                 # edi postprocessing of invoice and displaying the sale order on the portal
                 for invoice in invoices:
                     invoice._portal_ensure_token()
-                tx.invoice_ids = [Command.set(invoices.ids)]
+                if invoices:
+                    tx.invoice_ids = [Command.set(invoices.ids)]
 
     @api.model
     def _compute_reference_prefix(self, provider_code, separator, **values):

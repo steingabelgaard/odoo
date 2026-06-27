@@ -464,14 +464,15 @@ window.SelectorEngine.find = function (...args) {
 registry.slider = publicWidget.Widget.extend({
     selector: '.carousel',
     disabledInEditableMode: false,
-    edit_events: {
-        'content_changed': '_onContentChanged',
-    },
 
     /**
      * @override
      */
     start: function () {
+        if (this.editableMode) {
+            window.top.$(this.$el[0]).on('content_changed', () => this._onContentChanged());
+            window.top.$(this.$el[0]).on('image_changed', () => this._onContentChanged());
+        }
         this.$('img').on('load.slider', () => this._computeHeights());
         this._computeHeights();
         $(window).on('resize.slider', debounce(() => this._computeHeights(), 250));
@@ -1145,7 +1146,8 @@ registry.anchorSlide = publicWidget.Widget.extend({
         hash = '#' + $.escapeSelector(hash.substring(1));
         var $anchor = $(hash);
         const scrollValue = $anchor.attr('data-anchor');
-        if (!$anchor.length || !scrollValue) {
+        // No need to scroll when target is _blank as it should open in new tab
+        if (!$anchor.length || !scrollValue || this.el.target === "_blank") {
             return;
         }
 
@@ -1632,8 +1634,8 @@ registry.WebsiteAnimate = publicWidget.Widget.extend({
                 // case specifically instead of a generic solution using
                 // elementFromPoint as it is a rare case and the implementation
                 // would have been too complicated for such a small use case.
-                const actualScroll = wrapEl.scrollTop + this.windowsHeight;
-                const totalScrollHeight = wrapEl.scrollHeight;
+                const actualScroll = document.scrollingElement.scrollTop + this.windowsHeight;
+                const totalScrollHeight = document.scrollingElement.scrollHeight;
                 const heightFromFooter = this._getElementOffsetTop(el, footerEl);
                 visible = actualScroll >=
                     totalScrollHeight - heightFromFooter - elHeight + elOffset;

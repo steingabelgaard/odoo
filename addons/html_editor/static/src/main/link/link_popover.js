@@ -1,9 +1,18 @@
 import { session } from "@web/session";
 import { _t } from "@web/core/l10n/translation";
-import { Component, useState, onMounted, useRef } from "@odoo/owl";
+import { Component, useState, onMounted, useRef, onWillUnmount } from "@odoo/owl";
 import { useAutofocus, useService } from "@web/core/utils/hooks";
 import { browser } from "@web/core/browser/browser";
 import { cleanZWChars, deduceURLfromText } from "./utils";
+
+function useContentChange(el, callback) {
+    onMounted(() => {
+        el.addEventListener("keyup", callback);
+    });
+    onWillUnmount(() => {
+        el.removeEventListener("keyup", callback);
+    });
+}
 
 export class LinkPopover extends Component {
     static template = "html_editor.linkPopover";
@@ -90,6 +99,9 @@ export class LinkPopover extends Component {
             if (!this.state.editing) {
                 this.loadAsyncLinkPreview();
             }
+        });
+        useContentChange(this.props.linkEl, () => {
+            this.state.urlTitle = this.props.linkEl.textContent;
         });
     }
     initButtonStyle(className) {
@@ -197,9 +209,9 @@ export class LinkPopover extends Component {
             return;
         }
         if (this.isAttachmentUrl()) {
-            const { name, mimetype } = await this.props.getAttachmentMetadata(this.state.url);
+            const { mimetype } = await this.props.getAttachmentMetadata(this.state.url);
             this.resetPreview();
-            this.state.urlTitle = name;
+            this.state.urlTitle = this.props.linkEl.textContent;
             this.state.previewIcon = { type: "mimetype", value: mimetype };
             return;
         }
@@ -235,7 +247,12 @@ export class LinkPopover extends Component {
                 value: `https://www.google.com/s2/favicons?sz=16&domain=${encodeURIComponent(url)}`,
             };
 
-            const externalMetadata = await this.props.getExternalMetaData(this.state.url);
+            const externalMetadata = await this.props
+                .getExternalMetaData(this.state.url)
+                .catch((error) => {
+                    console.warn(`Error fetching external metadata for ${url.href}:`, error);
+                    return {};
+                });
 
             this.state.urlTitle = externalMetadata?.og_title || this.state.url;
             this.state.urlDescription = externalMetadata?.og_description || "";
@@ -251,7 +268,12 @@ export class LinkPopover extends Component {
             // Set state based on cached link meta data
             // for record missing errors, we push a warning that the url is likely invalid
             // for other errors, we log them to not block the ui
-            const internalMetadata = await this.props.getInternalMetaData(this.state.url);
+            const internalMetadata = await this.props
+                .getInternalMetaData(this.state.url)
+                .catch((error) => {
+                    console.warn(`Error fetching internal metadata for ${url.href}:`, error);
+                    return {};
+                });
             if (internalMetadata.favicon) {
                 this.state.previewIcon = {
                     type: "imgSrc",
