@@ -28,6 +28,8 @@ function invertMethod(method) {
 }
 
 export class AbstractNumbers extends Base {
+    static enableLazyGetters = false;
+
     get precision() {
         return Math.pow(10, -2);
     }
@@ -70,18 +72,12 @@ export class AbstractNumbers extends Base {
         return roundPrecision(a, this.precision, this.method);
     }
 
-    /**
-     * ```
-     * asymmetricRound(1.23, { precision: 0.1, method: "UP" }) // 1.3
-     * asymmetricRound(-1.23, { precision: 0.1, method: "UP" }) // -1.2
-     * ```
-     */
     asymmetricRound(a) {
         return roundPrecision(
             a,
             this.precision,
             // If negative, invert the rounding method
-            this.isNegative(a) ? invertMethod(this.method) : this.method
+            a < 0 ? invertMethod(this.method) : this.method
         );
     }
 }

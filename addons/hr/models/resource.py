@@ -83,8 +83,8 @@ class ResourceResource(models.Model):
         for contract in contracts:
             tz = timezone(contract.employee_id.tz)
             res[contract.employee_id.resource_id.id][contract.resource_calendar_id] |= Intervals([(
-                tz.localize(datetime.combine(contract.contract_date_start, datetime.min.time())) if contract.contract_date_start > start.astimezone(tz).date() else start,
-                tz.localize(datetime.combine(contract.contract_date_end, datetime.max.time())) if contract.contract_date_end and contract.contract_date_end < end.astimezone(tz).date() else end,
+                tz.localize(datetime.combine(contract.date_start, datetime.min.time())) if contract.date_start > start.astimezone(tz).date() else start,
+                tz.localize(datetime.combine(contract.date_end, datetime.max.time())) if contract.date_end and contract.date_end < end.astimezone(tz).date() else end,
                 self.env['resource.calendar.attendance']
             )])
         return res
@@ -127,3 +127,11 @@ class ResourceResource(models.Model):
                     calendars_within_period_per_resource[resource_id][calendar_id] = intervals & resource_default_work_intervals[resource_id]
 
         return calendars_within_period_per_resource
+
+    def _get_calendar_at(self, date_target, tz=False):
+        result = super()._get_calendar_at(date_target)
+        resources_with_employee = self.filtered(lambda r: r.employee_id)
+        employee_calendars = resources_with_employee.employee_id._get_calendars(date_target.astimezone(tz))
+        for resource in resources_with_employee:
+            result[resource] = employee_calendars[resource.employee_id.id]
+        return result

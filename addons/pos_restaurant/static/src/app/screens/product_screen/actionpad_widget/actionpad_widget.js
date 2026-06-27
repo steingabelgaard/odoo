@@ -18,6 +18,7 @@ patch(ActionpadWidget.prototype, {
     setup() {
         super.setup();
         this.doSubmitOrder = useTrackedAsync(() => this.pos.submitOrder());
+        this.doReprintOrder = useTrackedAsync(() => this.pos.reprintOrder());
     },
     get swapButton() {
         return (
@@ -26,12 +27,7 @@ patch(ActionpadWidget.prototype, {
         );
     },
     get hasChangesToPrint() {
-        let hasChange = this.pos.getOrderChanges();
-        hasChange =
-            hasChange.generalCustomerNote == ""
-                ? true // for the case when removed all general note
-                : hasChange.count || hasChange.generalCustomerNote || hasChange.modeUpdate;
-        return hasChange;
+        return Boolean(this.displayCategoryCount.length);
     },
     hasQuantity(order) {
         if (!order) {
@@ -84,6 +80,10 @@ patch(ActionpadWidget.prototype, {
         }
         this.currentOrder.cleanCourses(); //remove empty course on fire course.
         await this.pos.fireCourse(course);
+        this.pos.showDefault();
+    },
+    async clickNew() {
+        await this.pos.syncAllOrders({ orders: [this.pos.getOrder()] });
         this.pos.showDefault();
     },
 });

@@ -256,6 +256,13 @@ addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js
 !whatsapp
 !whatsapp/**/*
 
+# Whitelist voip modules
+!voip*
+!voip*/**/*
+
+# BlackList voip libs
+voip/static/lib/**/*
+
 # Whitelist stock_barcode modules
 !stock_barcode
 !stock_barcode/**/*
@@ -345,6 +352,8 @@ addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js
 !addons/pos_stripe/**/*
 !addons/spreadsheet_dashboard_pos_hr
 !addons/spreadsheet_dashboard_pos_hr/**/*
+!addons/pos_cashmatic
+!addons/pos_cashmatic/**/*
 
 # Whitelist enterprise pos modules
 !l10n_cl_edi_pos

@@ -33,6 +33,7 @@ export class ListCoreViewPlugin extends OdooCoreViewPlugin {
         this.lists = {};
 
         this.custom = config.custom;
+        this._pendingAddDomains = false;
     }
 
     beforeHandle(cmd) {
@@ -41,10 +42,6 @@ export class ListCoreViewPlugin extends OdooCoreViewPlugin {
                 for (const listId of this.getters.getListIds()) {
                     this._setupListDataSource(listId, 0);
                 }
-
-                // make sure the domains are correctly set before
-                // any evaluation
-                this._addDomains();
                 break;
         }
     }
@@ -71,7 +68,7 @@ export class ListCoreViewPlugin extends OdooCoreViewPlugin {
             case "EDIT_GLOBAL_FILTER":
             case "REMOVE_GLOBAL_FILTER":
             case "SET_GLOBAL_FILTER_VALUE":
-                this._addDomains();
+                this._pendingAddDomains = true;
                 break;
             case "UPDATE_ODOO_LIST":
             case "UPDATE_ODOO_LIST_DOMAIN": {
@@ -123,6 +120,13 @@ export class ListCoreViewPlugin extends OdooCoreViewPlugin {
         }
     }
 
+    finalize() {
+        if (this._pendingAddDomains) {
+            this._addDomains();
+            this._pendingAddDomains = false;
+        }
+    }
+
     // -------------------------------------------------------------------------
     // Handlers
     // -------------------------------------------------------------------------
@@ -133,6 +137,7 @@ export class ListCoreViewPlugin extends OdooCoreViewPlugin {
         if (!(dataSourceId in this.lists)) {
             this.lists[dataSourceId] = new ListDataSource(this.custom, { ...definition, limit });
         }
+        this._addDomain(listId);
     }
 
     /**
@@ -276,6 +281,9 @@ export class ListCoreViewPlugin extends OdooCoreViewPlugin {
             return undefined;
         }
         const cell = this.getters.getCell(position);
+        if (!cell?.isFormula) {
+            return undefined;
+        }
         const { functionName, args } = getFirstListFunction(cell.compiledFormula.tokens);
         const fieldArg = functionName === "ODOO.LIST.HEADER" ? args[1] : args[2];
         const dataSource = this.getters.getListDataSource(listId);
@@ -289,11 +297,11 @@ export class ListCoreViewPlugin extends OdooCoreViewPlugin {
     }
 
     getListSortDirection(position) {
-        const field = this.getters.getListFieldFromPosition(position);
         const listId = this.getters.getListIdFromPosition(position);
         if (!listId) {
             return "none";
         }
+        const field = this.getters.getListFieldFromPosition(position);
         const orderBy = this.getters.getListDefinition(listId).orderBy[0];
         if (!orderBy || !field || orderBy.name !== field.name) {
             return "none";
@@ -303,8 +311,11 @@ export class ListCoreViewPlugin extends OdooCoreViewPlugin {
 
     isSortableListHeader(position) {
         const listId = this.getters.getListIdFromPosition(position);
-        const cell = this.getters.getCell(position);
         if (!listId) {
+            return false;
+        }
+        const cell = this.getters.getCell(position);
+        if (!cell?.isFormula) {
             return false;
         }
         const { functionName } = getFirstListFunction(cell.compiledFormula.tokens);
@@ -336,7 +347,6 @@ export class ListCoreViewPlugin extends OdooCoreViewPlugin {
      */
     getListCellValueAndFormat(listId, position, path) {
         const dataSource = this.getters.getListDataSource(listId);
-        dataSource.addFieldPathToFetch(path);
         const value = dataSource.getListCellValue(position, path);
         if (typeof value === "object" && isEvaluationError(value.value)) {
             return value;

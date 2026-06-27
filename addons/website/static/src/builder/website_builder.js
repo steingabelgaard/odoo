@@ -5,16 +5,21 @@ import { DisableSnippetsPlugin } from "@html_builder/core/disable_snippets_plugi
 import { OperationPlugin } from "@html_builder/core/operation_plugin";
 import { SavePlugin } from "@html_builder/core/save_plugin";
 import { SetupEditorPlugin } from "@html_builder/core/setup_editor_plugin";
+import { TranslateSetupEditorPlugin } from "./plugins/translate_setup_editor_plugin";
 import { VisibilityPlugin } from "@html_builder/core/visibility_plugin";
 import { removePlugins } from "@html_builder/utils/utils";
 import { closestElement } from "@html_editor/utils/dom_traversal";
-import { Component } from "@odoo/owl";
+import { Component, onMounted, onWillStart } from "@odoo/owl";
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { useSetupAction } from "@web/search/action_hook";
 import { HighlightPlugin } from "./plugins/highlight/highlight_plugin";
+import { RepeatTranslationStatePlugin } from "./plugins/translation/repeat_translation_state_plugin";
+import { BadgeTranslationPlugin } from "./plugins/translation/badge_translation_plugin";
+import { ButtonTranslationPlugin } from "./plugins/options/button_option_plugin";
+import { NavTabsTranslationPlugin } from "./plugins/options/navtabs_style_option_plugin";
 import { PopupVisibilityPlugin } from "./plugins/popup_visibility_plugin";
 import { SaveTranslationPlugin } from "./plugins/save_translation_plugin";
 import { TranslateAnnouncementScrollPlugin } from "./plugins/translate_announcement_scroll_plugin";
@@ -39,9 +44,19 @@ import { FieldChangeReplicationPlugin } from "@html_builder/core/field_change_re
 import { BuilderContentEditablePlugin } from "@html_builder/core/builder_content_editable_plugin";
 import { ImageFieldPlugin } from "@html_builder/plugins/image_field_plugin";
 import { MonetaryFieldPlugin } from "@html_builder/plugins/monetary_field_plugin";
+import { DateTimeFieldPlugin } from "@html_builder/plugins/date_time_field_plugin";
 import { Many2OneOptionPlugin } from "@html_builder/plugins/many2one_option_plugin";
 import { CustomizeTranslationTab } from "@website/builder/plugins/translation_tab/customize_translation_tab";
 import { CustomizeTranslationTabPlugin } from "./plugins/translation_tab/customize_translation_tab_plugin";
+import { Plugin } from "@html_editor/plugin";
+import { revertPreview } from "@html_builder/core/utils";
+import { rpc } from "@web/core/network/rpc";
+import { redirect } from "@web/core/utils/urls";
+import { browser } from "@web/core/browser/browser";
+import {
+    localStorageNoDialogKey,
+    TranslatorInfoDialog,
+} from "./translation_components/translatorInfoDialog";
 
 const TRANSLATION_PLUGINS = [
     BuilderOptionsTranslationPlugin,
@@ -51,6 +66,7 @@ const TRANSLATION_PLUGINS = [
     DisableSnippetsPlugin,
     SavePlugin,
     SetupEditorPlugin,
+    TranslateSetupEditorPlugin,
     WebsiteSetupEditorPlugin,
     VisibilityPlugin,
     PopupVisibilityPlugin,
@@ -61,6 +77,10 @@ const TRANSLATION_PLUGINS = [
     WebsiteVisibilityPlugin,
     AnimateOptionPlugin,
     HighlightPlugin,
+    RepeatTranslationStatePlugin,
+    BadgeTranslationPlugin,
+    ButtonTranslationPlugin,
+    NavTabsTranslationPlugin,
     OperationPlugin,
     EditInteractionPlugin,
     TranslateTableOfContentOptionPlugin,
@@ -69,8 +89,18 @@ const TRANSLATION_PLUGINS = [
     BuilderContentEditablePlugin,
     ImageFieldPlugin,
     MonetaryFieldPlugin,
+    DateTimeFieldPlugin,
     Many2OneOptionPlugin,
     CustomizeTranslationTabPlugin,
+    // Those plugin are depended by other Plugin but not used in translation
+    // mode.
+    // Todo: find a better way to handle that.
+    class FakeRemovePlugin extends Plugin {
+        static id = "remove";
+    },
+    class FakeClonePlugin extends Plugin {
+        static id = "clone";
+    },
 ];
 
 export class WebsiteBuilder extends Component {
@@ -84,13 +114,27 @@ export class WebsiteBuilder extends Component {
     setup() {
         this.websiteService = useService("website");
         this.dialog = useService("dialog");
+        this.websiteEditService =
+            this.websiteService.websiteRootInstance?.bindService("website_edit");
         useSetupAction({
             beforeUnload: (ev) => this.onBeforeUnload(ev),
             beforeLeave: () => this.onBeforeLeave(),
         });
+        onWillStart(async () => {
+            this.translatedElements = this.props.translation
+                ? await rpc("/website/get_translated_elements")
+                : [];
+        });
+        onMounted(() => {
+            if (this.props.translation && !browser.localStorage.getItem(localStorageNoDialogKey)) {
+                this.dialog.add(TranslatorInfoDialog);
+            }
+            this.websiteEditService?.clearRpcCache();
+        });
     }
 
-    discard() {
+    async discard() {
+        await revertPreview(this.editor);
         if (this.editor.shared.history.canUndo()) {
             this.dialog.add(ConfirmationDialog, {
                 title: _t("Discard all changes?"),
@@ -105,13 +149,14 @@ export class WebsiteBuilder extends Component {
         } else {
             this.props.builderProps.closeEditor();
         }
+        this.reloadAfterTimeout();
     }
 
     onBeforeUnload(event) {
         if (!this.editor) {
             return;
         }
-        if (!this.isSaving && this.editor.shared.history.canUndo()) {
+        if (this.editor.shared.history.canUndo()) {
             event.preventDefault();
             event.returnValue = "Unsaved changes";
         }
@@ -139,22 +184,49 @@ export class WebsiteBuilder extends Component {
         return true;
     }
 
-    async save() {
-        this.editor.shared.operation.next(this._save.bind(this), { withLoadingEffect: false });
+    reloadAfterTimeout() {
+        if (this.editor.shared.operation.hasTimedOut()) {
+            const currentUrl = new URL(window.location.href);
+            // A timed-out operation might still be running; reload the page to avoid side effects
+            redirect(`/@${currentUrl.pathname}`);
+        }
     }
 
-    async _save() {
-        this.isSaving = true;
+    async save() {
+        if (this.editor.shared.operation.hasTimedOut()) {
+            const shouldContinue = await new Promise((resolve) => {
+                this.dialog.add(ConfirmationDialog, {
+                    title: _t("Corrupted content"),
+                    body: _t(
+                        "This page may be corrupted if you save these changes. Are you sure you want to continue?"
+                    ),
+                    confirmLabel: _t("Save anyway"),
+                    confirmClass: "btn-danger",
+                    confirm: () => resolve(true),
+                    cancel: () => resolve(false),
+                    dismiss: () => resolve(false),
+                });
+            });
+            if (!shouldContinue) {
+                return;
+            }
+        }
+
         // TODO: handle the urgent save and the fail of the save operation
-        await this.editor.shared.savePlugin.save({ alwaysSkipAfterSaveHandlers: false });
-        this.props.builderProps.closeEditor();
-        this.isSaving = false;
+        await this.editor.shared.operation.next(
+            async () => {
+                await this.editor.shared.savePlugin.save();
+                this.props.builderProps.closeEditor();
+            },
+            { withLoadingEffect: false, canTimeout: false }
+        );
+        this.reloadAfterTimeout();
     }
 
     get builderProps() {
         const builderProps = Object.assign({}, this.props.builderProps);
         const websitePlugins = this.props.translation
-            ? TRANSLATION_PLUGINS
+            ? [...TRANSLATION_PLUGINS, ...registry.category("website-translation-plugins").getAll()]
             : [
                   ...registry.category("builder-plugins").getAll(),
                   ...registry.category("website-plugins").getAll(),
@@ -170,7 +242,6 @@ export class WebsiteBuilder extends Component {
             "ImagePlugin",
             "AlignPlugin",
             "ListPlugin",
-            "FontPlugin",
             "FontFamilyPlugin",
         ];
         const pluginsToRemove = this.props.translation
@@ -211,6 +282,7 @@ export class WebsiteBuilder extends Component {
                 type: editableEl.dataset["oeType"],
             };
         };
+        builderProps.config.translatedElements = this.translatedElements;
         builderProps.getThemeTab = () => this.websiteService.isDesigner && ThemeTab;
         builderProps.getCustomizeTranslationTab = () => CustomizeTranslationTab;
         const installSnippetModule = builderProps.installSnippetModule;

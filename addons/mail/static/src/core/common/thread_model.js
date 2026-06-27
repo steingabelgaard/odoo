@@ -165,9 +165,23 @@ export class Thread extends Record {
         },
     });
     isDisplayedOnUpdate() {}
+
+    get composerDisabled() {
+        return false;
+    }
+
     get isFocused() {
         return this.isFocusedCounter !== 0;
     }
+    isFocusedByThread = fields.Attr(false, {
+        onUpdate() {
+            if (this.isFocusedByThread) {
+                this.isFocusedCounter++;
+            } else {
+                this.isFocusedCounter--;
+            }
+        },
+    });
     isFocusedCounter = fields.Attr(0, {
         onUpdate() {
             if (this.isFocusedCounter < 0) {
@@ -189,6 +203,8 @@ export class Thread extends Record {
             }
         },
     });
+    /** @type {Boolean|undefined} */
+    has_mail_thread;
     message_main_attachment_id = fields.One("ir.attachment");
     message_needaction_counter = 0;
     message_needaction_counter_bus_id = 0;
@@ -246,6 +262,8 @@ export class Thread extends Record {
     /** @type {String|undefined} */
     primary_email_field;
     hasLoadingFailed = false;
+    /** @type {Error} */
+    hasLoadingFailedError;
     canPostOnReadonly;
     /** @type {Boolean} */
     is_editable;
@@ -313,6 +331,10 @@ export class Thread extends Record {
         );
     }
 
+    get canPostMessage() {
+        return this.hasWriteAccess || (this.hasReadAccess && this.canPostOnReadonly);
+    }
+
     /**
      * Return the name of the given persona to display in the context of this
      * thread.
@@ -321,7 +343,7 @@ export class Thread extends Record {
      * @returns {string}
      */
     getPersonaName(persona) {
-        return persona.displayName || persona.name;
+        return persona?.displayName || persona?.name;
     }
 
     get hasAttachmentPanel() {
@@ -461,9 +483,11 @@ export class Thread extends Record {
         let res;
         try {
             res = await this.fetchMessagesData({ after, around, before });
+            this.hasLoadingFailedError = undefined;
             this.hasLoadingFailed = false;
         } catch (e) {
             this.hasLoadingFailed = true;
+            this.hasLoadingFailedError = e;
             this.isLoaded = true;
             this.status = "ready";
             throw e;

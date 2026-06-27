@@ -3,13 +3,15 @@
 # * payment_flutterwave
 #
 # "Tiffany Chang (tic)" <tic@odoo.com>, 2025.
+# "Dylan Kiss (dyki)" <dyki@odoo.com>, 2025.
+# "Noemi Pla Garcia (nopl)" <nopl@odoo.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-08 18:39+0000\n"
-"PO-Revision-Date: 2025-09-17 17:21+0000\n"
-"Last-Translator: \"Tiffany Chang (tic)\" <tic@odoo.com>\n"
+"POT-Creation-Date: 2026-01-25 18:37+0000\n"
+"PO-Revision-Date: 2025-12-20 09:51+0000\n"
+"Last-Translator: \"Noemi Pla Garcia (nopl)\" <nopl@odoo.com>\n"
 "Language-Team: Spanish <https://translate.odoo.com/projects/odoo-19/"
 "payment_flutterwave/es/>\n"
 "Language: es\n"
@@ -17,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.12.2\n"
+"X-Generator: Weblate 5.14.3\n"
 
 #. module: payment_flutterwave
 #. odoo-python
@@ -25,7 +27,8 @@ msgstr ""
 msgid ""
 "An error occurred during the processing of your payment (status %s). Please "
 "try again."
-msgstr "Ocurrió un error al procesar su pago (estado %s). Inténtelo de nuevo."
+msgstr ""
+"Se ha producido un error al procesar tu pago (estado %s). Inténtalo de nuevo."
 
 #. module: payment_flutterwave
 #: model:ir.model.fields,field_description:payment_flutterwave.field_payment_provider__code
@@ -37,7 +40,7 @@ msgstr "Código"
 #: model:ir.model.fields,field_description:payment_flutterwave.field_payment_token__display_name
 #: model:ir.model.fields,field_description:payment_flutterwave.field_payment_transaction__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nombre para mostrar"
 
 #. module: payment_flutterwave
 #: model:ir.model.fields.selection,name:payment_flutterwave.selection__payment_provider__code__flutterwave
@@ -69,7 +72,7 @@ msgstr "Secreto de webhook de Flutterwave"
 #: model:ir.model.fields,field_description:payment_flutterwave.field_payment_token__id
 #: model:ir.model.fields,field_description:payment_flutterwave.field_payment_transaction__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: payment_flutterwave
 #: model:ir.model,name:payment_flutterwave.model_payment_provider

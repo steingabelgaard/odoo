@@ -48,22 +48,29 @@ export class NoteButton extends Component {
                 note: payload,
             });
             selectedOrderline.qty = saved_quantity;
+            for (const line of selectedOrderline.combo_line_ids) {
+                line.setQuantity(line.uiState.oldQty);
+            }
         } else {
             this.setOrderlineNote(payload);
         }
     }
 
     async openTextInput(selectedNote) {
+        const selectedLine = this.pos.getOrder().getSelectedOrderline();
         let buttons = [];
-        if (this.type === "internal" || this.pos.getOrder()?.getSelectedOrderline() === undefined) {
+        if (this.type === "internal" || !selectedLine) {
             buttons = this.pos.models["pos.note"].readAll().map((note) => ({
                 label: note.name,
                 class: note.color ? `o_colorlist_item_color_${note.color}` : "",
             }));
         }
 
+        const titlePrefix = selectedLine
+            ? selectedLine.product_id.name + _t(": Add ")
+            : _t("Add a ");
         return await makeAwaitable(this.dialog, TextInputPopup, {
-            title: _t("Add %s", this.props.label),
+            title: titlePrefix + this.props.label,
             buttons,
             rows: 4,
             startingValue: selectedNote,
@@ -120,7 +127,7 @@ export class InternalNoteButton extends NoteButton {
         const selectedOrderline = this.pos.getOrder().getSelectedOrderline();
         const selectedNote = JSON.parse(this.currentNote || "[]");
         const payload = await this.openTextInput(selectedNote.map((n) => n.text).join("\n"));
-        const coloredNotes = payload ? this.reframeNotes(payload) : "[]";
+        const coloredNotes = payload ? this.reframeNotes(payload) : "";
         if (selectedOrderline) {
             this.setChanges(selectedOrderline, coloredNotes);
         } else {

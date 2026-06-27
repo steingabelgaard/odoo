@@ -6,6 +6,8 @@ import {
     insertSnippet,
     registerWebsitePreviewTour,
     changeOptionInPopover,
+    clickOnEditAndWaitEditMode,
+    assertCssVariable,
 } from "@website/js/tours/tour_utils";
 
 registerWebsitePreviewTour(
@@ -75,7 +77,7 @@ registerWebsitePreviewTour(
             content:
                 "Check that the Snippet Editor of the clicked image has been loaded with its size",
             trigger:
-                ".o-tab-content [data-container-title='Image']:has([title='Size']:contains(/^.+ kB$/)",
+                ".o-tab-content [data-container-title='Image']:has([title='Size']:text(.+ kB)",
         },
         {
             content: "Click on Remove Block",
@@ -157,6 +159,18 @@ registerWebsitePreviewTour(
             trigger:
                 ".o_customize_tab [data-container-title='Image'] [data-label='Filter'] .o-dropdown:contains('Blur')",
         },
+        {
+            content: "Change the height of the snippet",
+            trigger: `.o_customize_tab [data-container-title="Image Gallery"] [data-label="Height"] input`,
+            run: "edit 400",
+        },
+        changeOption("Image", "[data-label='Re-order'] button[data-action-value='next']"),
+        {
+            content: "Click on the moved image",
+            trigger: ":iframe .s_image_gallery .carousel-item.active img[data-index='2']",
+            run: "click",
+        },
+        assertCssVariable("height", "400px", ":iframe .s_image_gallery"),
     ]
 );
 
@@ -176,6 +190,7 @@ registerWebsitePreviewTour(
             id: "s_image_gallery",
             name: "Image Gallery",
         }),
+        ...changeOptionInPopover("Image Gallery", "Indicators", "Squared Miniatures"),
         changeOption("Image Gallery", "addImage"),
         {
             content: "Click on the default image",
@@ -185,12 +200,62 @@ registerWebsitePreviewTour(
         addMedia(),
         {
             content: "Check that the new image has been added",
-            trigger: ":iframe .s_image_gallery:has(img[data-index='3'])",
+            trigger: ":iframe .s_image_gallery_indicators_squared:has(img[data-index='3'])",
         },
         {
             content: "Check that the thumbnail of the first image has not been changed",
             trigger:
                 ":iframe .s_image_gallery div.carousel-indicators button:first-child[style='background-image: url(/web/image/website.library_image_08)']",
+        },
+        ...clickOnSave(),
+        ...clickOnEditAndWaitEditMode(),
+        {
+            content: "Check that the thumbnail of the new image is displayed",
+            trigger:
+                ":iframe .s_image_gallery div.carousel-indicators button:nth-child(4)[style*='s_default_image']",
+        },
+        {
+            content: "Select the first image in the gallery",
+            trigger: ":iframe .s_image_gallery .carousel-item:first-child img",
+            run: "click",
+        },
+        {
+            content: "Open the replace media dialog",
+            trigger: "[data-action-id='replaceMedia']",
+            run: "click",
+        },
+        {
+            content: "Pick another image to replace the first one",
+            trigger: ".o_select_media_dialog .o_button_area[aria-label='s_default_image_2.jpg']",
+            run: "click",
+        },
+        ...clickOnSave(),
+        ...clickOnEditAndWaitEditMode(),
+        {
+            content: "Check that the first image has been replaced",
+            trigger:
+                ":iframe .s_image_gallery .carousel-item:first-child img[src*='s_default_image_2']",
+        },
+        {
+            content: "Check that the thumbnail of the first image is updated",
+            trigger:
+                ":iframe .s_image_gallery div.carousel-indicators button:first-child[style*='s_default_image_2']",
+        },
+        {
+            content: "Select the second image in the gallery",
+            trigger: ":iframe .s_image_gallery .carousel-control-next-icon",
+            run: "click",
+        },
+        changeOption("Image", "[data-label='Shape'] .dropdown-toggle"),
+        {
+            content: "Click on the first image shape",
+            trigger: "[data-action-id='setImageShape']",
+            run: "click",
+        },
+        {
+            content: "Check that the thumbnail of the second image is an SVG",
+            trigger:
+                ":iframe .s_image_gallery div.carousel-indicators button:nth-child(2)[style*='data:image/svg+xml']",
         },
     ]
 );

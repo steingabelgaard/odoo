@@ -26,19 +26,37 @@
  * @property { Object[] } items
  */
 
+/**
+ * @typedef { import("../../../../html_editor/static/src/editor").EditorContext } EditorContext
+ */
+
 export class BuilderAction {
     /** @type { string[] } */
     static dependencies = [];
-    constructor(plugin, dependencies) {
-        this.window = plugin.window;
-        this.document = plugin.document;
-        this.editable = plugin.editable;
-        this.dependencies = dependencies;
-        this.services = plugin.services;
-        this.config = plugin.config;
-        this.getResource = plugin.getResource.bind(plugin);
-        this.dispatchTo = plugin.dispatchTo.bind(plugin);
-        this.delegateTo = plugin.delegateTo.bind(plugin);
+    static cancelReload = Symbol("cancel reload");
+    /**
+     * @param { EditorContext } context
+     */
+    constructor(context) {
+        /** @type { EditorContext['document'] } **/
+        this.document = context.document;
+        this.window = context.document.defaultView;
+        /** @type { EditorContext['editable'] } **/
+        this.editable = context.editable;
+        /** @type { EditorContext['config'] } **/
+        this.config = context.config;
+        /** @type { EditorContext['services'] } **/
+        this.services = context.services;
+        /** @type { EditorContext['dependencies'] } **/
+        this.dependencies = context.dependencies;
+        /** @type { EditorContext['getResource'] } **/
+        this.getResource = context.getResource;
+        /** @type { EditorContext['dispatchTo'] } **/
+        this.dispatchTo = context.dispatchTo;
+        /** @type { EditorContext['delegateTo'] } **/
+        this.delegateTo = context.delegateTo;
+        /** @type { EditorContext['checkPredicates'] } **/
+        this.checkPredicates = context.checkPredicates;
 
         this.setup();
 
@@ -47,6 +65,9 @@ export class BuilderAction {
         this.preview ??= this.reload ? false : true;
         this.withLoadingEffect ??= true;
         this.loadOnClean ??= false;
+        // canTimeout is enabled when no load is used to avoid staying stuck
+        // in the mutex if apply fails silently.
+        this.canTimeout ??= !this.has("load");
     }
 
     /**
@@ -152,7 +173,10 @@ export class BuilderAction {
      * value is passed as `loadResult` in the `apply` context.
      * /!\ By itself, `load` SHOULD NOT have any effect.
      *
-     * Should be used when there is a preview: when triggering an action after
+     * Should be used in 2 cases:
+     * 1. when the action's reload is set and you want to open a dialog: open
+     * the dialog in `load`, otherwise the interface will be blocked.
+     * 2. when there is a preview: when triggering an action after
      * another one, the previous call to `apply` is cancelled. But if `apply` is
      * async, the builder has to wait for the end of the call (and clean) before
      * applying the next action. In order to avoid stalling the builder, you can

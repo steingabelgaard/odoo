@@ -31,7 +31,7 @@ import {
 import { cleanupAnimations } from "../mock/animation";
 import { cleanupDate } from "../mock/date";
 import { internalRandom } from "../mock/math";
-import { cleanupNavigator, mockUserAgent } from "../mock/navigator";
+import { cleanupNavigator } from "../mock/navigator";
 import { cleanupNetwork, throttleNetwork } from "../mock/network";
 import {
     cleanupWindow,
@@ -58,6 +58,8 @@ import * as _navigator from "../mock/navigator";
 import * as _network from "../mock/network";
 import * as _notification from "../mock/notification";
 import * as _window from "../mock/window";
+
+const { isPrevented, mockPreventDefault } = _window;
 
 /**
  * @typedef {{
@@ -169,8 +171,11 @@ function formatIncludes(values) {
  */
 function formatAssertions(assertions) {
     const lines = [];
-    for (const { failedDetails, label, message, number } of assertions) {
+    for (const { additionalMessage, failedDetails, label, message, number } of assertions) {
         const formattedMessage = message.map((part) => (isLabel(part) ? part[0] : String(part)));
+        if (additionalMessage) {
+            formattedMessage.push(`(${additionalMessage})`);
+        }
         lines.push(`\n${number}. [${label}] ${formattedMessage.join(" ")}`);
         if (failedDetails) {
             for (const detail of failedDetails) {
@@ -195,15 +200,6 @@ function formatAssertions(assertions) {
         }
     }
     return lines;
-}
-
-/**
- * @param {Event} ev
- */
-function safePrevent(ev) {
-    if (ev.cancelable) {
-        ev.preventDefault();
-    }
 }
 
 /**
@@ -838,6 +834,7 @@ export class Runner {
     }
 
     manualStart() {
+        this._canStartDef ||= Promise.withResolvers();
         this._canStartDef.resolve(true);
     }
 
@@ -987,6 +984,8 @@ export class Runner {
                 continue;
             }
 
+            logger.logTest(test);
+
             // Suppress console errors and warnings if test is in "todo" mode
             // (and not in debug).
             const restoreConsole = handleConsoleIssues(test, !this.debug);
@@ -1054,14 +1053,7 @@ export class Runner {
 
             // Log test errors and increment counters
             this.expectHooks.after(this);
-            if (lastResults.pass) {
-                logger.logTest(test);
-
-                if (this.state.failedIds.has(test.id)) {
-                    this.state.failedIds.delete(test.id);
-                    storageSet(STORAGE.failed, [...this.state.failedIds]);
-                }
-            } else {
+            if (!lastResults.pass) {
                 this._failed++;
 
                 const failReasons = [];
@@ -1094,6 +1086,9 @@ export class Runner {
                     this.state.failedIds.add(test.id);
                     storageSet(STORAGE.failed, [...this.state.failedIds]);
                 }
+            } else if (this.state.failedIds.has(test.id)) {
+                this.state.failedIds.delete(test.id);
+                storageSet(STORAGE.failed, [...this.state.failedIds]);
             }
 
             await this._callbacks.call("after-post-test", test, handleError);
@@ -1156,6 +1151,17 @@ export class Runner {
         }
 
         await this._callbacks.call("after-all", this, logger.error);
+
+        if (this.headless) {
+            // Log root suite results in headless
+            const restoreLogLevel = logger.setLogLevel("suites");
+            for (const suite of this.suites.values()) {
+                if (!suite.parent) {
+                    logger.logSuite(suite);
+                }
+            }
+            restoreLogLevel();
+        }
 
         const { passed, failed, assertions } = this.reporting;
         if (failed > 0) {
@@ -1430,7 +1436,6 @@ export class Runner {
      * @param {boolean} [canEraseParent]
      */
     _erase(job, canEraseParent = false) {
-        job.minimize();
         if (job instanceof Suite) {
             if (!job.reporting.failed) {
                 this.suites.delete(job.id);
@@ -1440,6 +1445,7 @@ export class Runner {
                 this.tests.delete(job.id);
             }
         }
+        job.minimize();
         if (canEraseParent && job.parent) {
             const jobIndex = job.parent.jobs.indexOf(job);
             if (jobIndex >= 0) {
@@ -1699,9 +1705,6 @@ export class Runner {
             if (preset.tags?.length) {
                 this._include(this.state.includeSpecs.tag, preset.tags, INCLUDE_LEVEL.preset);
             }
-            if (preset.platform) {
-                mockUserAgent(preset.platform);
-            }
             if (typeof preset.touch === "boolean") {
                 this.beforeEach(() => mockTouch(preset.touch));
             }
@@ -1736,7 +1739,7 @@ export class Runner {
         this._populateState = false;
 
         if (!this.state.tests.length) {
-            throw new HootError(`no tests to run`, { level: "critical" });
+            logger.logGlobal(`no tests to run`);
         }
 
         // Reduce non-included suites & tests info to a miminum
@@ -1783,7 +1786,7 @@ export class Runner {
         const error = ensureError(ev);
         if (handledErrors.has(error)) {
             // Already handled
-            return safePrevent(ev);
+            return ev.preventDefault();
         }
         handledErrors.add(error);
 
@@ -1791,27 +1794,32 @@ export class Runner {
             ev = new ErrorEvent("error", { error });
         }
 
+        mockPreventDefault(ev);
+
         if (error.message.includes(RESIZE_OBSERVER_MESSAGE)) {
             // Stop event
             ev.stopImmediatePropagation();
             if (ev.bubbles) {
                 ev.stopPropagation();
             }
-            return safePrevent(ev);
+            return ev.preventDefault();
         }
 
-        if (this.state.currentTest && !(error instanceof HootError)) {
+        if (this.state.currentTest) {
             // Handle the error in the current test
             const handled = this._handleErrorInTest(ev, error);
             if (handled) {
-                return safePrevent(ev);
+                if (!(error instanceof HootError)) {
+                    ev.preventDefault();
+                }
+                return;
             }
         } else {
             this._handleGlobalError(ev, error);
         }
 
         // Prevent error event
-        safePrevent(ev);
+        ev.preventDefault();
 
         // Log error
         if (error.level) {
@@ -1831,7 +1839,7 @@ export class Runner {
     _handleErrorInTest(ev, error) {
         for (const callbackRegistry of this._getCallbackChain(this.state.currentTest)) {
             callbackRegistry.callSync("error", ev, logger.error);
-            if (ev.defaultPrevented) {
+            if (isPrevented(ev)) {
                 // Prevented in tests
                 return true;
             }
@@ -1880,7 +1888,7 @@ export class Runner {
     async _setupStart() {
         this._startTime = $now();
         if (this.config.manual) {
-            this._canStartDef = Promise.withResolvers();
+            this._canStartDef ||= Promise.withResolvers();
         }
 
         // Config log

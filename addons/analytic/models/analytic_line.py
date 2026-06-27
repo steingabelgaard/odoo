@@ -98,6 +98,15 @@ class AnalyticPlanFieldsMixin(models.AbstractModel):
                 raise ValidationError(_("At least one analytic account must be set"))
 
     @api.model
+    def default_get(self, fields):
+        defaults = super().default_get(fields)
+        account_id = self.env.context.get('default_auto_account_id')
+        account = self.env['account.analytic.account'].browse(account_id).exists()
+        if account:
+            defaults[account.plan_id._column_name()] = account.id
+        return defaults
+
+    @api.model
     def fields_get(self, allfields=None, attributes=None):
         fields = super().fields_get(allfields, attributes)
         if not self.env.context.get("studio") and self.env['account.analytic.plan'].has_access('read'):
@@ -237,6 +246,8 @@ class AccountAnalyticLine(models.Model):
                 {line._get_distribution_key(): 100},
                 line.analytic_distribution or {},
             )
+            if not final_distribution:
+                continue
             amount_fname = line._split_amount_fname()
             vals_list = [
                 {amount_fname: line[amount_fname] * percent / 100} | empty_account | {

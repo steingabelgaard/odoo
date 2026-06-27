@@ -51,12 +51,12 @@ export class ReceiptScreen extends Component {
     }
     get orderAmountPlusTip() {
         const order = this.currentOrder;
-        const orderTotalAmount = order.getTotalWithTax();
+        const orderTotalAmount = order.priceIncl;
         const tip_product_id = this.pos.config.tip_product_id?.id;
         const tipLine = order
             .getOrderlines()
             .find((line) => tip_product_id && line.product_id.id === tip_product_id);
-        const tipAmount = tipLine ? tipLine.allPrices.priceWithTax : 0;
+        const tipAmount = tipLine ? tipLine.prices.total_included : 0;
         const orderAmountStr = this.env.utils.formatCurrency(orderTotalAmount - tipAmount);
         if (!tipAmount) {
             return orderAmountStr;
@@ -94,6 +94,7 @@ export class ReceiptScreen extends Component {
                 body: _t(
                     "This order is not yet synced to server. Make sure it is synced then try again."
                 ),
+                showReloadButton: true,
             });
             return Promise.reject();
         }

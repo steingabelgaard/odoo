@@ -160,6 +160,33 @@ test("start interactions with selectorHas", async () => {
     expect(core.interactions[0].interaction.el).toBe(queryOne(".test:has(.inner)"));
 });
 
+test("stop interactions with selectorHas", async () => {
+    class Test extends Interaction {
+        static selector = ".test";
+        static selectorHas = ".inner";
+
+        start() {
+            expect.step("start");
+        }
+
+        destroy() {
+            expect.step("destroy");
+        }
+    }
+
+    const { core } = await startInteraction(
+        Test,
+        `
+        <div class="test"><div class="inner"></div><div class="other"></div></div>
+    `
+    );
+    expect.verifySteps(["start"]);
+
+    queryOne(".inner").remove();
+    core.stopInteractions(queryOne(".other")); // on sub-element of the Interaction root
+    expect.verifySteps(["destroy"]);
+});
+
 test("start interactions even if there is a crash when evaluating selectorNotHas", async () => {
     class Boom extends Interaction {
         static selector = ".test";
@@ -214,6 +241,30 @@ test("start interactions with selectorNotHas", async () => {
     expect(core.interactions).toHaveLength(1);
     expect.verifySteps(["start"]);
     expect(core.interactions[0].interaction.el).toBe(queryOne(".test:not(:has(.inner))"));
+});
+
+test("stop interactions with selectorNotHas", async () => {
+    class Test extends Interaction {
+        static selector = ".test";
+        static selectorNotHas = ".inner";
+
+        start() {
+            expect.step("start");
+        }
+
+        destroy() {
+            expect.step("destroy");
+        }
+    }
+
+    const { core } = await startInteraction(Test, `<div class="test"></div>`);
+    expect.verifySteps(["start"]);
+
+    const div = document.createElement("div");
+    div.className = "inner";
+    queryOne(".test").appendChild(div);
+    core.stopInteractions(div); // on sub-element of the Interaction root (added node)
+    expect.verifySteps(["destroy"]);
 });
 
 test("recover from error as much as possible when applying dynamiccontent", async () => {
@@ -274,6 +325,28 @@ test("interactions are stopped in reverse order", async () => {
     expect.verifySteps(["setup 1", "setup 2"]);
     core.stopInteractions();
     expect.verifySteps(["destroy 2", "destroy 1"]);
+});
+
+test("stop interactions continues after a destroy crash", async () => {
+    class Boom extends Interaction {
+        static selector = ".test";
+
+        destroy() {
+            expect.step("destroy boom");
+            throw new Error("boom");
+        }
+    }
+    class NotBoom extends Interaction {
+        static selector = ".test";
+
+        destroy() {
+            expect.step("destroy notboom");
+        }
+    }
+
+    const { core } = await startInteraction([NotBoom, Boom], `<div class="test"></div>`);
+    expect(() => core.stopInteractions()).toThrow("Could not destroy interaction Boom");
+    expect.verifySteps(["destroy boom", "destroy notboom"]);
 });
 
 test("can mount a component", async () => {

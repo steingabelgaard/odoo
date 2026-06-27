@@ -26,7 +26,6 @@ import {
     useExternalListener,
 } from "@odoo/owl";
 import { standardActionServiceProps } from "@web/webclient/actions/action_service";
-import { addLoadingEffect as addButtonLoadingEffect } from "@web/core/utils/ui";
 import { fuzzyLevenshteinLookup } from "@web/core/utils/search";
 import { isBrowserSafari } from "@web/core/browser/feature_detection";
 
@@ -263,7 +262,7 @@ export class DescriptionScreen extends Component {
         } else {
             let synonymMatches = this.state.industries.filter((val, index) => {
                 // To match, every term should be contained in the synonym
-                for (const candidate of [...(val.synonyms || "").split(this.splitRegex)]) {
+                for (const candidate of [...(val.synonyms || "").split(/[|,]/)]) {
                     // Check if industry label has already matched
                     if (
                         terms.every((term) => candidate.toLowerCase().includes(term)) &&
@@ -317,7 +316,7 @@ export class DescriptionScreen extends Component {
             let bitIndex = 0;
             while (bitIndex < matchTermOrder.labelBits.length) {
                 const currentBit = matchTermOrder.labelBits[bitIndex];
-                const splitBits = currentBit.split(new RegExp(`(${escapeRegExp(term)})`));
+                const splitBits = currentBit.split(new RegExp(`(${escapeRegExp(term)})`, "i"));
                 matchTermOrder.labelBits.splice(bitIndex, 1, ...splitBits);
                 bitIndex += splitBits.length;
             }
@@ -732,7 +731,7 @@ export class ThemeSelectionScreen extends ApplyConfiguratorScreen {
     }
 
     async getMoreThemes() {
-        const removeLoadingEffect = addButtonLoadingEffect(this.extraThemesButtonRef.el);
+        this.uiService.block();
         const themes = await getRecommendedThemes(
             this.orm,
             this.state,
@@ -745,7 +744,7 @@ export class ThemeSelectionScreen extends ApplyConfiguratorScreen {
             (extraTheme) => !mainThemeNames.includes(extraTheme.name)
         );
         this.state.extraThemesLoaded = true;
-        removeLoadingEffect();
+        this.uiService.unblock();
     }
 
     getExtraThemeName(idx) {

@@ -1,3 +1,5 @@
+import { insertText as htmlInsertText } from "@html_editor/../tests/_helpers/user_actions";
+
 import { waitNotifications, waitUntilSubscribe } from "@bus/../tests/bus_test_helpers";
 
 import {
@@ -5,6 +7,7 @@ import {
     contains,
     defineMailModels,
     editInput,
+    focus,
     insertText,
     listenStoreFetch,
     onRpcBefore,
@@ -18,6 +21,7 @@ import {
     STORE_FETCH_ROUTES,
     triggerHotkey,
     waitStoreFetch,
+    getChannelCommandsForThread,
 } from "@mail/../tests/mail_test_helpers";
 import { mailDataHelpers } from "@mail/../tests/mock_server/mail_mock_server";
 import { describe, expect, test } from "@odoo/hoot";
@@ -203,7 +207,7 @@ test("Posting message should transform links.", async () => {
     await contains("a[href='https://www.odoo.com/']");
 });
 
-test("Posting message should transform relevant data to emoji.", async () => {
+test("[text composer] Posting message should transform relevant data to emoji.", async () => {
     const pyEnv = await startServer();
     const channelId = pyEnv["discuss.channel"].create({
         name: "general",
@@ -212,6 +216,27 @@ test("Posting message should transform relevant data to emoji.", async () => {
     await start();
     await openDiscuss(channelId);
     await insertText(".o-mail-Composer-input", "test :P :laughing:");
+    await press("Enter");
+    await contains(".o-mail-Message-body", { text: "test 😛 😆" });
+});
+
+test.tags("html composer");
+test("Posting message should transform relevant data to emoji.", async () => {
+    const pyEnv = await startServer();
+    const channelId = pyEnv["discuss.channel"].create({
+        name: "general",
+        channel_type: "channel",
+    });
+    await start();
+    const composerService = getService("mail.composer");
+    composerService.setHtmlComposer();
+    await openDiscuss(channelId);
+    await focus(".o-mail-Composer-html.odoo-editor-editable");
+    const editor = {
+        document,
+        editable: document.querySelector(".o-mail-Composer-html.odoo-editor-editable"),
+    };
+    await htmlInsertText(editor, "test :P :laughing:");
     await press("Enter");
     await contains(".o-mail-Message-body", { text: "test 😛 😆" });
 });
@@ -275,6 +300,14 @@ test("Click on avatar opens its partner chat window", async () => {
     await contains(".o_card_user_infos > span", { text: "testPartner" });
     await contains(".o_card_user_infos > a", { text: "test@partner.com" });
     await contains(".o_card_user_infos > a", { text: "+45687468" });
+});
+
+test("guests are not allowed to use commands", async () => {
+    const pyEnv = await startServer();
+    const channelId = pyEnv["discuss.channel"].create({ name: "wololo" });
+    await start({ authenticateAs: false });
+    await openDiscuss(channelId);
+    expect(getChannelCommandsForThread(channelId)).toHaveLength(0);
 });
 
 test("sidebar: chat im_status rendering", async () => {
@@ -1315,6 +1348,13 @@ test("receive new chat messages: out of odoo focus (tab title)", async () => {
 
 test("new message in tab title has precedence over action name", async () => {
     const pyEnv = await startServer();
+    patchWithCleanup(document, {
+        set title(newTitle) {
+            if (newTitle?.includes("Inbox")) {
+                expect.step(newTitle);
+            }
+        },
+    });
     const bobUserId = pyEnv["res.users"].create({ name: "bob" });
     const bobPartnerId = pyEnv["res.partner"].create({ name: "bob", user_ids: [bobUserId] });
     const channelId = pyEnv["discuss.channel"].create({
@@ -1327,8 +1367,7 @@ test("new message in tab title has precedence over action name", async () => {
     await start();
     await openDiscuss("mail.box_inbox");
     await contains(".o-mail-DiscussContent-threadName", { value: "Inbox" }); // wait for action name being Inbox
-    const titleService = getService("title");
-    expect(titleService.current).toBe("Inbox");
+    await expect.waitForSteps(["Inbox"]);
     // simulate receiving a new message in chat 1 with odoo out-of-focused
     await withUser(bobUserId, () =>
         rpc("/mail/message/post", {
@@ -1338,11 +1377,18 @@ test("new message in tab title has precedence over action name", async () => {
         })
     );
     await waitNotifications(["discuss.channel.member/fetched"]);
-    expect(titleService.current).toBe("(1) Inbox");
+    await expect.waitForSteps(["(1) Inbox"]);
 });
 
 test("out-of-focus notif takes new inbox messages into account", async () => {
     const pyEnv = await startServer();
+    patchWithCleanup(document, {
+        set title(newTitle) {
+            if (newTitle === "(1) Inbox") {
+                expect.step(newTitle);
+            }
+        },
+    });
     pyEnv["res.users"].write(serverState.userId, { notification_type: "inbox" });
     const partnerId = pyEnv["res.partner"].create({ name: "Dumbledore" });
     const userId = pyEnv["res.users"].create({ partner_id: partnerId });
@@ -1350,7 +1396,7 @@ test("out-of-focus notif takes new inbox messages into account", async () => {
     await start();
     await waitStoreFetch("init_messaging");
     await openDiscuss("mail.box_inbox");
-    const titleService = getService("title");
+    await contains(".o-mail-DiscussContent-threadName", { value: "Inbox" }); // wait for action name being Inbox
     // simulate receiving a new needaction message with odoo out-of-focused
     const adminId = serverState.partnerId;
     await withUser(userId, () =>
@@ -1365,11 +1411,18 @@ test("out-of-focus notif takes new inbox messages into account", async () => {
         })
     );
     await contains(".o-mail-DiscussSidebar-item:has(.badge:contains(1))", { text: "Inbox" });
-    expect(titleService.current).toBe("(1) Inbox");
+    await expect.waitForSteps(["(1) Inbox"]);
 });
 
 test("out-of-focus notif on needaction message in group chat contributes only once", async () => {
     const pyEnv = await startServer();
+    patchWithCleanup(document, {
+        set title(newTitle) {
+            if (newTitle === "(1) Inbox") {
+                expect.step(newTitle);
+            }
+        },
+    });
     pyEnv["res.users"].write(serverState.userId, { notification_type: "inbox" });
     const partnerId = pyEnv["res.partner"].create({ name: "Dumbledore" });
     const userId = pyEnv["res.users"].create({ partner_id: partnerId });
@@ -1384,7 +1437,7 @@ test("out-of-focus notif on needaction message in group chat contributes only on
     await start();
     await waitStoreFetch("init_messaging");
     await openDiscuss("mail.box_inbox");
-    const titleService = getService("title");
+    await contains(".o-mail-DiscussContent-threadName", { value: "Inbox" }); // wait for action name being Inbox
     // simulate receiving a new needaction message with odoo out-of-focused
     const adminId = serverState.partnerId;
     await withUser(userId, () =>
@@ -1402,7 +1455,7 @@ test("out-of-focus notif on needaction message in group chat contributes only on
     await contains(".o-mail-DiscussSidebar-item:has(.badge:contains(1))", {
         text: "Mitchell Admin and Dumbledore",
     });
-    expect(titleService.current).toBe("(1) Inbox");
+    await expect.waitForSteps(["(1) Inbox"]);
 });
 
 test("inbox notifs shouldn't play sound nor open chat bubble", async () => {
@@ -2007,10 +2060,12 @@ test("failure on loading more messages should display error and prompt retry but
 });
 
 test("Retry loading more messages on failed load more messages should load more messages", async () => {
-    // first call needs to be successful as it is the initial loading of messages
-    // second call comes from load more and needs to fail in order to show the error alert
-    // any later call should work so that retry button and load more clicks would now work
-    let messageFetchShouldFail = false;
+    // The initial load and the retry/success loads use the real handler; only the
+    // "load more" that must fail goes through messageFetchDeferred. It is rejected
+    // only once the fetch is in flight (waitForSteps), so that while it is pending a
+    // duplicate IntersectionObserver fire no-ops on status "loading" and cannot leave
+    // an orphaned fetch racing the retry click.
+    let messageFetchDeferred;
     const pyEnv = await startServer();
     const channelId = pyEnv["discuss.channel"].create({
         channel_type: "channel",
@@ -2030,19 +2085,22 @@ test("Retry loading more messages on failed load more messages should load more 
     pyEnv["discuss.channel.member"].write([selfMember.id], {
         new_message_separator: messageIds.at(-1) + 1,
     });
-    onRpcBefore("/discuss/channel/messages", () => {
-        if (messageFetchShouldFail) {
-            return Promise.reject();
+    onRpcBefore("/discuss/channel/messages", async () => {
+        if (messageFetchDeferred) {
+            asyncStep("load more messages");
+            await messageFetchDeferred;
         }
     });
     await start();
     await openDiscuss(channelId);
     await contains(".o-mail-Message", { count: 30 });
-    messageFetchShouldFail = true;
+    messageFetchDeferred = new Deferred();
     await contains(".o-mail-Thread", { scroll: "bottom" });
     await scroll(".o-mail-Thread", 0);
+    await waitForSteps(["load more messages"]);
+    messageFetchDeferred.reject(new Error("Simulated load more failure"));
     await contains("button", { text: "Click here to retry" });
-    messageFetchShouldFail = false;
+    messageFetchDeferred = undefined;
     await click("button", { text: "Click here to retry" });
     await contains(".o-mail-Message", { count: 60 });
     await scroll(".o-mail-Thread", 0);
@@ -2263,6 +2321,7 @@ test("Notification settings: basic rendering", async () => {
     });
     await start();
     await openDiscuss(channelId);
+    await contains(".o-discuss-ChannelMemberList"); // wait for auto-open of this panel
     await click("[title='Notification Settings']");
     await contains("button", { text: "All Messages" });
     await contains("button", { text: "Mentions Only", count: 2 }); // the extra is in the Use Default as subtitle
@@ -2335,6 +2394,7 @@ test("Notification settings: mute/unmute conversation works correctly", async ()
     });
     await start();
     await openDiscuss(channelId);
+    await contains(".o-discuss-ChannelMemberList"); // wait for auto-open of this panel
     await click("[title='Notification Settings']");
     // dropdown requires an extra delay before click (because handler is registered in useEffect)
     await contains("button", { text: "Mute Conversation" });
@@ -2378,7 +2438,7 @@ test("Newly created chat is at the top of the DM list", async () => {
     await start();
     await openDiscuss();
     await click("input[placeholder='Search conversations']");
-    await contains(".o_command_name", { count: 6 });
+    await contains(".o_command_name", { count: 5 });
     await insertText("input[placeholder='Search a conversation']", "Jer");
     await contains(".o_command_name", { count: 3 });
     await click(".o_command_name", { text: "Jerry Golay" });
