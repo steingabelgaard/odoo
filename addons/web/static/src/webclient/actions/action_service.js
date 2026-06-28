@@ -760,8 +760,9 @@ function makeActionManager(env) {
      */
     function _executeActURLAction(action, options) {
         let url = action.url;
-        if (url && !(url.startsWith('http') || url.startsWith('/')))
+        if (url && !(url.startsWith('http') || url.startsWith('/') || url.startsWith('mailto:'))) {
             url = '/' + url;
+        }
         if (action.target === "self") {
             env.services.router.redirect(url);
         } else {
